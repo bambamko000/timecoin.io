@@ -1,0 +1,6 @@
+usr/local/bin/time-qt usr/bin
+share/pixmaps/time32.xpm usr/share/pixmaps
+share/pixmaps/time16.xpm usr/share/pixmaps
+share/pixmaps/time128.png usr/share/pixmaps
+debian/time-qt.desktop usr/share/applications
+debian/time-qt.protocol usr/share/kde4/services/

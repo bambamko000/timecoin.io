@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=TIMECCoin
+Comment=TIMECCoin P2P Cryptocurrency
+Comment[fr]=TIMECCoin, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=TIMECCoin, eşten eşe kriptografik sanal para birimi
+Exec=time-qt %u
+Terminal=false
+Type=Application
+Icon=time128
+MimeType=x-scheme-handler/time;
+Categories=Office;Finance;

@@ -1,0 +1,22 @@
+[Unit]
+Description=TIMECCoin's distributed currency daemon
+After=network.target
+
+[Service]
+User=timecore
+Group=timecore
+
+Type=forking
+PIDFile=/var/lib/timed/timed.pid
+ExecStart=/usr/bin/timed -daemon -pid=/var/lib/timed/timed.pid \
+-conf=/etc/timecore/time.conf -datadir=/var/lib/timed -disablewallet
+
+Restart=always
+PrivateTmp=true
+TIMECCoinoutStopSec=60s
+TIMECCoinoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

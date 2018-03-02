@@ -19,8 +19,6 @@ For more information, as well as an immediately useable, binary version of
 the TIMECoin Core software, see the release tab.
 
 
-Coin Sp
-
 
 License
 -------
@@ -66,9 +64,6 @@ not straightforward.
 
 Translations
 ------------
-
-Changes to translations as well as new translations can be submitted to
-[TIMECoin Core's Transifex page](https://www.transifex.com/projects/p/time/).
 
 Translations are periodically pulled from Transifex and merged into the git repository. See the
 [translation process](doc/translation_process.md) for details on how this works.

@@ -72,23 +72,23 @@ void RPCTypeCheck(const UniValue& params,
 void RPCTypeCheckObj(const UniValue& o,
                   const std::map<std::string, UniValue::VType>& typesExpected, bool fAllowNull=false);
 
-/** Opaque base class for timers returned by NewTIMECCoinrFunc.
+/** Opaque base class for timers returned by NewTIMECoinrFunc.
  * This provides no methods at the moment, but makes sure that delete
  * cleans up the whole state.
  */
-class RPCTIMECCoinrBase
+class RPCTIMECoinrBase
 {
 public:
-    virtual ~RPCTIMECCoinrBase() {}
+    virtual ~RPCTIMECoinrBase() {}
 };
 
 /**
  * RPC timer "driver".
  */
-class RPCTIMECCoinrInterface
+class RPCTIMECoinrInterface
 {
 public:
-    virtual ~RPCTIMECCoinrInterface() {}
+    virtual ~RPCTIMECoinrInterface() {}
     /** Implementation name */
     virtual const char *Name() = 0;
     /** Factory function for timers.
@@ -97,13 +97,13 @@ public:
      * This is needed to cope with the case in which there is no HTTP server, but
      * only GUI RPC console, and to break the dependency of pcserver on httprpc.
      */
-    virtual RPCTIMECCoinrBase* NewTIMECCoinr(boost::function<void(void)>& func, int64_t millis) = 0;
+    virtual RPCTIMECoinrBase* NewTIMECoinr(boost::function<void(void)>& func, int64_t millis) = 0;
 };
 
 /** Register factory function for timers */
-void RPCRegisterTIMECCoinrInterface(RPCTIMECCoinrInterface *iface);
+void RPCRegisterTIMECoinrInterface(RPCTIMECoinrInterface *iface);
 /** Unregister factory function for timers */
-void RPCUnregisterTIMECCoinrInterface(RPCTIMECCoinrInterface *iface);
+void RPCUnregisterTIMECoinrInterface(RPCTIMECoinrInterface *iface);
 
 /**
  * Run func nSeconds from now.
@@ -123,7 +123,7 @@ public:
 };
 
 /**
- * TIMECCoin RPC command dispatcher.
+ * TIMECoin RPC command dispatcher.
  */
 class CRPCTable
 {
@@ -161,7 +161,7 @@ extern uint256 ParseHashO(const UniValue& o, std::string strKey);
 extern std::vector<unsigned char> ParseHexV(const UniValue& v, std::string strName);
 extern std::vector<unsigned char> ParseHexO(const UniValue& o, std::string strKey);
 
-extern int64_t nWalletUnlockTIMECCoin;
+extern int64_t nWalletUnlockTIMECoin;
 extern CAmount AmountFromValue(const UniValue& value);
 extern UniValue ValueFromAmount(const CAmount& amount);
 extern double GetDifficulty(const CBlockIndex* blockindex = NULL);

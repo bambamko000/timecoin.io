@@ -16,8 +16,8 @@ BEGIN
     BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
-            VALUE "CompanyName",        "TIMECCoin"
-            VALUE "FileDescription",    "time-tx (CLI TIMECCoin transaction editor utility)"
+            VALUE "CompanyName",        "TIMECoin"
+            VALUE "FileDescription",    "time-tx (CLI TIMECoin transaction editor utility)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
             VALUE "InternalName",       "time-tx"
             VALUE "LegalCopyright",     COPYRIGHT_STR

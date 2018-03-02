@@ -67,10 +67,10 @@ def calc_hash_str(blk_hdr):
 
 def get_blk_dt(blk_hdr):
 	members = struct.unpack("<I", blk_hdr[68:68+4])
-	nTIMECCoin = members[0]
-	dt = datetime.datetime.fromtimestamp(nTIMECCoin)
+	nTIMECoin = members[0]
+	dt = datetime.datetime.fromtimestamp(nTIMECoin)
 	dt_ym = datetime.datetime(dt.year, dt.month, 1)
-	return (dt_ym, nTIMECCoin)
+	return (dt_ym, nTIMECoin)
 
 def get_block_hashes(settings):
 	blkindex = []
@@ -111,12 +111,12 @@ class BlockDataCopier:
 		self.highTS = 1408893517 - 315360000
 		self.timestampSplit = False
 		self.fileOutput = True
-		self.setFileTIMECCoin = False
+		self.setFileTIMECoin = False
 		self.maxOutSz = settings['max_out_sz']
 		if 'output' in settings:
 			self.fileOutput = False
 		if settings['file_timestamp'] != 0:
-			self.setFileTIMECCoin = True
+			self.setFileTIMECoin = True
 		if settings['split_timestamp'] != 0:
 			self.timestampSplit = True
 		# Extents and cache for out-of-order blocks
@@ -128,7 +128,7 @@ class BlockDataCopier:
 		blockSizeOnDisk = len(inhdr) + len(blk_hdr) + len(rawblock)
 		if not self.fileOutput and ((self.outsz + blockSizeOnDisk) > self.maxOutSz):
 			self.outF.close()
-			if self.setFileTIMECCoin:
+			if self.setFileTIMECoin:
 				os.utime(outFname, (int(time.time()), highTS))
 			self.outF = None
 			self.outFname = None
@@ -141,7 +141,7 @@ class BlockDataCopier:
 			lastDate = blkDate
 			if outF:
 				outF.close()
-				if setFileTIMECCoin:
+				if setFileTIMECoin:
 					os.utime(outFname, (int(time.time()), highTS))
 				self.outF = None
 				self.outFname = None

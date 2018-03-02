@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_CASE(acc_orderupgrade)
 
     ae.strAccount = "";
     ae.nCreditDebit = 1;
-    ae.nTIMECCoin = 1333333333;
+    ae.nTIMECoin = 1333333333;
     ae.strOtherAccount = "b";
     ae.strComment = "";
     pwalletMain->AddAccountingEntry(ae, walletdb);
@@ -50,10 +50,10 @@ BOOST_AUTO_TEST_CASE(acc_orderupgrade)
     wtx.mapValue["comment"] = "z";
     pwalletMain->AddToWallet(wtx, false, &walletdb);
     vpwtx.push_back(&pwalletMain->mapWallet[wtx.GetHash()]);
-    vpwtx[0]->nTIMECCoinReceived = (unsigned int)1333333335;
+    vpwtx[0]->nTIMECoinReceived = (unsigned int)1333333335;
     vpwtx[0]->nOrderPos = -1;
 
-    ae.nTIMECCoin = 1333333336;
+    ae.nTIMECoin = 1333333336;
     ae.strOtherAccount = "c";
     pwalletMain->AddAccountingEntry(ae, walletdb);
 
@@ -61,14 +61,14 @@ BOOST_AUTO_TEST_CASE(acc_orderupgrade)
 
     BOOST_CHECK(pwalletMain->nOrderPosNext == 3);
     BOOST_CHECK(2 == results.size());
-    BOOST_CHECK(results[0].nTIMECCoin == 1333333333);
+    BOOST_CHECK(results[0].nTIMECoin == 1333333333);
     BOOST_CHECK(results[0].strComment.empty());
     BOOST_CHECK(1 == vpwtx[0]->nOrderPos);
-    BOOST_CHECK(results[2].nTIMECCoin == 1333333336);
+    BOOST_CHECK(results[2].nTIMECoin == 1333333336);
     BOOST_CHECK(results[2].strOtherAccount == "c");
 
 
-    ae.nTIMECCoin = 1333333330;
+    ae.nTIMECoin = 1333333330;
     ae.strOtherAccount = "d";
     ae.nOrderPos = pwalletMain->IncOrderPosNext();
     pwalletMain->AddAccountingEntry(ae, walletdb);
@@ -77,32 +77,32 @@ BOOST_AUTO_TEST_CASE(acc_orderupgrade)
 
     BOOST_CHECK(results.size() == 3);
     BOOST_CHECK(pwalletMain->nOrderPosNext == 4);
-    BOOST_CHECK(results[0].nTIMECCoin == 1333333333);
+    BOOST_CHECK(results[0].nTIMECoin == 1333333333);
     BOOST_CHECK(1 == vpwtx[0]->nOrderPos);
-    BOOST_CHECK(results[2].nTIMECCoin == 1333333336);
-    BOOST_CHECK(results[3].nTIMECCoin == 1333333330);
+    BOOST_CHECK(results[2].nTIMECoin == 1333333336);
+    BOOST_CHECK(results[3].nTIMECoin == 1333333330);
     BOOST_CHECK(results[3].strComment.empty());
 
 
     wtx.mapValue["comment"] = "y";
     {
         CMutableTransaction tx(wtx);
-        --tx.nLockTIMECCoin;  // Just to change the hash :)
+        --tx.nLockTIMECoin;  // Just to change the hash :)
         *static_cast<CTransaction*>(&wtx) = CTransaction(tx);
     }
     pwalletMain->AddToWallet(wtx, false, &walletdb);
     vpwtx.push_back(&pwalletMain->mapWallet[wtx.GetHash()]);
-    vpwtx[1]->nTIMECCoinReceived = (unsigned int)1333333336;
+    vpwtx[1]->nTIMECoinReceived = (unsigned int)1333333336;
 
     wtx.mapValue["comment"] = "x";
     {
         CMutableTransaction tx(wtx);
-        --tx.nLockTIMECCoin;  // Just to change the hash :)
+        --tx.nLockTIMECoin;  // Just to change the hash :)
         *static_cast<CTransaction*>(&wtx) = CTransaction(tx);
     }
     pwalletMain->AddToWallet(wtx, false, &walletdb);
     vpwtx.push_back(&pwalletMain->mapWallet[wtx.GetHash()]);
-    vpwtx[2]->nTIMECCoinReceived = (unsigned int)1333333329;
+    vpwtx[2]->nTIMECoinReceived = (unsigned int)1333333329;
     vpwtx[2]->nOrderPos = -1;
 
     GetResults(walletdb, results);
@@ -110,15 +110,15 @@ BOOST_AUTO_TEST_CASE(acc_orderupgrade)
     BOOST_CHECK(results.size() == 3);
     BOOST_CHECK(pwalletMain->nOrderPosNext == 6);
     BOOST_CHECK(0 == vpwtx[2]->nOrderPos);
-    BOOST_CHECK(results[1].nTIMECCoin == 1333333333);
+    BOOST_CHECK(results[1].nTIMECoin == 1333333333);
     BOOST_CHECK(2 == vpwtx[0]->nOrderPos);
-    BOOST_CHECK(results[3].nTIMECCoin == 1333333336);
-    BOOST_CHECK(results[4].nTIMECCoin == 1333333330);
+    BOOST_CHECK(results[3].nTIMECoin == 1333333336);
+    BOOST_CHECK(results[4].nTIMECoin == 1333333330);
     BOOST_CHECK(results[4].strComment.empty());
     BOOST_CHECK(5 == vpwtx[1]->nOrderPos);
 
 
-    ae.nTIMECCoin = 1333333334;
+    ae.nTIMECoin = 1333333334;
     ae.strOtherAccount = "e";
     ae.nOrderPos = -1;
     pwalletMain->AddAccountingEntry(ae, walletdb);
@@ -128,13 +128,13 @@ BOOST_AUTO_TEST_CASE(acc_orderupgrade)
     BOOST_CHECK(results.size() == 4);
     BOOST_CHECK(pwalletMain->nOrderPosNext == 7);
     BOOST_CHECK(0 == vpwtx[2]->nOrderPos);
-    BOOST_CHECK(results[1].nTIMECCoin == 1333333333);
+    BOOST_CHECK(results[1].nTIMECoin == 1333333333);
     BOOST_CHECK(2 == vpwtx[0]->nOrderPos);
-    BOOST_CHECK(results[3].nTIMECCoin == 1333333336);
+    BOOST_CHECK(results[3].nTIMECoin == 1333333336);
     BOOST_CHECK(results[3].strComment.empty());
-    BOOST_CHECK(results[4].nTIMECCoin == 1333333330);
+    BOOST_CHECK(results[4].nTIMECoin == 1333333330);
     BOOST_CHECK(results[4].strComment.empty());
-    BOOST_CHECK(results[5].nTIMECCoin == 1333333334);
+    BOOST_CHECK(results[5].nTIMECoin == 1333333334);
     BOOST_CHECK(6 == vpwtx[1]->nOrderPos);
 }
 

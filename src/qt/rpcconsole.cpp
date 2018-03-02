@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -85,18 +85,18 @@ Q_SIGNALS:
 /** Class for handling RPC timers
  * (used for e.g. re-locking the wallet after a timeout)
  */
-class QtRPCTIMECCoinrBase: public QObject, public RPCTIMECCoinrBase
+class QtRPCTIMECoinrBase: public QObject, public RPCTIMECoinrBase
 {
     Q_OBJECT
 public:
-    QtRPCTIMECCoinrBase(boost::function<void(void)>& func, int64_t millis):
+    QtRPCTIMECoinrBase(boost::function<void(void)>& func, int64_t millis):
         func(func)
     {
         timer.setSingleShot(true);
         connect(&timer, SIGNAL(timeout()), this, SLOT(timeout()));
         timer.start(millis);
     }
-    ~QtRPCTIMECCoinrBase() {}
+    ~QtRPCTIMECoinrBase() {}
 private Q_SLOTS:
     void timeout() { func(); }
 private:
@@ -104,14 +104,14 @@ private:
     boost::function<void(void)> func;
 };
 
-class QtRPCTIMECCoinrInterface: public RPCTIMECCoinrInterface
+class QtRPCTIMECoinrInterface: public RPCTIMECoinrInterface
 {
 public:
-    ~QtRPCTIMECCoinrInterface() {}
+    ~QtRPCTIMECoinrInterface() {}
     const char *Name() { return "Qt"; }
-    RPCTIMECCoinrBase* NewTIMECCoinr(boost::function<void(void)>& func, int64_t millis)
+    RPCTIMECoinrBase* NewTIMECoinr(boost::function<void(void)>& func, int64_t millis)
     {
-        return new QtRPCTIMECCoinrBase(func, millis);
+        return new QtRPCTIMECoinrBase(func, millis);
     }
 };
 
@@ -301,8 +301,8 @@ RPCConsole::RPCConsole(const PlatformStyle *platformStyle, QWidget *parent) :
     ui->berkeleyDBVersion->hide();
 #endif
     // Register RPC timer interface
-    rpcTIMECCoinrInterface = new QtRPCTIMECCoinrInterface();
-    RPCRegisterTIMECCoinrInterface(rpcTIMECCoinrInterface);
+    rpcTIMECoinrInterface = new QtRPCTIMECoinrInterface();
+    RPCRegisterTIMECoinrInterface(rpcTIMECoinrInterface);
 
     setTrafficGraphRange(INITIAL_TRAFFIC_GRAPH_SETTING);
 
@@ -316,8 +316,8 @@ RPCConsole::RPCConsole(const PlatformStyle *platformStyle, QWidget *parent) :
 RPCConsole::~RPCConsole()
 {
     GUIUtil::saveWindowGeometry("nRPCConsoleWindow", this);
-    RPCUnregisterTIMECCoinrInterface(rpcTIMECCoinrInterface);
-    delete rpcTIMECCoinrInterface;
+    RPCUnregisterTIMECoinrInterface(rpcTIMECoinrInterface);
+    delete rpcTIMECoinrInterface;
     delete ui;
 }
 
@@ -474,7 +474,7 @@ void RPCConsole::setClientModel(ClientModel *model)
         ui->clientUserAgent->setText(model->formatSubVersion());
         ui->clientName->setText(model->clientName());
         ui->dataDir->setText(model->dataDir());
-        ui->startupTIMECCoin->setText(model->formatClientStartupTIMECCoin());
+        ui->startupTIMECoin->setText(model->formatClientStartupTIMECoin());
         ui->networkName->setText(QString::fromStdString(Params().NetworkIDString()));
 
         //Setup autocomplete and attach it
@@ -641,7 +641,7 @@ void RPCConsole::clear(bool clearHistory)
             ).arg(fixedFontInfo.family(), QString("%1pt").arg(consoleFontSize))
         );
 
-    message(CMD_REPLY, (tr("Welcome to the TIMECCoin Core RPC console.") + "<br>" +
+    message(CMD_REPLY, (tr("Welcome to the TIMECoin Core RPC console.") + "<br>" +
                         tr("Use up and down arrows to navigate history, and <b>Ctrl-L</b> to clear screen.") + "<br>" +
                         tr("Type <b>help</b> for an overview of available commands.")), true);
 }
@@ -700,7 +700,7 @@ void RPCConsole::setNumBlocks(int count, const QDateTime& blockDate, double nVer
 {
     if (!headers) {
         ui->numberOfBlocks->setText(QString::number(count));
-        ui->lastBlockTIMECCoin->setText(blockDate.toString());
+        ui->lastBlockTIMECoin->setText(blockDate.toString());
     }
 }
 
@@ -913,15 +913,15 @@ void RPCConsole::updateNodeDetail(const CNodeCombinedStats *stats)
         peerAddrDetails += "<br />" + tr("via %1").arg(QString::fromStdString(stats->nodeStats.addrLocal));
     ui->peerHeading->setText(peerAddrDetails);
     ui->peerServices->setText(GUIUtil::formatServicesStr(stats->nodeStats.nServices));
-    ui->peerLastSend->setText(stats->nodeStats.nLastSend ? GUIUtil::formatDurationStr(GetSystemTIMECCoinInSeconds() - stats->nodeStats.nLastSend) : tr("never"));
-    ui->peerLastRecv->setText(stats->nodeStats.nLastRecv ? GUIUtil::formatDurationStr(GetSystemTIMECCoinInSeconds() - stats->nodeStats.nLastRecv) : tr("never"));
+    ui->peerLastSend->setText(stats->nodeStats.nLastSend ? GUIUtil::formatDurationStr(GetSystemTIMECoinInSeconds() - stats->nodeStats.nLastSend) : tr("never"));
+    ui->peerLastRecv->setText(stats->nodeStats.nLastRecv ? GUIUtil::formatDurationStr(GetSystemTIMECoinInSeconds() - stats->nodeStats.nLastRecv) : tr("never"));
     ui->peerBytesSent->setText(FormatBytes(stats->nodeStats.nSendBytes));
     ui->peerBytesRecv->setText(FormatBytes(stats->nodeStats.nRecvBytes));
-    ui->peerConnTIMECCoin->setText(GUIUtil::formatDurationStr(GetSystemTIMECCoinInSeconds() - stats->nodeStats.nTIMECCoinConnected));
-    ui->peerPingTIMECCoin->setText(GUIUtil::formatPingTIMECCoin(stats->nodeStats.dPingTIMECCoin));
-    ui->peerPingWait->setText(GUIUtil::formatPingTIMECCoin(stats->nodeStats.dPingWait));
-    ui->peerMinPing->setText(GUIUtil::formatPingTIMECCoin(stats->nodeStats.dMinPing));
-    ui->timeoffset->setText(GUIUtil::formatTIMECCoinOffset(stats->nodeStats.nTIMECCoinOffset));
+    ui->peerConnTIMECoin->setText(GUIUtil::formatDurationStr(GetSystemTIMECoinInSeconds() - stats->nodeStats.nTIMECoinConnected));
+    ui->peerPingTIMECoin->setText(GUIUtil::formatPingTIMECoin(stats->nodeStats.dPingTIMECoin));
+    ui->peerPingWait->setText(GUIUtil::formatPingTIMECoin(stats->nodeStats.dPingWait));
+    ui->peerMinPing->setText(GUIUtil::formatPingTIMECoin(stats->nodeStats.dMinPing));
+    ui->timeoffset->setText(GUIUtil::formatTIMECoinOffset(stats->nodeStats.nTIMECoinOffset));
     ui->peerVersion->setText(QString("%1").arg(QString::number(stats->nodeStats.nVersion)));
     ui->peerSubversion->setText(QString::fromStdString(stats->nodeStats.cleanSubVer));
     ui->peerDirection->setText(stats->nodeStats.fInbound ? tr("Inbound") : tr("Outbound"));

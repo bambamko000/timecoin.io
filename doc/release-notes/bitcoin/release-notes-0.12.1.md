@@ -85,7 +85,7 @@ BIP113 locktime enforcement soft fork
 -------------------------------------
 
 Bitcoin Core 0.11.2 previously introduced mempool-only locktime
-enforcement using GetMedianTIMECCoinPast(). This release seeks to
+enforcement using GetMedianTIMECoinPast(). This release seeks to
 consensus enforce the rule.
 
 Bitcoin transactions currently may specify a locktime indicating when
@@ -102,18 +102,18 @@ hours.
 
 The consensus rules also specify that valid blocks may have a header
 time greater than that of the median of the 11 previous blocks.  This
-GetMedianTIMECCoinPast() time has a key feature we generally associate with
+GetMedianTIMECoinPast() time has a key feature we generally associate with
 time: it can't go backwards.
 
 [BIP113][] specifies a soft fork enforced in this release that
 weakens this perverse incentive for individual miners to use a future
-time by requiring that valid blocks have a computed GetMedianTIMECCoinPast()
+time by requiring that valid blocks have a computed GetMedianTIMECoinPast()
 greater than the locktime specified in any transaction in that block.
 
 Mempool inclusion rules currently require transactions to be valid for
 immediate inclusion in a block in order to be accepted into the mempool.
 This release begins applying the BIP113 rule to received transactions,
-so transaction whose time is greater than the GetMedianTIMECCoinPast() will
+so transaction whose time is greater than the GetMedianTIMECoinPast() will
 no longer be accepted into the mempool.
 
 **Implication for miners:** you will begin rejecting transactions that
@@ -124,7 +124,7 @@ under the BIP113 rules will either be mined by other miners or delayed
 until they are valid under BIP113. Note, however, that time-based
 locktime transactions are more or less unseen on the network currently.
 
-**Implication for users:** GetMedianTIMECCoinPast() always trails behind the
+**Implication for users:** GetMedianTIMECoinPast() always trails behind the
 current time, so a transaction locktime set to the present time will be
 rejected by nodes running this release until the median time moves
 forward. To compensate, subtract one hour (3,600 seconds) from your
@@ -186,7 +186,7 @@ Thanks to everyone who directly contributed to this release:
 - Alex Morcos
 - BtcDrak
 - Jonas Schnelli
-- Luke TIMECCoinjr
+- Luke TIMECoinjr
 - MarcoFalke
 - Mark Friedenbach
 - NicolasDorier

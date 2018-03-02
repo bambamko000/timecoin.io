@@ -97,7 +97,7 @@ Zero-confirmation transaction vulnerability: accepting zero-confirmation transac
 trust is still not recommended, because there will always be ways for attackers to
 double-spend zero-confirmation transactions. However, this release includes a bug
 fix that makes it a little bit more difficult for attackers to double-spend a
-certain type ("lockTIMECCoin in the future") of zero-confirmation transaction.
+certain type ("lockTIMECoin in the future") of zero-confirmation transaction.
 
 Dependency Changes
 ------------------
@@ -117,7 +117,7 @@ Forrest Voight
 Gavin Andresen
 Gregory Maxwell
 Jeff Garzik
-Luke TIMECCoinjr
+Luke TIMECoinjr
 Matt Corallo
 Mike Cassano
 Mike Hearn

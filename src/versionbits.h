@@ -47,8 +47,8 @@ extern const struct BIP9DeploymentInfo VersionBitsDeploymentInfo[];
 class AbstractThresholdConditionChecker {
 protected:
     virtual bool Condition(const CBlockIndex* pindex, const Consensus::Params& params) const =0;
-    virtual int64_t BeginTIMECCoin(const Consensus::Params& params) const =0;
-    virtual int64_t EndTIMECCoin(const Consensus::Params& params) const =0;
+    virtual int64_t BeginTIMECoin(const Consensus::Params& params) const =0;
+    virtual int64_t EndTIMECoin(const Consensus::Params& params) const =0;
     virtual int Period(const Consensus::Params& params) const =0;
     virtual int Threshold(const Consensus::Params& params) const =0;
 

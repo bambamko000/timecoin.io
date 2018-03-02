@@ -96,7 +96,7 @@ struct CSpentIndexKeyCompare
     }
 };
 
-struct CTIMECCoinstampIndexIteratorKey {
+struct CTIMECoinstampIndexIteratorKey {
     unsigned int timestamp;
 
     size_t GetSerializeSize(int nType, int nVersion) const {
@@ -111,11 +111,11 @@ struct CTIMECCoinstampIndexIteratorKey {
         timestamp = ser_readdata32be(s);
     }
 
-    CTIMECCoinstampIndexIteratorKey(unsigned int time) {
+    CTIMECoinstampIndexIteratorKey(unsigned int time) {
         timestamp = time;
     }
 
-    CTIMECCoinstampIndexIteratorKey() {
+    CTIMECoinstampIndexIteratorKey() {
         SetNull();
     }
 
@@ -124,7 +124,7 @@ struct CTIMECCoinstampIndexIteratorKey {
     }
 };
 
-struct CTIMECCoinstampIndexKey {
+struct CTIMECoinstampIndexKey {
     unsigned int timestamp;
     uint256 blockHash;
 
@@ -142,12 +142,12 @@ struct CTIMECCoinstampIndexKey {
         blockHash.Unserialize(s, nType, nVersion);
     }
 
-    CTIMECCoinstampIndexKey(unsigned int time, uint256 hash) {
+    CTIMECoinstampIndexKey(unsigned int time, uint256 hash) {
         timestamp = time;
         blockHash = hash;
     }
 
-    CTIMECCoinstampIndexKey() {
+    CTIMECoinstampIndexKey() {
         SetNull();
     }
 

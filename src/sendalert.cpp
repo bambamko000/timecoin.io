@@ -42,8 +42,8 @@ void ThreadSendAlert(CConnman& connman)
     // Nodes never save alerts to disk, they are in-memory-only.
     //
     CAlert alert;
-    alert.nRelayUntil   = GetAdjustedTIMECCoin() + 15 * 60;
-    alert.nExpiration   = GetAdjustedTIMECCoin() + 30 * 60 * 60;
+    alert.nRelayUntil   = GetAdjustedTIMECoin() + 15 * 60;
+    alert.nExpiration   = GetAdjustedTIMECoin() + 30 * 60 * 60;
     alert.nID           = 1;  // keep track of alert IDs somewhere
     alert.nCancel       = 0;   // cancels previous messages up to this ID number
 
@@ -60,7 +60,7 @@ void ThreadSendAlert(CConnman& connman)
     alert.strStatusBar  = "URGENT: Upgrade required: see https://www.time.org";
 
     // Set specific client version/versions here. If setSubVer is empty, no filtering on subver is done:
-    // alert.setSubVer.insert(std::string("/TIMECCoin Core:0.12.0.58/"));
+    // alert.setSubVer.insert(std::string("/TIMECoin Core:0.12.0.58/"));
 
     // Sign
     if(!alert.Sign())

@@ -23,14 +23,14 @@ BenchRunner::BenchRunner(std::string name, BenchFunction func)
 }
 
 void
-BenchRunner::RunAll(double elapsedTIMECCoinForOne)
+BenchRunner::RunAll(double elapsedTIMECoinForOne)
 {
     std::cout << "Benchmark" << "," << "count" << "," << "min" << "," << "max" << "," << "average" << "\n";
 
     for (std::map<std::string,BenchFunction>::iterator it = benchmarks.begin();
          it != benchmarks.end(); ++it) {
 
-        State state(it->first, elapsedTIMECCoinForOne);
+        State state(it->first, elapsedTIMECoinForOne);
         BenchFunction& func = it->second;
         func(state);
     }
@@ -40,7 +40,7 @@ bool State::KeepRunning()
 {
     double now;
     if (count == 0) {
-        beginTIMECCoin = now = gettimedouble();
+        beginTIMECoin = now = gettimedouble();
     }
     else {
         // timeCheckCount is used to avoid calling gettime most of the time,
@@ -50,21 +50,21 @@ bool State::KeepRunning()
             return true; // keep going
         }
         now = gettimedouble();
-        double elapsedOne = (now - lastTIMECCoin)/timeCheckCount;
-        if (elapsedOne < minTIMECCoin) minTIMECCoin = elapsedOne;
-        if (elapsedOne > maxTIMECCoin) maxTIMECCoin = elapsedOne;
+        double elapsedOne = (now - lastTIMECoin)/timeCheckCount;
+        if (elapsedOne < minTIMECoin) minTIMECoin = elapsedOne;
+        if (elapsedOne > maxTIMECoin) maxTIMECoin = elapsedOne;
         if (elapsedOne*timeCheckCount < maxElapsed/16) timeCheckCount *= 2;
     }
-    lastTIMECCoin = now;
+    lastTIMECoin = now;
     ++count;
 
-    if (now - beginTIMECCoin < maxElapsed) return true; // Keep going
+    if (now - beginTIMECoin < maxElapsed) return true; // Keep going
 
     --count;
 
     // Output results
-    double average = (now-beginTIMECCoin)/count;
-    std::cout << name << "," << count << "," << minTIMECCoin << "," << maxTIMECCoin << "," << average << "\n";
+    double average = (now-beginTIMECoin)/count;
+    std::cout << name << "," << count << "," << minTIMECoin << "," << maxTIMECoin << "," << average << "\n";
 
     return false;
 }

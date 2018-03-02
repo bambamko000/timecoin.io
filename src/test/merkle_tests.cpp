@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE(merkle_test)
             block.vtx.resize(ntx);
             for (int j = 0; j < ntx; j++) {
                 CMutableTransaction mtx;
-                mtx.nLockTIMECCoin = j;
+                mtx.nLockTIMECoin = j;
                 block.vtx[j] = mtx;
             }
             // Compute the root of the block before mutating it.

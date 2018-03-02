@@ -281,7 +281,7 @@ BOOST_AUTO_TEST_CASE(rpc_ban)
     adr = find_value(o1, "address");
     banned_until = find_value(o1, "banned_until");
     BOOST_CHECK_EQUAL(adr.get_str(), "127.0.0.0/24");
-    int64_t now = GetTIMECCoin();
+    int64_t now = GetTIMECoin();
     BOOST_CHECK(banned_until.get_int64() > now);
     BOOST_CHECK(banned_until.get_int64()-now <= 200);
 

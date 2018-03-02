@@ -318,7 +318,7 @@ git merge commit are mentioned.
 - #6354 `bdf0d94` Gitian windows signing normalization
 
 ### Wallet
-- #2340 `811c71d` Discourage fee sniping with nLockTIMECCoin
+- #2340 `811c71d` Discourage fee sniping with nLockTIMECoin
 - #5485 `d01bcc4` Enforce minRelayTxFee on wallet created tx and add a maxtxfee option
 - #5508 `9a5cabf` Add RandAddSeedPerfmon to MakeNewKey
 - #4805 `8204e19` Do not flush the wallet in AddToWalletIfInvolvingMe(..)
@@ -327,7 +327,7 @@ git merge commit are mentioned.
 - #6076 `6c97fd1` wallet: fix boost::get usage with boost 1.58
 - #5511 `23c998d` Sort pending wallet transactions before reaccepting
 - #6126 `26e08a1` Change default nTxConfirmTarget to 2
-- #6183 `75a4d51` Fix off-by-one error w/ nLockTIMECCoin in the wallet
+- #6183 `75a4d51` Fix off-by-one error w/ nLockTIMECoin in the wallet
 - #6276 `c9fd907` Fix getbalance * 0
 
 ### GUI
@@ -434,7 +434,7 @@ Thanks to everyone who directly contributed to this release:
 - Chris Arnesen
 - Ciemon
 - CohibAA
-- Corinne TIMECCoinjr
+- Corinne TIMECoinjr
 - Cory Fields
 - Cozz Lovan
 - Daira Hopwood
@@ -463,7 +463,7 @@ Thanks to everyone who directly contributed to this release:
 - jtimon
 - Julian Yap
 - Luca Venturini
-- Luke TIMECCoinjr
+- Luke TIMECoinjr
 - Manuel Araoz
 - MarcoFalke
 - Matt Bogosian

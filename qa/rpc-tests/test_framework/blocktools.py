@@ -8,13 +8,13 @@ from .mininode import *
 from .script import CScript, OP_TRUE, OP_CHECKSIG
 
 # Create a block (with regtest difficulty)
-def create_block(hashprev, coinbase, nTIMECCoin=None):
+def create_block(hashprev, coinbase, nTIMECoin=None):
     block = CBlock()
-    if nTIMECCoin is None:
+    if nTIMECoin is None:
         import time
-        block.nTIMECCoin = int(time.time()+600)
+        block.nTIMECoin = int(time.time()+600)
     else:
-        block.nTIMECCoin = nTIMECCoin
+        block.nTIMECoin = nTIMECoin
     block.hashPrevBlock = hashprev
     block.nBits = 0x207fffff # Will break after a difficulty adjustment...
     block.vtx.append(coinbase)

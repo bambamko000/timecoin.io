@@ -46,11 +46,11 @@ public Q_SLOTS:
        @param[in] title  title shown with message
        @param[in] text   message content
        @param[in] icon   optional icon to show with message
-       @param[in] millisTIMECCoinout notification timeout in milliseconds (defaults to 10 seconds)
+       @param[in] millisTIMECoinout notification timeout in milliseconds (defaults to 10 seconds)
        @note Platform implementations are free to ignore any of the provided fields except for \a text.
      */
     void notify(Class cls, const QString &title, const QString &text,
-                const QIcon &icon = QIcon(), int millisTIMECCoinout = 10000);
+                const QIcon &icon = QIcon(), int millisTIMECoinout = 10000);
 
 private:
     QWidget *parent;
@@ -68,9 +68,9 @@ private:
 #ifdef USE_DBUS
     QDBusInterface *interface;
 
-    void notifyDBus(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTIMECCoinout);
+    void notifyDBus(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTIMECoinout);
 #endif
-    void notifySystray(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTIMECCoinout);
+    void notifySystray(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTIMECoinout);
 #ifdef Q_OS_MAC
     void notifyGrowl(Class cls, const QString &title, const QString &text, const QIcon &icon);
     void notifyMacUserNotificationCenter(Class cls, const QString &title, const QString &text, const QIcon &icon);

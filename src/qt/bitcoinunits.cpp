@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -72,10 +72,10 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case TIMEC: return QString("TIMECCoin");
-            case mTIMEC: return QString("Milli-TIMECCoin (1 / 1" THIN_SP_UTF8 "000)");
-            case uTIMEC: return QString("Micro-TIMECCoin (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case Rituls: return QString("Ten Nano-TIMECCoin (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case TIMEC: return QString("TIMECoin");
+            case mTIMEC: return QString("Milli-TIMECoin (1 / 1" THIN_SP_UTF8 "000)");
+            case uTIMEC: return QString("Micro-TIMECoin (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case Rituls: return QString("Ten Nano-TIMECoin (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -83,10 +83,10 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case TIMEC: return QString("TestTIMECCoins");
-            case mTIMEC: return QString("Milli-TestTIMECCoin (1 / 1" THIN_SP_UTF8 "000)");
-            case uTIMEC: return QString("Micro-TestTIMECCoin (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case Rituls: return QString("Ten Nano-TestTIMECCoin (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case TIMEC: return QString("TestTIMECoins");
+            case mTIMEC: return QString("Milli-TestTIMECoin (1 / 1" THIN_SP_UTF8 "000)");
+            case uTIMEC: return QString("Micro-TestTIMECoin (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case Rituls: return QString("Ten Nano-TestTIMECoin (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }

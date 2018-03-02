@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -84,14 +84,14 @@ extern double NSAppKitVersionNumber;
 
 namespace GUIUtil {
 
-QString dateTIMECCoinStr(const QDateTime &date)
+QString dateTIMECoinStr(const QDateTime &date)
 {
     return date.date().toString(Qt::SystemLocaleShortDate) + QString(" ") + date.toString("hh:mm");
 }
 
-QString dateTIMECCoinStr(qint64 nTIMECCoin)
+QString dateTIMECoinStr(qint64 nTIMECoin)
 {
-    return dateTIMECCoinStr(QDateTime::fromTime_t((qint32)nTIMECCoin));
+    return dateTIMECoinStr(QDateTime::fromTime_t((qint32)nTIMECoin));
 }
 
 QFont fixedPitchFont()
@@ -117,7 +117,7 @@ void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent)
 #if QT_VERSION >= 0x040700
     // We don't want translators to use own addresses in translations
     // and this is the only place, where this address is supplied.
-    widget->setPlaceholderText(QObject::tr("Enter a TIMECCoin address (e.g. %1)").arg("XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg"));
+    widget->setPlaceholderText(QObject::tr("Enter a TIMECoin address (e.g. %1)").arg("XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg"));
 #endif
     widget->setValidator(new BitcoinAddressEntryValidator(parent));
     widget->setCheckValidator(new BitcoinAddressCheckValidator(parent));
@@ -634,15 +634,15 @@ boost::filesystem::path static StartupShortcutPath()
 {
     std::string chain = ChainNameFromCommandLine();
     if (chain == CBaseChainParams::MAIN)
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "TIMECCoin Core.lnk";
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "TIMECoin Core.lnk";
     if (chain == CBaseChainParams::TESTNET) // Remove this special case when CBaseChainParams::TESTNET = "testnet4"
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "TIMECCoin Core (testnet).lnk";
-    return GetSpecialFolderPath(CSIDL_STARTUP) / strprintf("TIMECCoin Core (%s).lnk", chain);
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "TIMECoin Core (testnet).lnk";
+    return GetSpecialFolderPath(CSIDL_STARTUP) / strprintf("TIMECoin Core (%s).lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
 {
-    // check for "TIMECCoin Core*.lnk"
+    // check for "TIMECoin Core*.lnk"
     return boost::filesystem::exists(StartupShortcutPath());
 }
 
@@ -778,9 +778,9 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
         if (chain == CBaseChainParams::MAIN)
-            optionFile << "Name=TIMECCoin Core\n";
+            optionFile << "Name=TIMECoin Core\n";
         else
-            optionFile << strprintf("Name=TIMECCoin Core (%s)\n", chain);
+            optionFile << strprintf("Name=TIMECoin Core (%s)\n", chain);
         optionFile << "Exec=" << pszExePath << strprintf(" -min -testnet=%d -regtest=%d\n", GetBoolArg("-testnet", false), GetBoolArg("-regtest", false));
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";
@@ -799,7 +799,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
 LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl);
 LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl)
 {
-    // loop through the list of startup items and try to find the TIMECCoin Core app
+    // loop through the list of startup items and try to find the TIMECoin Core app
     CFArrayRef listSnapshot = LSSharedFileListCopySnapshot(list, NULL);
     for(int i = 0; i < CFArrayGetCount(listSnapshot); i++) {
         LSSharedFileListItemRef item = (LSSharedFileListItemRef)CFArrayGetValueAtIndex(listSnapshot, i);
@@ -844,7 +844,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
     LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, bitcoinAppUrl);
 
     if(fAutoStart && !foundItem) {
-        // add TIMECCoin Core app to startup item list
+        // add TIMECoin Core app to startup item list
         LSSharedFileListInsertItemURL(loginItems, kLSSharedFileListItemBeforeFirst, NULL, NULL, bitcoinAppUrl, NULL, NULL);
     }
     else if(!fAutoStart && foundItem) {
@@ -1015,17 +1015,17 @@ QString formatServicesStr(quint64 mask)
         return QObject::tr("None");
 }
 
-QString formatPingTIMECCoin(double dPingTIMECCoin)
+QString formatPingTIMECoin(double dPingTIMECoin)
 {
-    return (dPingTIMECCoin == std::numeric_limits<int64_t>::max()/1e6 || dPingTIMECCoin == 0) ? QObject::tr("N/A") : QString(QObject::tr("%1 ms")).arg(QString::number((int)(dPingTIMECCoin * 1000), 10));
+    return (dPingTIMECoin == std::numeric_limits<int64_t>::max()/1e6 || dPingTIMECoin == 0) ? QObject::tr("N/A") : QString(QObject::tr("%1 ms")).arg(QString::number((int)(dPingTIMECoin * 1000), 10));
 }
 
-QString formatTIMECCoinOffset(int64_t nTIMECCoinOffset)
+QString formatTIMECoinOffset(int64_t nTIMECoinOffset)
 {
-  return QString(QObject::tr("%1 s")).arg(QString::number((int)nTIMECCoinOffset, 10));
+  return QString(QObject::tr("%1 s")).arg(QString::number((int)nTIMECoinOffset, 10));
 }
 
-QString formatNiceTIMECCoinOffset(qint64 secs)
+QString formatNiceTIMECoinOffset(qint64 secs)
 {
     // Represent time from last generated block in human readable text
     QString timeBehindText;

@@ -43,9 +43,9 @@ namespace boost {
     class thread_group;
 } // namespace boost
 
-/** TIMECCoin between pings automatically sent out for latency probing and keepalive (in seconds). */
+/** TIMECoin between pings automatically sent out for latency probing and keepalive (in seconds). */
 static const int PING_INTERVAL = 2 * 60;
-/** TIMECCoin after which to disconnect, after waiting for a ping response (or inactivity). */
+/** TIMECoin after which to disconnect, after waiting for a ping response (or inactivity). */
 static const int TIMECOUT_INTERVAL = 20 * 60;
 /** Minimum time between warnings printed to log. */
 static const int WARNING_INTERVAL = 10 * 60;
@@ -142,7 +142,7 @@ public:
     // fConnectToMasternode should be 'true' only if you want this node to allow to connect to itself
     // and/or you want it to be disconnected on CMasternodeMan::ProcessMasternodeConnections()
     // Unfortunately, can't make this method private like in Bitcoin,
-    // because it's used in many TIMECCoin-specific places (masternode, privatesend).
+    // because it's used in many TIMECoin-specific places (masternode, privatesend).
     CNode* ConnectNode(CAddress addrConnect, const char *pszDest = NULL, bool fConnectToMasternode = false);
 
     struct CFullyConnectedOnly {
@@ -312,8 +312,8 @@ public:
     size_t GetAddressCount() const;
     void SetServices(const CService &addr, ServiceFlags nServices);
     void MarkAddressGood(const CAddress& addr);
-    void AddNewAddress(const CAddress& addr, const CAddress& addrFrom, int64_t nTIMECCoinPenalty = 0);
-    void AddNewAddresses(const std::vector<CAddress>& vAddr, const CAddress& addrFrom, int64_t nTIMECCoinPenalty = 0);
+    void AddNewAddress(const CAddress& addr, const CAddress& addrFrom, int64_t nTIMECoinPenalty = 0);
+    void AddNewAddresses(const std::vector<CAddress>& vAddr, const CAddress& addrFrom, int64_t nTIMECoinPenalty = 0);
     std::vector<CAddress> GetAddresses();
     void AddressCurrentlyConnected(const CService& addr);
 
@@ -363,8 +363,8 @@ public:
     uint64_t GetMaxOutboundTarget();
 
     //!set the timeframe for the max outbound target
-    void SetMaxOutboundTIMECCoinframe(uint64_t timeframe);
-    uint64_t GetMaxOutboundTIMECCoinframe();
+    void SetMaxOutboundTIMECoinframe(uint64_t timeframe);
+    uint64_t GetMaxOutboundTIMECoinframe();
 
     //!check if the outbound target is reached
     // if param historicalBlockServingLimit is set true, the function will
@@ -377,7 +377,7 @@ public:
 
     //!response the time in second left in the current max outbound cycle
     // in case of no limit, it will always response 0
-    uint64_t GetMaxOutboundTIMECCoinLeftInCycle();
+    uint64_t GetMaxOutboundTIMECoinLeftInCycle();
 
     uint64_t GetTotalBytesRecv();
     uint64_t GetTotalBytesSent();
@@ -448,9 +448,9 @@ private:
 
     // outbound limit & stats
     uint64_t nMaxOutboundTotalBytesSentInCycle;
-    uint64_t nMaxOutboundCycleStartTIMECCoin;
+    uint64_t nMaxOutboundCycleStartTIMECoin;
     uint64_t nMaxOutboundLimit;
-    uint64_t nMaxOutboundTIMECCoinframe;
+    uint64_t nMaxOutboundTIMECoinframe;
 
     // Whitelisted ranges. Any node connecting from these is automatically
     // whitelisted (as well as those connecting to whitelisted binds).
@@ -596,8 +596,8 @@ public:
     bool fRelayTxes;
     int64_t nLastSend;
     int64_t nLastRecv;
-    int64_t nTIMECCoinConnected;
-    int64_t nTIMECCoinOffset;
+    int64_t nTIMECoinConnected;
+    int64_t nTIMECoinOffset;
     std::string addrName;
     int nVersion;
     std::string cleanSubVer;
@@ -608,7 +608,7 @@ public:
     uint64_t nRecvBytes;
     mapMsgCmdSize mapRecvBytesPerMsgCmd;
     bool fWhitelisted;
-    double dPingTIMECCoin;
+    double dPingTIMECoin;
     double dPingWait;
     double dMinPing;
     std::string addrLocal;
@@ -629,14 +629,14 @@ public:
     CDataStream vRecv;              // received message data
     unsigned int nDataPos;
 
-    int64_t nTIMECCoin;                  // time (in microseconds) of message receipt.
+    int64_t nTIMECoin;                  // time (in microseconds) of message receipt.
 
     CNetMessage(const CMessageHeader::MessageStartChars& pchMessageStartIn, int nTypeIn, int nVersionIn) : hdrbuf(nTypeIn, nVersionIn), hdr(pchMessageStartIn), vRecv(nTypeIn, nVersionIn) {
         hdrbuf.resize(24);
         in_data = false;
         nHdrPos = 0;
         nDataPos = 0;
-        nTIMECCoin = 0;
+        nTIMECoin = 0;
     }
 
     bool complete() const
@@ -682,9 +682,9 @@ public:
 
     int64_t nLastSend;
     int64_t nLastRecv;
-    int64_t nTIMECCoinConnected;
-    int64_t nTIMECCoinOffset;
-    int64_t nLastWarningTIMECCoin;
+    int64_t nTIMECoinConnected;
+    int64_t nTIMECoinOffset;
+    int64_t nLastWarningTIMECoin;
     CAddress addr;
     std::string addrName;
     CService addrLocal;
@@ -751,18 +751,18 @@ public:
     std::vector<uint256> vBlockHashesFromINV;
 
     // Block and TXN accept times
-    std::atomic<int64_t> nLastBlockTIMECCoin;
-    std::atomic<int64_t> nLastTXTIMECCoin;
+    std::atomic<int64_t> nLastBlockTIMECoin;
+    std::atomic<int64_t> nLastTXTIMECoin;
 
     // Ping time measurement:
     // The pong reply we're expecting, or 0 if no pong expected.
     uint64_t nPingNonceSent;
-    // TIMECCoin (in usec) the last ping was sent, or 0 if no ping was ever sent.
+    // TIMECoin (in usec) the last ping was sent, or 0 if no ping was ever sent.
     int64_t nPingUsecStart;
     // Last measured round-trip time.
-    int64_t nPingUsecTIMECCoin;
+    int64_t nPingUsecTIMECoin;
     // Best measured round-trip time.
-    int64_t nMinPingUsecTIMECCoin;
+    int64_t nMinPingUsecTIMECoin;
     // Whether a ping is requested.
     bool fPingQueued;
 

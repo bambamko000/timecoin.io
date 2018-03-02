@@ -116,7 +116,7 @@ Gregory Maxwell
 Jeff Garzik
 Jonas Schnelli
 Larry Gilbert
-Luke TIMECCoinjr
+Luke TIMECoinjr
 Matt Corallo
 Michael Ford
 Mike Hearn

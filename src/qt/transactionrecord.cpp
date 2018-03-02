@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -39,7 +39,7 @@ bool TransactionRecord::showTransaction(const CWalletTx &wtx)
 QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *wallet, const CWalletTx &wtx)
 {
     QList<TransactionRecord> parts;
-    int64_t nTIMECCoin = wtx.GetTxTIMECCoin();
+    int64_t nTIMECoin = wtx.GetTxTIMECoin();
     CAmount nCredit = wtx.GetCredit(ISMINE_ALL);
     CAmount nDebit = wtx.GetDebit(ISMINE_ALL);
     CAmount nNet = nCredit - nDebit;
@@ -56,14 +56,14 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
             isminetype mine = wallet->IsMine(txout);
             if(mine)
             {
-                TransactionRecord sub(hash, nTIMECCoin);
+                TransactionRecord sub(hash, nTIMECoin);
                 CTxDestination address;
                 sub.idx = parts.size(); // sequence number
                 sub.credit = txout.nValue;
                 sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
                 if (ExtractDestination(txout.scriptPubKey, address) && IsMine(*wallet, address))
                 {
-                    // Received by TIMECCoin Address
+                    // Received by TIMECoin Address
                     sub.type = TransactionRecord::RecvWithAddress;
                     sub.address = CBitcoinAddress(address).ToString();
                 }
@@ -114,7 +114,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
         }
 
         if(fAllFromMeDenom && fAllToMeDenom && nFromMe * nToMe) {
-            parts.append(TransactionRecord(hash, nTIMECCoin, TransactionRecord::PrivateSendDenominate, "", -nDebit, nCredit));
+            parts.append(TransactionRecord(hash, nTIMECoin, TransactionRecord::PrivateSendDenominate, "", -nDebit, nCredit));
             parts.last().involvesWatchAddress = false;   // maybe pass to TransactionRecord as constructor argument
         }
         else if (fAllFromMe && fAllToMe)
@@ -123,7 +123,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
             // TODO: this section still not accurate but covers most cases,
             // might need some additional work however
 
-            TransactionRecord sub(hash, nTIMECCoin);
+            TransactionRecord sub(hash, nTIMECoin);
             // Payment to self by default
             sub.type = TransactionRecord::SendToSelf;
             sub.address = "";
@@ -134,7 +134,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
                 CTxDestination address;
                 if (ExtractDestination(wtx.vout[0].scriptPubKey, address))
                 {
-                    // Sent to TIMECCoin Address
+                    // Sent to TIMECoin Address
                     sub.address = CBitcoinAddress(address).ToString();
                 }
                 else
@@ -173,7 +173,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
             for (unsigned int nOut = 0; nOut < wtx.vout.size(); nOut++)
             {
                 const CTxOut& txout = wtx.vout[nOut];
-                TransactionRecord sub(hash, nTIMECCoin);
+                TransactionRecord sub(hash, nTIMECoin);
                 sub.idx = parts.size();
                 sub.involvesWatchAddress = involvesWatchAddress;
 
@@ -187,7 +187,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
                 CTxDestination address;
                 if (ExtractDestination(txout.scriptPubKey, address))
                 {
-                    // Sent to TIMECCoin Address
+                    // Sent to TIMECoin Address
                     sub.type = TransactionRecord::SendToAddress;
                     sub.address = CBitcoinAddress(address).ToString();
                 }
@@ -220,7 +220,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
             //
             // Mixed debit transaction, can't break down payees
             //
-            parts.append(TransactionRecord(hash, nTIMECCoin, TransactionRecord::Other, "", nNet, 0));
+            parts.append(TransactionRecord(hash, nTIMECoin, TransactionRecord::Other, "", nNet, 0));
             parts.last().involvesWatchAddress = involvesWatchAddress;
         }
     }
@@ -243,7 +243,7 @@ void TransactionRecord::updateStatus(const CWalletTx &wtx)
     status.sortKey = strprintf("%010d-%01d-%010u-%03d",
         (pindex ? pindex->nHeight : std::numeric_limits<int>::max()),
         (wtx.IsCoinBase() ? 1 : 0),
-        wtx.nTIMECCoinReceived,
+        wtx.nTIMECoinReceived,
         idx);
     status.countsForBalance = wtx.IsTrusted() && !(wtx.GetBlocksToMaturity() > 0);
     status.depth = wtx.GetDepthInMainChain();
@@ -252,15 +252,15 @@ void TransactionRecord::updateStatus(const CWalletTx &wtx)
 
     if (!CheckFinalTx(wtx))
     {
-        if (wtx.nLockTIMECCoin < LOCKTIMEC_THRESHOLD)
+        if (wtx.nLockTIMECoin < LOCKTIMEC_THRESHOLD)
         {
             status.status = TransactionStatus::OpenUntilBlock;
-            status.open_for = wtx.nLockTIMECCoin - chainActive.Height();
+            status.open_for = wtx.nLockTIMECoin - chainActive.Height();
         }
         else
         {
             status.status = TransactionStatus::OpenUntilDate;
-            status.open_for = wtx.nLockTIMECCoin;
+            status.open_for = wtx.nLockTIMECoin;
         }
     }
     // For generated transactions, determine maturity
@@ -275,7 +275,7 @@ void TransactionRecord::updateStatus(const CWalletTx &wtx)
                 status.matures_in = wtx.GetBlocksToMaturity();
 
                 // Check if the block was requested by anyone
-                if (GetAdjustedTIMECCoin() - wtx.nTIMECCoinReceived > 2 * 60 && wtx.GetRequestCount() == 0)
+                if (GetAdjustedTIMECoin() - wtx.nTIMECoinReceived > 2 * 60 && wtx.GetRequestCount() == 0)
                     status.status = TransactionStatus::MaturesWarning;
             }
             else
@@ -294,7 +294,7 @@ void TransactionRecord::updateStatus(const CWalletTx &wtx)
         {
             status.status = TransactionStatus::Conflicted;
         }
-        else if (GetAdjustedTIMECCoin() - wtx.nTIMECCoinReceived > 2 * 60 && wtx.GetRequestCount() == 0)
+        else if (GetAdjustedTIMECoin() - wtx.nTIMECoinReceived > 2 * 60 && wtx.GetRequestCount() == 0)
         {
             status.status = TransactionStatus::Offline;
         }

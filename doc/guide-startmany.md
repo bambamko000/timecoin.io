@@ -89,7 +89,7 @@ You can confirm that remote server is on the correct block by issuing
 
 ```time-cli getinfo```
 
-and comparing with the official explorer at https://explorer.time.org/chain/TIMECCoin
+and comparing with the official explorer at https://explorer.time.org/chain/TIMECoin
 
 ### Local
 

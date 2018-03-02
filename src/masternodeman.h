@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -72,7 +72,7 @@ private:
 
     std::vector<uint256> vecDirtyGovernanceObjectHashes;
 
-    int64_t nLastWatchdogVoteTIMECCoin;
+    int64_t nLastWatchdogVoteTIMECoin;
 
     friend class CMasternodeSync;
     /// Find an entry
@@ -111,7 +111,7 @@ public:
         READWRITE(mWeAskedForMasternodeListEntry);
         READWRITE(mMnbRecoveryRequests);
         READWRITE(mMnbRecoveryGoodReplies);
-        READWRITE(nLastWatchdogVoteTIMECCoin);
+        READWRITE(nLastWatchdogVoteTIMECoin);
         READWRITE(nDsqCount);
 
         READWRITE(mapSeenMasternodeBroadcast);
@@ -166,9 +166,9 @@ public:
     bool GetMasternodeInfo(const CScript& payee, masternode_info_t& mnInfoRet);
 
     /// Find an entry in the masternode list that is next to be paid
-    bool GetNextMasternodeInQueueForPayment(int nBlockHeight, bool fFilterSigTIMECCoin, int& nCountRet, masternode_info_t& mnInfoRet);
+    bool GetNextMasternodeInQueueForPayment(int nBlockHeight, bool fFilterSigTIMECoin, int& nCountRet, masternode_info_t& mnInfoRet);
     /// Same as above but use current block height
-    bool GetNextMasternodeInQueueForPayment(bool fFilterSigTIMECCoin, int& nCountRet, masternode_info_t& mnInfoRet);
+    bool GetNextMasternodeInQueueForPayment(bool fFilterSigTIMECoin, int& nCountRet, masternode_info_t& mnInfoRet);
 
     /// Find a random entry
     masternode_info_t FindRandomNotInVec(const std::vector<COutPoint> &vecToExclude, int nProtocolVersion = -1);
@@ -218,13 +218,13 @@ public:
     }
 
     bool IsWatchdogActive();
-    void UpdateWatchdogVoteTIMECCoin(const COutPoint& outpoint, uint64_t nVoteTIMECCoin = 0);
+    void UpdateWatchdogVoteTIMECoin(const COutPoint& outpoint, uint64_t nVoteTIMECoin = 0);
     bool AddGovernanceVote(const COutPoint& outpoint, uint256 nGovernanceObjectHash);
     void RemoveGovernanceObject(uint256 nGovernanceObjectHash);
 
     void CheckMasternode(const CPubKey& pubKeyMasternode, bool fForce);
 
-    bool IsMasternodePingedWithin(const COutPoint& outpoint, int nSeconds, int64_t nTIMECCoinToCheckAt = -1);
+    bool IsMasternodePingedWithin(const COutPoint& outpoint, int nSeconds, int64_t nTIMECoinToCheckAt = -1);
     void SetMasternodeLastPing(const COutPoint& outpoint, const CMasternodePing& mnp);
 
     void UpdatedBlockTip(const CBlockIndex *pindex);

@@ -18,9 +18,9 @@
 int GetOffsetFromUtc()
 {
 #if QT_VERSION < 0x050200
-    const QDateTime dateTIMECCoin1 = QDateTime::currentDateTime();
-    const QDateTime dateTIMECCoin2 = QDateTime(dateTIMECCoin1.date(), dateTIMECCoin1.time(), Qt::UTC);
-    return dateTIMECCoin1.secsTo(dateTIMECCoin2);
+    const QDateTime dateTIMECoin1 = QDateTime::currentDateTime();
+    const QDateTime dateTIMECoin2 = QDateTime(dateTIMECoin1.date(), dateTIMECoin1.time(), Qt::UTC);
+    return dateTIMECoin1.secsTo(dateTIMECoin2);
 #else
     return QDateTime::currentDateTime().offsetFromUtc();
 #endif
@@ -70,7 +70,7 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     timer->start(1000);
 
     fFilterUpdated = false;
-    nTIMECCoinFilterUpdated = GetTIMECCoin();
+    nTIMECoinFilterUpdated = GetTIMECoin();
     updateNodeList();
 }
 
@@ -202,9 +202,9 @@ void MasternodeList::updateMyMasternodeInfo(QString strAlias, QString strAddr, c
     QTableWidgetItem *addrItem = new QTableWidgetItem(fFound ? QString::fromStdString(infoMn.addr.ToString()) : strAddr);
     QTableWidgetItem *protocolItem = new QTableWidgetItem(QString::number(fFound ? infoMn.nProtocolVersion : -1));
     QTableWidgetItem *statusItem = new QTableWidgetItem(QString::fromStdString(fFound ? CMasternode::StateToString(infoMn.nActiveState) : "MISSING"));
-    QTableWidgetItem *activeSecondsItem = new QTableWidgetItem(QString::fromStdString(DurationToDHMS(fFound ? (infoMn.nTIMECCoinLastPing - infoMn.sigTIMECCoin) : 0)));
-    QTableWidgetItem *lastSeenItem = new QTableWidgetItem(QString::fromStdString(DateTIMECCoinStrFormat("%Y-%m-%d %H:%M",
-                                                                                                   fFound ? infoMn.nTIMECCoinLastPing + GetOffsetFromUtc() : 0)));
+    QTableWidgetItem *activeSecondsItem = new QTableWidgetItem(QString::fromStdString(DurationToDHMS(fFound ? (infoMn.nTIMECoinLastPing - infoMn.sigTIMECoin) : 0)));
+    QTableWidgetItem *lastSeenItem = new QTableWidgetItem(QString::fromStdString(DateTIMECoinStrFormat("%Y-%m-%d %H:%M",
+                                                                                                   fFound ? infoMn.nTIMECoinLastPing + GetOffsetFromUtc() : 0)));
     QTableWidgetItem *pubkeyItem = new QTableWidgetItem(QString::fromStdString(fFound ? CBitcoinAddress(infoMn.pubKeyCollateralAddress.GetID()).ToString() : ""));
 
     ui->tableWidgetMyMasternodes->setItem(nNewRow, 0, aliasItem);
@@ -222,15 +222,15 @@ void MasternodeList::updateMyNodeList(bool fForce)
     if(!fLockAcquired) {
         return;
     }
-    static int64_t nTIMECCoinMyListUpdated = 0;
+    static int64_t nTIMECoinMyListUpdated = 0;
 
     // automatically update my masternode list only once in MY_MASTERNODELIST_UPDATE_SECONDS seconds,
     // this update still can be triggered manually at any time via button click
-    int64_t nSecondsTillUpdate = nTIMECCoinMyListUpdated + MY_MASTERNODELIST_UPDATE_SECONDS - GetTIMECCoin();
+    int64_t nSecondsTillUpdate = nTIMECoinMyListUpdated + MY_MASTERNODELIST_UPDATE_SECONDS - GetTIMECoin();
     ui->secondsLabel->setText(QString::number(nSecondsTillUpdate));
 
     if(nSecondsTillUpdate > 0 && !fForce) return;
-    nTIMECCoinMyListUpdated = GetTIMECCoin();
+    nTIMECoinMyListUpdated = GetTIMECoin();
 
     ui->tableWidgetMasternodes->setSortingEnabled(false);
     BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
@@ -254,18 +254,18 @@ void MasternodeList::updateNodeList()
         return;
     }
 
-    static int64_t nTIMECCoinListUpdated = GetTIMECCoin();
+    static int64_t nTIMECoinListUpdated = GetTIMECoin();
 
     // to prevent high cpu usage update only once in MASTERNODELIST_UPDATE_SECONDS seconds
     // or MASTERNODELIST_FILTER_COOLDOWN_SECONDS seconds after filter was last changed
     int64_t nSecondsToWait = fFilterUpdated
-                            ? nTIMECCoinFilterUpdated - GetTIMECCoin() + MASTERNODELIST_FILTER_COOLDOWN_SECONDS
-                            : nTIMECCoinListUpdated - GetTIMECCoin() + MASTERNODELIST_UPDATE_SECONDS;
+                            ? nTIMECoinFilterUpdated - GetTIMECoin() + MASTERNODELIST_FILTER_COOLDOWN_SECONDS
+                            : nTIMECoinListUpdated - GetTIMECoin() + MASTERNODELIST_UPDATE_SECONDS;
 
     if(fFilterUpdated) ui->countLabel->setText(QString::fromStdString(strprintf("Please wait... %d", nSecondsToWait)));
     if(nSecondsToWait > 0) return;
 
-    nTIMECCoinListUpdated = GetTIMECCoin();
+    nTIMECoinListUpdated = GetTIMECoin();
     fFilterUpdated = false;
 
     QString strToFilter;
@@ -284,8 +284,8 @@ void MasternodeList::updateNodeList()
         QTableWidgetItem *addressItem = new QTableWidgetItem(QString::fromStdString(mn.addr.ToString()));
         QTableWidgetItem *protocolItem = new QTableWidgetItem(QString::number(mn.nProtocolVersion));
         QTableWidgetItem *statusItem = new QTableWidgetItem(QString::fromStdString(mn.GetStatus()));
-        QTableWidgetItem *activeSecondsItem = new QTableWidgetItem(QString::fromStdString(DurationToDHMS(mn.lastPing.sigTIMECCoin - mn.sigTIMECCoin)));
-        QTableWidgetItem *lastSeenItem = new QTableWidgetItem(QString::fromStdString(DateTIMECCoinStrFormat("%Y-%m-%d %H:%M", mn.lastPing.sigTIMECCoin + offsetFromUtc)));
+        QTableWidgetItem *activeSecondsItem = new QTableWidgetItem(QString::fromStdString(DurationToDHMS(mn.lastPing.sigTIMECoin - mn.sigTIMECoin)));
+        QTableWidgetItem *lastSeenItem = new QTableWidgetItem(QString::fromStdString(DateTIMECoinStrFormat("%Y-%m-%d %H:%M", mn.lastPing.sigTIMECoin + offsetFromUtc)));
         QTableWidgetItem *pubkeyItem = new QTableWidgetItem(QString::fromStdString(CBitcoinAddress(mn.pubKeyCollateralAddress.GetID()).ToString()));
 
         if (strCurrentFilter != "")
@@ -315,7 +315,7 @@ void MasternodeList::updateNodeList()
 void MasternodeList::on_filterLineEdit_textChanged(const QString &strFilterIn)
 {
     strCurrentFilter = strFilterIn;
-    nTIMECCoinFilterUpdated = GetTIMECCoin();
+    nTIMECoinFilterUpdated = GetTIMECoin();
     fFilterUpdated = true;
     ui->countLabel->setText(QString::fromStdString(strprintf("Please wait... %d", MASTERNODELIST_FILTER_COOLDOWN_SECONDS)));
 }

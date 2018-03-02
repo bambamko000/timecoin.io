@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -55,18 +55,18 @@ private:
 public:
     int nSporkID;
     int64_t nValue;
-    int64_t nTIMECCoinSigned;
+    int64_t nTIMECoinSigned;
 
-    CSporkMessage(int nSporkID, int64_t nValue, int64_t nTIMECCoinSigned) :
+    CSporkMessage(int nSporkID, int64_t nValue, int64_t nTIMECoinSigned) :
         nSporkID(nSporkID),
         nValue(nValue),
-        nTIMECCoinSigned(nTIMECCoinSigned)
+        nTIMECoinSigned(nTIMECoinSigned)
         {}
 
     CSporkMessage() :
         nSporkID(0),
         nValue(0),
-        nTIMECCoinSigned(0)
+        nTIMECoinSigned(0)
         {}
 
 
@@ -76,7 +76,7 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(nSporkID);
         READWRITE(nValue);
-        READWRITE(nTIMECCoinSigned);
+        READWRITE(nTIMECoinSigned);
         READWRITE(vchSig);
     }
 
@@ -85,7 +85,7 @@ public:
         CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
         ss << nSporkID;
         ss << nValue;
-        ss << nTIMECCoinSigned;
+        ss << nTIMECoinSigned;
         return ss.GetHash();
     }
 

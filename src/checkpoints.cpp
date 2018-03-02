@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -42,13 +42,13 @@ namespace Checkpoints {
         if (pindex->nChainTx <= data.nTransactionsLastCheckpoint) {
             double nCheapBefore = pindex->nChainTx;
             double nCheapAfter = data.nTransactionsLastCheckpoint - pindex->nChainTx;
-            double nExpensiveAfter = (nNow - data.nTIMECCoinLastCheckpoint)/86400.0*data.fTransactionsPerDay;
+            double nExpensiveAfter = (nNow - data.nTIMECoinLastCheckpoint)/86400.0*data.fTransactionsPerDay;
             fWorkBefore = nCheapBefore;
             fWorkAfter = nCheapAfter + nExpensiveAfter*fSigcheckVerificationFactor;
         } else {
             double nCheapBefore = data.nTransactionsLastCheckpoint;
             double nExpensiveBefore = pindex->nChainTx - data.nTransactionsLastCheckpoint;
-            double nExpensiveAfter = (nNow - pindex->GetBlockTIMECCoin())/86400.0*data.fTransactionsPerDay;
+            double nExpensiveAfter = (nNow - pindex->GetBlockTIMECoin())/86400.0*data.fTransactionsPerDay;
             fWorkBefore = nCheapBefore + nExpensiveBefore*fSigcheckVerificationFactor;
             fWorkAfter = nExpensiveAfter*fSigcheckVerificationFactor;
         }

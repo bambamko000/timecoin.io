@@ -69,8 +69,8 @@ public:
 };
 
 /** Functions to keep track of adjusted P2P time */
-int64_t GetTIMECCoinOffset();
-int64_t GetAdjustedTIMECCoin();
-void AddTIMECCoinData(const CNetAddr& ip, int64_t nTIMECCoin);
+int64_t GetTIMECoinOffset();
+int64_t GetAdjustedTIMECoin();
+void AddTIMECoinData(const CNetAddr& ip, int64_t nTIMECoin);
 
 #endif // BITCOIN_TIMECDATA_H

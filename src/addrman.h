@@ -97,10 +97,10 @@ public:
     int GetBucketPosition(const uint256 &nKey, bool fNew, int nBucket) const;
 
     //! Determine whether the statistics about this entry are bad enough so that it can just be deleted
-    bool IsTerrible(int64_t nNow = GetAdjustedTIMECCoin()) const;
+    bool IsTerrible(int64_t nNow = GetAdjustedTIMECoin()) const;
 
     //! Calculate the relative chance this entry should be given when selecting nodes to connect to
-    double GetChance(int64_t nNow = GetAdjustedTIMECCoin()) const;
+    double GetChance(int64_t nNow = GetAdjustedTIMECoin()) const;
 
 };
 
@@ -207,7 +207,7 @@ protected:
     CAddrInfo* Find(const CNetAddr& addr, int *pnId = NULL);
 
     //! find an entry, creating it if necessary.
-    //! nTIMECCoin and nServices of the found node are updated, if necessary.
+    //! nTIMECoin and nServices of the found node are updated, if necessary.
     CAddrInfo* Create(const CAddress &addr, const CNetAddr &addrSource, int *pnId = NULL);
 
     //! Swap two elements in vRandom.
@@ -223,13 +223,13 @@ protected:
     void ClearNew(int nUBucket, int nUBucketPos);
 
     //! Mark an entry "good", possibly moving it from "new" to "tried".
-    void Good_(const CService &addr, int64_t nTIMECCoin);
+    void Good_(const CService &addr, int64_t nTIMECoin);
 
     //! Add an entry to the "new" table.
-    bool Add_(const CAddress &addr, const CNetAddr& source, int64_t nTIMECCoinPenalty);
+    bool Add_(const CAddress &addr, const CNetAddr& source, int64_t nTIMECoinPenalty);
 
     //! Mark an entry as attempted to connect.
-    void Attempt_(const CService &addr, int64_t nTIMECCoin);
+    void Attempt_(const CService &addr, int64_t nTIMECoin);
 
     //! Select an address to connect to, if newOnly is set to true, only the new table is selected from.
     CAddrInfo Select_(bool newOnly);
@@ -246,7 +246,7 @@ protected:
     void GetAddr_(std::vector<CAddress> &vAddr);
 
     //! Mark an entry as currently-connected-to.
-    void Connected_(const CService &addr, int64_t nTIMECCoin);
+    void Connected_(const CService &addr, int64_t nTIMECoin);
 
     //! Update an entry's service bits.
     void SetServices_(const CService &addr, ServiceFlags nServices);
@@ -484,13 +484,13 @@ public:
     }
 
     //! Add a single address.
-    bool Add(const CAddress &addr, const CNetAddr& source, int64_t nTIMECCoinPenalty = 0)
+    bool Add(const CAddress &addr, const CNetAddr& source, int64_t nTIMECoinPenalty = 0)
     {
         bool fRet = false;
         {
             LOCK(cs);
             Check();
-            fRet |= Add_(addr, source, nTIMECCoinPenalty);
+            fRet |= Add_(addr, source, nTIMECoinPenalty);
             Check();
         }
         if (fRet)
@@ -499,14 +499,14 @@ public:
     }
 
     //! Add multiple addresses.
-    bool Add(const std::vector<CAddress> &vAddr, const CNetAddr& source, int64_t nTIMECCoinPenalty = 0)
+    bool Add(const std::vector<CAddress> &vAddr, const CNetAddr& source, int64_t nTIMECoinPenalty = 0)
     {
         int nAdd = 0;
         {
             LOCK(cs);
             Check();
             for (std::vector<CAddress>::const_iterator it = vAddr.begin(); it != vAddr.end(); it++)
-                nAdd += Add_(*it, source, nTIMECCoinPenalty) ? 1 : 0;
+                nAdd += Add_(*it, source, nTIMECoinPenalty) ? 1 : 0;
             Check();
         }
         if (nAdd)
@@ -515,23 +515,23 @@ public:
     }
 
     //! Mark an entry as accessible.
-    void Good(const CService &addr, int64_t nTIMECCoin = GetAdjustedTIMECCoin())
+    void Good(const CService &addr, int64_t nTIMECoin = GetAdjustedTIMECoin())
     {
         {
             LOCK(cs);
             Check();
-            Good_(addr, nTIMECCoin);
+            Good_(addr, nTIMECoin);
             Check();
         }
     }
 
     //! Mark an entry as connection attempted to.
-    void Attempt(const CService &addr, int64_t nTIMECCoin = GetAdjustedTIMECCoin())
+    void Attempt(const CService &addr, int64_t nTIMECoin = GetAdjustedTIMECoin())
     {
         {
             LOCK(cs);
             Check();
-            Attempt_(addr, nTIMECCoin);
+            Attempt_(addr, nTIMECoin);
             Check();
         }
     }
@@ -565,12 +565,12 @@ public:
     }
 
     //! Mark an entry as currently-connected-to.
-    void Connected(const CService &addr, int64_t nTIMECCoin = GetAdjustedTIMECCoin())
+    void Connected(const CService &addr, int64_t nTIMECoin = GetAdjustedTIMECoin())
     {
         {
             LOCK(cs);
             Check();
-            Connected_(addr, nTIMECCoin);
+            Connected_(addr, nTIMECoin);
             Check();
         }
     }

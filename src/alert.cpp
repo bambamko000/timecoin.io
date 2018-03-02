@@ -102,7 +102,7 @@ uint256 CAlert::GetHash() const
 
 bool CAlert::IsInEffect() const
 {
-    return (GetAdjustedTIMECCoin() < nExpiration);
+    return (GetAdjustedTIMECoin() < nExpiration);
 }
 
 bool CAlert::Cancels(const CAlert& alert) const
@@ -137,7 +137,7 @@ bool CAlert::RelayTo(CNode* pnode, CConnman& connman) const
     {
         if (AppliesTo(pnode->nVersion, pnode->strSubVer) ||
             AppliesToMe() ||
-            GetAdjustedTIMECCoin() < nRelayUntil)
+            GetAdjustedTIMECoin() < nRelayUntil)
         {
             connman.PushMessage(pnode, NetMsgType::ALERT, *this);
             return true;

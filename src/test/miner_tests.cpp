@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
     {
         CBlock *pblock = &pblocktemplate->block; // pointer for convenience
         pblock->nVersion = 1;
-        pblock->nTIMECCoin = chainActive.Tip()->GetMedianTIMECCoinPast()+1;
+        pblock->nTIMECoin = chainActive.Tip()->GetMedianTIMECoinPast()+1;
         CMutableTransaction txCoinbase(pblock->vtx[0]);
         txCoinbase.nVersion = 1;
         txCoinbase.vin[0].scriptSig = CScript();
@@ -140,7 +140,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
         hash = tx.GetHash();
         bool spendsCoinbase = (i == 0) ? true : false; // only first tx spends coinbase
         // If we don't set the # of sig ops in the CTxMemPoolEntry, template creation fails
-        mempool.addUnchecked(hash, entry.Fee(1000000).TIMECCoin(GetTIMECCoin()).SpendsCoinbase(spendsCoinbase).FromTx(tx));
+        mempool.addUnchecked(hash, entry.Fee(1000000).TIMECoin(GetTIMECoin()).SpendsCoinbase(spendsCoinbase).FromTx(tx));
         tx.vin[0].prevout.hash = hash;
     }
     BOOST_CHECK_THROW(CreateNewBlock(chainparams, scriptPubKey), std::runtime_error);
@@ -154,7 +154,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
         hash = tx.GetHash();
         bool spendsCoinbase = (i == 0) ? true : false; // only first tx spends coinbase
         // If we do set the # of sig ops in the CTxMemPoolEntry, template creation passes
-        mempool.addUnchecked(hash, entry.Fee(1000000).TIMECCoin(GetTIMECCoin()).SpendsCoinbase(spendsCoinbase).SigOps(20).FromTx(tx));
+        mempool.addUnchecked(hash, entry.Fee(1000000).TIMECoin(GetTIMECoin()).SpendsCoinbase(spendsCoinbase).SigOps(20).FromTx(tx));
         tx.vin[0].prevout.hash = hash;
     }
     BOOST_CHECK(pblocktemplate = CreateNewBlock(chainparams, scriptPubKey));
@@ -175,7 +175,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
         tx.vout[0].nValue -= 10000000;
         hash = tx.GetHash();
         bool spendsCoinbase = (i == 0) ? true : false; // only first tx spends coinbase
-        mempool.addUnchecked(hash, entry.Fee(1000000).TIMECCoin(GetTIMECCoin()).SpendsCoinbase(spendsCoinbase).FromTx(tx));
+        mempool.addUnchecked(hash, entry.Fee(1000000).TIMECoin(GetTIMECoin()).SpendsCoinbase(spendsCoinbase).FromTx(tx));
         tx.vin[0].prevout.hash = hash;
     }
     BOOST_CHECK(pblocktemplate = CreateNewBlock(chainparams, scriptPubKey));
@@ -184,7 +184,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
 
     // orphan in mempool, template creation fails
     hash = tx.GetHash();
-    mempool.addUnchecked(hash, entry.Fee(1000000).TIMECCoin(GetTIMECCoin()).FromTx(tx));
+    mempool.addUnchecked(hash, entry.Fee(1000000).TIMECoin(GetTIMECoin()).FromTx(tx));
     BOOST_CHECK_THROW(CreateNewBlock(chainparams, scriptPubKey), std::runtime_error);
     mempool.clear();
 
@@ -193,7 +193,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
     tx.vin[0].prevout.hash = txFirst[1]->GetHash();
     tx.vout[0].nValue = 49000000000LL;
     hash = tx.GetHash();
-    mempool.addUnchecked(hash, entry.Fee(1000000000LL).TIMECCoin(GetTIMECCoin()).SpendsCoinbase(true).FromTx(tx));
+    mempool.addUnchecked(hash, entry.Fee(1000000000LL).TIMECoin(GetTIMECoin()).SpendsCoinbase(true).FromTx(tx));
     tx.vin[0].prevout.hash = hash;
     tx.vin.resize(2);
     tx.vin[1].scriptSig = CScript() << OP_1;
@@ -201,7 +201,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
     tx.vin[1].prevout.n = 0;
     tx.vout[0].nValue = 59000000000LL;
     hash = tx.GetHash();
-    mempool.addUnchecked(hash, entry.Fee(4000000000LL).TIMECCoin(GetTIMECCoin()).SpendsCoinbase(true).FromTx(tx));
+    mempool.addUnchecked(hash, entry.Fee(4000000000LL).TIMECoin(GetTIMECoin()).SpendsCoinbase(true).FromTx(tx));
     BOOST_CHECK(pblocktemplate = CreateNewBlock(chainparams, scriptPubKey));
     delete pblocktemplate;
     mempool.clear();
@@ -213,7 +213,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
     tx.vout[0].nValue = 0;
     hash = tx.GetHash();
     // give it a fee so it'll get mined
-    mempool.addUnchecked(hash, entry.Fee(100000).TIMECCoin(GetTIMECCoin()).SpendsCoinbase(false).FromTx(tx));
+    mempool.addUnchecked(hash, entry.Fee(100000).TIMECoin(GetTIMECoin()).SpendsCoinbase(false).FromTx(tx));
     BOOST_CHECK_THROW(CreateNewBlock(chainparams, scriptPubKey), std::runtime_error);
     mempool.clear();
 
@@ -225,12 +225,12 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
     script = CScript() << OP_0;
     tx.vout[0].scriptPubKey = GetScriptForDestination(CScriptID(script));
     hash = tx.GetHash();
-    mempool.addUnchecked(hash, entry.Fee(100000000L).TIMECCoin(GetTIMECCoin()).SpendsCoinbase(true).FromTx(tx));
+    mempool.addUnchecked(hash, entry.Fee(100000000L).TIMECoin(GetTIMECoin()).SpendsCoinbase(true).FromTx(tx));
     tx.vin[0].prevout.hash = hash;
     tx.vin[0].scriptSig = CScript() << std::vector<unsigned char>(script.begin(), script.end());
     tx.vout[0].nValue -= 1000000;
     hash = tx.GetHash();
-    mempool.addUnchecked(hash, entry.Fee(1000000).TIMECCoin(GetTIMECCoin()).SpendsCoinbase(false).FromTx(tx));
+    mempool.addUnchecked(hash, entry.Fee(1000000).TIMECoin(GetTIMECoin()).SpendsCoinbase(false).FromTx(tx));
     BOOST_CHECK_THROW(CreateNewBlock(chainparams, scriptPubKey), std::runtime_error);
     mempool.clear();
 
@@ -240,10 +240,10 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
     tx.vout[0].nValue = 49000000000LL;
     tx.vout[0].scriptPubKey = CScript() << OP_1;
     hash = tx.GetHash();
-    mempool.addUnchecked(hash, entry.Fee(1000000000L).TIMECCoin(GetTIMECCoin()).SpendsCoinbase(true).FromTx(tx));
+    mempool.addUnchecked(hash, entry.Fee(1000000000L).TIMECoin(GetTIMECoin()).SpendsCoinbase(true).FromTx(tx));
     tx.vout[0].scriptPubKey = CScript() << OP_2;
     hash = tx.GetHash();
-    mempool.addUnchecked(hash, entry.Fee(1000000000L).TIMECCoin(GetTIMECCoin()).SpendsCoinbase(true).FromTx(tx));
+    mempool.addUnchecked(hash, entry.Fee(1000000000L).TIMECoin(GetTIMECoin()).SpendsCoinbase(true).FromTx(tx));
     BOOST_CHECK_THROW(CreateNewBlock(chainparams, scriptPubKey), std::runtime_error);
     mempool.clear();
 
@@ -285,7 +285,7 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
     // }
 
     // non-final txs in mempool
-    SetMockTIMECCoin(chainActive.Tip()->GetMedianTIMECCoinPast()+1);
+    SetMockTIMECoin(chainActive.Tip()->GetMedianTIMECoinPast()+1);
     int flags = LOCKTIMEC_VERIFY_SEQUENCE|LOCKTIMEC_MEDIAN_TIMEC_PAST;
     // height map
     std::vector<int> prevheights;
@@ -302,54 +302,54 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
     tx.vout.resize(1);
     tx.vout[0].nValue = 49000000000LL;
     tx.vout[0].scriptPubKey = CScript() << OP_1;
-    tx.nLockTIMECCoin = 0;
+    tx.nLockTIMECoin = 0;
     hash = tx.GetHash();
-    mempool.addUnchecked(hash, entry.Fee(1000000000L).TIMECCoin(GetTIMECCoin()).SpendsCoinbase(true).FromTx(tx));
+    mempool.addUnchecked(hash, entry.Fee(1000000000L).TIMECoin(GetTIMECoin()).SpendsCoinbase(true).FromTx(tx));
     BOOST_CHECK(CheckFinalTx(tx, flags)); // Locktime passes
     BOOST_CHECK(!TestSequenceLocks(tx, flags)); // Sequence locks fail
     BOOST_CHECK(SequenceLocks(tx, flags, &prevheights, CreateBlockIndex(chainActive.Tip()->nHeight + 2))); // Sequence locks pass on 2nd block
 
     // relative time locked
     tx.vin[0].prevout.hash = txFirst[1]->GetHash();
-    tx.vin[0].nSequence = CTxIn::SEQUENCE_LOCKTIMEC_TYPE_FLAG | (((chainActive.Tip()->GetMedianTIMECCoinPast()+1-chainActive[1]->GetMedianTIMECCoinPast()) >> CTxIn::SEQUENCE_LOCKTIMEC_GRANULARITY) + 1); // txFirst[1] is the 3rd block
+    tx.vin[0].nSequence = CTxIn::SEQUENCE_LOCKTIMEC_TYPE_FLAG | (((chainActive.Tip()->GetMedianTIMECoinPast()+1-chainActive[1]->GetMedianTIMECoinPast()) >> CTxIn::SEQUENCE_LOCKTIMEC_GRANULARITY) + 1); // txFirst[1] is the 3rd block
     prevheights[0] = baseheight + 2;
     hash = tx.GetHash();
-    mempool.addUnchecked(hash, entry.TIMECCoin(GetTIMECCoin()).FromTx(tx));
+    mempool.addUnchecked(hash, entry.TIMECoin(GetTIMECoin()).FromTx(tx));
     BOOST_CHECK(CheckFinalTx(tx, flags)); // Locktime passes
     BOOST_CHECK(!TestSequenceLocks(tx, flags)); // Sequence locks fail
 
-    for (int i = 0; i < CBlockIndex::nMedianTIMECCoinSpan; i++)
-        chainActive.Tip()->GetAncestor(chainActive.Tip()->nHeight - i)->nTIMECCoin += 512; //Trick the MedianTIMECCoinPast
+    for (int i = 0; i < CBlockIndex::nMedianTIMECoinSpan; i++)
+        chainActive.Tip()->GetAncestor(chainActive.Tip()->nHeight - i)->nTIMECoin += 512; //Trick the MedianTIMECoinPast
     BOOST_CHECK(SequenceLocks(tx, flags, &prevheights, CreateBlockIndex(chainActive.Tip()->nHeight + 1))); // Sequence locks pass 512 seconds later
-    for (int i = 0; i < CBlockIndex::nMedianTIMECCoinSpan; i++)
-        chainActive.Tip()->GetAncestor(chainActive.Tip()->nHeight - i)->nTIMECCoin -= 512; //undo tricked MTP
+    for (int i = 0; i < CBlockIndex::nMedianTIMECoinSpan; i++)
+        chainActive.Tip()->GetAncestor(chainActive.Tip()->nHeight - i)->nTIMECoin -= 512; //undo tricked MTP
 
     // absolute height locked
     tx.vin[0].prevout.hash = txFirst[2]->GetHash();
     tx.vin[0].nSequence = CTxIn::SEQUENCE_FINAL - 1;
     prevheights[0] = baseheight + 3;
-    tx.nLockTIMECCoin = chainActive.Tip()->nHeight + 1;
+    tx.nLockTIMECoin = chainActive.Tip()->nHeight + 1;
     hash = tx.GetHash();
-    mempool.addUnchecked(hash, entry.TIMECCoin(GetTIMECCoin()).FromTx(tx));
+    mempool.addUnchecked(hash, entry.TIMECoin(GetTIMECoin()).FromTx(tx));
     BOOST_CHECK(!CheckFinalTx(tx, flags)); // Locktime fails
     BOOST_CHECK(TestSequenceLocks(tx, flags)); // Sequence locks pass
-    BOOST_CHECK(IsFinalTx(tx, chainActive.Tip()->nHeight + 2, chainActive.Tip()->GetMedianTIMECCoinPast())); // Locktime passes on 2nd block
+    BOOST_CHECK(IsFinalTx(tx, chainActive.Tip()->nHeight + 2, chainActive.Tip()->GetMedianTIMECoinPast())); // Locktime passes on 2nd block
 
     // absolute time locked
     tx.vin[0].prevout.hash = txFirst[3]->GetHash();
-    tx.nLockTIMECCoin = chainActive.Tip()->GetMedianTIMECCoinPast();
+    tx.nLockTIMECoin = chainActive.Tip()->GetMedianTIMECoinPast();
     prevheights.resize(1);
     prevheights[0] = baseheight + 4;
     hash = tx.GetHash();
-    mempool.addUnchecked(hash, entry.TIMECCoin(GetTIMECCoin()).FromTx(tx));
+    mempool.addUnchecked(hash, entry.TIMECoin(GetTIMECoin()).FromTx(tx));
     BOOST_CHECK(!CheckFinalTx(tx, flags)); // Locktime fails
     BOOST_CHECK(TestSequenceLocks(tx, flags)); // Sequence locks pass
-    BOOST_CHECK(IsFinalTx(tx, chainActive.Tip()->nHeight + 2, chainActive.Tip()->GetMedianTIMECCoinPast() + 1)); // Locktime passes 1 second later
+    BOOST_CHECK(IsFinalTx(tx, chainActive.Tip()->nHeight + 2, chainActive.Tip()->GetMedianTIMECoinPast() + 1)); // Locktime passes 1 second later
 
     // mempool-dependent transactions (not added)
     tx.vin[0].prevout.hash = hash;
     prevheights[0] = chainActive.Tip()->nHeight + 1;
-    tx.nLockTIMECCoin = 0;
+    tx.nLockTIMECoin = 0;
     tx.vin[0].nSequence = 0;
     BOOST_CHECK(CheckFinalTx(tx, flags)); // Locktime passes
     BOOST_CHECK(TestSequenceLocks(tx, flags)); // Sequence locks pass
@@ -369,17 +369,17 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
     BOOST_CHECK_EQUAL(pblocktemplate->block.vtx.size(), 3);
     delete pblocktemplate;
     // However if we advance height by 1 and time by 512, all of them should be mined
-    for (int i = 0; i < CBlockIndex::nMedianTIMECCoinSpan; i++)
-        chainActive.Tip()->GetAncestor(chainActive.Tip()->nHeight - i)->nTIMECCoin += 512; //Trick the MedianTIMECCoinPast
+    for (int i = 0; i < CBlockIndex::nMedianTIMECoinSpan; i++)
+        chainActive.Tip()->GetAncestor(chainActive.Tip()->nHeight - i)->nTIMECoin += 512; //Trick the MedianTIMECoinPast
     chainActive.Tip()->nHeight++;
-    SetMockTIMECCoin(chainActive.Tip()->GetMedianTIMECCoinPast() + 1);
+    SetMockTIMECoin(chainActive.Tip()->GetMedianTIMECoinPast() + 1);
 
     BOOST_CHECK(pblocktemplate = CreateNewBlock(chainparams, scriptPubKey));
     BOOST_CHECK_EQUAL(pblocktemplate->block.vtx.size(), 5);
     delete pblocktemplate;
 
     chainActive.Tip()->nHeight--;
-    SetMockTIMECCoin(0);
+    SetMockTIMECoin(0);
     mempool.clear();
 
     BOOST_FOREACH(CTransaction *tx, txFirst)

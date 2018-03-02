@@ -18,14 +18,14 @@ BEGIN
     BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
-            VALUE "CompanyName",        "TIMECCoin"
-            VALUE "FileDescription",    "TIMECCoin Core (GUI node for TIMECCoin)"
+            VALUE "CompanyName",        "TIMECoin"
+            VALUE "FileDescription",    "TIMECoin Core (GUI node for TIMECoin)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
             VALUE "InternalName",       "time-qt"
             VALUE "LegalCopyright",     COPYRIGHT_STR
             VALUE "LegalTrademarks1",   "Distributed under the MIT software license, see the accompanying file COPYING or http://www.opensource.org/licenses/mit-license.php."
             VALUE "OriginalFilename",   "time-qt.exe"
-            VALUE "ProductName",        "TIMECCoin Core"
+            VALUE "ProductName",        "TIMECoin Core"
             VALUE "ProductVersion",     VER_PRODUCTVERSION_STR
         END
     END

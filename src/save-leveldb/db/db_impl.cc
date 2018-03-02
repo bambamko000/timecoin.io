@@ -1372,7 +1372,7 @@ bool DBImpl::GetProperty(const Slice& property, std::string* value) {
     char buf[200];
     snprintf(buf, sizeof(buf),
              "                               Compactions\n"
-             "Level  Files Size(MB) TIMECCoin(sec) Read(MB) Write(MB)\n"
+             "Level  Files Size(MB) TIMECoin(sec) Read(MB) Write(MB)\n"
              "--------------------------------------------------\n"
              );
     value->append(buf);

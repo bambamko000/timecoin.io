@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -229,8 +229,8 @@ UniValue masternode(const UniValue& params, bool fHelp)
         obj.push_back(Pair("protocol",      (int64_t)mnInfo.nProtocolVersion));
         obj.push_back(Pair("outpoint",      mnInfo.vin.prevout.ToStringShort()));
         obj.push_back(Pair("payee",         CBitcoinAddress(mnInfo.pubKeyCollateralAddress.GetID()).ToString()));
-        obj.push_back(Pair("lastseen",      mnInfo.nTIMECCoinLastPing));
-        obj.push_back(Pair("activeseconds", mnInfo.nTIMECCoinLastPing - mnInfo.sigTIMECCoin));
+        obj.push_back(Pair("lastseen",      mnInfo.nTIMECoinLastPing));
+        obj.push_back(Pair("activeseconds", mnInfo.nTIMECoinLastPing - mnInfo.sigTIMECoin));
         return obj;
     }
 
@@ -472,7 +472,7 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                 "  lastpaidblock  - Print the last block height a node was paid on the network\n"
                 "  lastpaidtime   - Print the last time a node was paid on the network\n"
                 "  lastseen       - Print timestamp of when a masternode was last seen on the network\n"
-                "  payee          - Print TIMECCoin address associated with a masternode (can be additionally filtered,\n"
+                "  payee          - Print TIMECoin address associated with a masternode (can be additionally filtered,\n"
                 "                   partial match)\n"
                 "  protocol       - Print protocol of a masternode (can be additionally filtered, exact match)\n"
                 "  pubkey         - Print the masternode (not collateral) public key\n"
@@ -507,7 +507,7 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
             std::string strOutpoint = mnpair.first.ToStringShort();
             if (strMode == "activeseconds") {
                 if (strFilter !="" && strOutpoint.find(strFilter) == std::string::npos) continue;
-                obj.push_back(Pair(strOutpoint, (int64_t)(mn.lastPing.sigTIMECCoin - mn.sigTIMECCoin)));
+                obj.push_back(Pair(strOutpoint, (int64_t)(mn.lastPing.sigTIMECoin - mn.sigTIMECoin)));
             } else if (strMode == "addr") {
                 std::string strAddress = mn.addr.ToString();
                 if (strFilter !="" && strAddress.find(strFilter) == std::string::npos &&
@@ -519,9 +519,9 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                                mn.GetStatus() << " " <<
                                mn.nProtocolVersion << " " <<
                                CBitcoinAddress(mn.pubKeyCollateralAddress.GetID()).ToString() << " " <<
-                               (int64_t)mn.lastPing.sigTIMECCoin << " " << std::setw(8) <<
-                               (int64_t)(mn.lastPing.sigTIMECCoin - mn.sigTIMECCoin) << " " << std::setw(10) <<
-                               mn.GetLastPaidTIMECCoin() << " "  << std::setw(6) <<
+                               (int64_t)mn.lastPing.sigTIMECoin << " " << std::setw(8) <<
+                               (int64_t)(mn.lastPing.sigTIMECoin - mn.sigTIMECoin) << " " << std::setw(10) <<
+                               mn.GetLastPaidTIMECoin() << " "  << std::setw(6) <<
                                mn.GetLastPaidBlock() << " " <<
                                mn.addr.ToString();
                 std::string strFull = streamFull.str();
@@ -534,8 +534,8 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                                mn.GetStatus() << " " <<
                                mn.nProtocolVersion << " " <<
                                CBitcoinAddress(mn.pubKeyCollateralAddress.GetID()).ToString() << " " <<
-                               (int64_t)mn.lastPing.sigTIMECCoin << " " << std::setw(8) <<
-                               (int64_t)(mn.lastPing.sigTIMECCoin - mn.sigTIMECCoin) << " " <<
+                               (int64_t)mn.lastPing.sigTIMECoin << " " << std::setw(8) <<
+                               (int64_t)(mn.lastPing.sigTIMECoin - mn.sigTIMECoin) << " " <<
                                SafeIntVersionToString(mn.lastPing.nSentinelVersion) << " "  <<
                                (mn.lastPing.fSentinelIsCurrent ? "current" : "expired") << " " <<
                                mn.addr.ToString();
@@ -548,10 +548,10 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                 obj.push_back(Pair(strOutpoint, mn.GetLastPaidBlock()));
             } else if (strMode == "lastpaidtime") {
                 if (strFilter !="" && strOutpoint.find(strFilter) == std::string::npos) continue;
-                obj.push_back(Pair(strOutpoint, mn.GetLastPaidTIMECCoin()));
+                obj.push_back(Pair(strOutpoint, mn.GetLastPaidTIMECoin()));
             } else if (strMode == "lastseen") {
                 if (strFilter !="" && strOutpoint.find(strFilter) == std::string::npos) continue;
-                obj.push_back(Pair(strOutpoint, (int64_t)mn.lastPing.sigTIMECCoin));
+                obj.push_back(Pair(strOutpoint, (int64_t)mn.lastPing.sigTIMECoin));
             } else if (strMode == "payee") {
                 CBitcoinAddress address(mn.pubKeyCollateralAddress.GetID());
                 std::string strPayee = address.ToString();
@@ -749,14 +749,14 @@ UniValue masternodebroadcast(const UniValue& params, bool fHelp)
                 resultObj.push_back(Pair("pubKeyCollateralAddress", CBitcoinAddress(mnb.pubKeyCollateralAddress.GetID()).ToString()));
                 resultObj.push_back(Pair("pubKeyMasternode", CBitcoinAddress(mnb.pubKeyMasternode.GetID()).ToString()));
                 resultObj.push_back(Pair("vchSig", EncodeBase64(&mnb.vchSig[0], mnb.vchSig.size())));
-                resultObj.push_back(Pair("sigTIMECCoin", mnb.sigTIMECCoin));
+                resultObj.push_back(Pair("sigTIMECoin", mnb.sigTIMECoin));
                 resultObj.push_back(Pair("protocolVersion", mnb.nProtocolVersion));
                 resultObj.push_back(Pair("nLastDsq", mnb.nLastDsq));
 
                 UniValue lastPingObj(UniValue::VOBJ);
                 lastPingObj.push_back(Pair("outpoint", mnb.lastPing.vin.prevout.ToStringShort()));
                 lastPingObj.push_back(Pair("blockHash", mnb.lastPing.blockHash.ToString()));
-                lastPingObj.push_back(Pair("sigTIMECCoin", mnb.lastPing.sigTIMECCoin));
+                lastPingObj.push_back(Pair("sigTIMECoin", mnb.lastPing.sigTIMECoin));
                 lastPingObj.push_back(Pair("vchSig", EncodeBase64(&mnb.lastPing.vchSig[0], mnb.lastPing.vchSig.size())));
 
                 resultObj.push_back(Pair("lastPing", lastPingObj));

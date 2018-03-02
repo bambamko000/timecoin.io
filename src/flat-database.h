@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -41,7 +41,7 @@ private:
     {
         // LOCK(objToSave.cs);
 
-        int64_t nStart = GetTIMECCoinMillis();
+        int64_t nStart = GetTIMECoinMillis();
 
         // serialize, checksum data up to that point, then append checksum
         CDataStream ssObj(SER_DISK, CLIENT_VERSION);
@@ -66,7 +66,7 @@ private:
         }
         fileout.fclose();
 
-        LogPrintf("Written info to %s  %dms\n", strFilename, GetTIMECCoinMillis() - nStart);
+        LogPrintf("Written info to %s  %dms\n", strFilename, GetTIMECoinMillis() - nStart);
         LogPrintf("     %s\n", objToSave.ToString());
 
         return true;
@@ -76,7 +76,7 @@ private:
     {
         //LOCK(objToLoad.cs);
 
-        int64_t nStart = GetTIMECCoinMillis();
+        int64_t nStart = GetTIMECoinMillis();
         // open input file, and associate with CAutoFile
         FILE *file = fopen(pathDB.string().c_str(), "rb");
         CAutoFile filein(file, SER_DISK, CLIENT_VERSION);
@@ -151,7 +151,7 @@ private:
             return IncorrectFormat;
         }
 
-        LogPrintf("Loaded info from %s  %dms\n", strFilename, GetTIMECCoinMillis() - nStart);
+        LogPrintf("Loaded info from %s  %dms\n", strFilename, GetTIMECoinMillis() - nStart);
         LogPrintf("     %s\n", objToLoad.ToString());
         if(!fDryRun) {
             LogPrintf("%s: Cleaning....\n", __func__);
@@ -195,7 +195,7 @@ public:
 
     bool Dump(T& objToSave)
     {
-        int64_t nStart = GetTIMECCoinMillis();
+        int64_t nStart = GetTIMECoinMillis();
 
         LogPrintf("Verifying %s format...\n", strFilename);
         T tmpObjToLoad;
@@ -218,7 +218,7 @@ public:
 
         LogPrintf("Writing info to %s...\n", strFilename);
         Write(objToSave);
-        LogPrintf("%s dump finished  %dms\n", strFilename, GetTIMECCoinMillis() - nStart);
+        LogPrintf("%s dump finished  %dms\n", strFilename, GetTIMECoinMillis() - nStart);
 
         return true;
     }

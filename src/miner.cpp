@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -36,7 +36,7 @@ using namespace std;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-// TIMECCoinMiner
+// TIMECoinMiner
 //
 
 //
@@ -59,19 +59,19 @@ public:
     }
 };
 
-int64_t UpdateTIMECCoin(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev)
+int64_t UpdateTIMECoin(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev)
 {
-    int64_t nOldTIMECCoin = pblock->nTIMECCoin;
-    int64_t nNewTIMECCoin = std::max(pindexPrev->GetMedianTIMECCoinPast()+1, GetAdjustedTIMECCoin());
+    int64_t nOldTIMECoin = pblock->nTIMECoin;
+    int64_t nNewTIMECoin = std::max(pindexPrev->GetMedianTIMECoinPast()+1, GetAdjustedTIMECoin());
 
-    if (nOldTIMECCoin < nNewTIMECCoin)
-        pblock->nTIMECCoin = nNewTIMECCoin;
+    if (nOldTIMECoin < nNewTIMECoin)
+        pblock->nTIMECoin = nNewTIMECoin;
 
     // Updating time can change work required on testnet:
     if (consensusParams.fPowAllowMinDifficultyBlocks)
         pblock->nBits = GetNextWorkRequired(pindexPrev, pblock, consensusParams);
 
-    return nNewTIMECCoin - nOldTIMECCoin;
+    return nNewTIMECoin - nOldTIMECoin;
 }
 
 CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& scriptPubKeyIn)
@@ -128,8 +128,8 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
 
         CBlockIndex* pindexPrev = chainActive.Tip();
         const int nHeight = pindexPrev->nHeight + 1;
-        pblock->nTIMECCoin = GetAdjustedTIMECCoin();
-        const int64_t nMedianTIMECCoinPast = pindexPrev->GetMedianTIMECCoinPast();
+        pblock->nTIMECoin = GetAdjustedTIMECoin();
+        const int64_t nMedianTIMECoinPast = pindexPrev->GetMedianTIMECoinPast();
 
         // Add our coinbase tx as first transaction
         pblock->vtx.push_back(txNew);
@@ -141,9 +141,9 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
         if (chainparams.MineBlocksOnDemand())
             pblock->nVersion = GetArg("-blockversion", pblock->nVersion);
 
-        int64_t nLockTIMECCoinCutoff = (STANDARD_LOCKTIMEC_VERIFY_FLAGS & LOCKTIMEC_MEDIAN_TIMEC_PAST)
-                                ? nMedianTIMECCoinPast
-                                : pblock->GetBlockTIMECCoin();
+        int64_t nLockTIMECoinCutoff = (STANDARD_LOCKTIMEC_VERIFY_FLAGS & LOCKTIMEC_MEDIAN_TIMEC_PAST)
+                                ? nMedianTIMECoinPast
+                                : pblock->GetBlockTIMECoin();
 
         {
             LOCK(mempool.cs);
@@ -227,7 +227,7 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
                     continue;
                 }
 
-                if (!IsFinalTx(tx, nHeight, nLockTIMECCoinCutoff))
+                if (!IsFinalTx(tx, nHeight, nLockTIMECoinCutoff))
                     continue;
 
                 unsigned int nTxSigOps = iter->GetSigOpCount();
@@ -305,7 +305,7 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
 
         // Fill in header
         pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
-        UpdateTIMECCoin(pblock, chainparams.GetConsensus(), pindexPrev);
+        UpdateTIMECoin(pblock, chainparams.GetConsensus(), pindexPrev);
         pblock->nBits          = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus());
         pblock->nNonce         = 0;
         pblocktemplate->vTxSigOps[0] = GetLegacySigOpCount(pblock->vtx[0]);
@@ -343,7 +343,7 @@ void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned
 // Internal miner
 //
 
-// ***TODO*** ScanHash is not yet used in TIMECCoin
+// ***TODO*** ScanHash is not yet used in TIMECoin
 //
 // ScanHash scans nonces looking for a hash with at least some zero bits.
 // The nonce is usually preserved between calls, but periodically or if the
@@ -402,7 +402,7 @@ static bool ProcessBlockFound(const CBlock* pblock, const CChainParams& chainpar
 // ***TODO*** that part changed in bitcoin, we are using a mix with old one here for now
 void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
 {
-    LogPrintf("TIMECCoinMiner -- started\n");
+    LogPrintf("TIMECoinMiner -- started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
     RenameThread("time-miner");
 
@@ -441,19 +441,19 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
             std::unique_ptr<CBlockTemplate> pblocktemplate(CreateNewBlock(chainparams, coinbaseScript->reserveScript));
             if (!pblocktemplate.get())
             {
-                LogPrintf("TIMECCoinMiner -- Keypool ran out, please call keypoolrefill before restarting the mining thread\n");
+                LogPrintf("TIMECoinMiner -- Keypool ran out, please call keypoolrefill before restarting the mining thread\n");
                 return;
             }
             CBlock *pblock = &pblocktemplate->block;
             IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
 
-            LogPrintf("TIMECCoinMiner -- Running miner with %u transactions in block (%u bytes)\n", pblock->vtx.size(),
+            LogPrintf("TIMECoinMiner -- Running miner with %u transactions in block (%u bytes)\n", pblock->vtx.size(),
                 ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
 
             //
             // Search
             //
-            int64_t nStart = GetTIMECCoin();
+            int64_t nStart = GetTIMECoin();
             arith_uint256 hashTarget = arith_uint256().SetCompact(pblock->nBits);
             while (true)
             {
@@ -467,7 +467,7 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
                     {
                         // Found a solution
                         SetThreadPriority(THREAD_PRIORITY_NORMAL);
-                        LogPrintf("TIMECCoinMiner:\n  proof-of-work found\n  hash: %s\n  target: %s\n", hash.GetHex(), hashTarget.GetHex());
+                        LogPrintf("TIMECoinMiner:\n  proof-of-work found\n  hash: %s\n  target: %s\n", hash.GetHex(), hashTarget.GetHex());
                         ProcessBlockFound(pblock, chainparams);
                         SetThreadPriority(THREAD_PRIORITY_LOWEST);
                         coinbaseScript->KeepScript();
@@ -492,18 +492,18 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
                     break;
                 if (pblock->nNonce >= 0xffff0000)
                     break;
-                if (mempool.GetTransactionsUpdated() != nTransactionsUpdatedLast && GetTIMECCoin() - nStart > 60)
+                if (mempool.GetTransactionsUpdated() != nTransactionsUpdatedLast && GetTIMECoin() - nStart > 60)
                     break;
                 if (pindexPrev != chainActive.Tip())
                     break;
 
-                // Update nTIMECCoin every few seconds
-                if (UpdateTIMECCoin(pblock, chainparams.GetConsensus(), pindexPrev) < 0)
+                // Update nTIMECoin every few seconds
+                if (UpdateTIMECoin(pblock, chainparams.GetConsensus(), pindexPrev) < 0)
                     break; // Recreate the block if the clock has run backwards,
                            // so that we can use the correct time.
                 if (chainparams.GetConsensus().fPowAllowMinDifficultyBlocks)
                 {
-                    // Changing pblock->nTIMECCoin can change work required on testnet:
+                    // Changing pblock->nTIMECoin can change work required on testnet:
                     hashTarget.SetCompact(pblock->nBits);
                 }
             }
@@ -511,12 +511,12 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
     }
     catch (const boost::thread_interrupted&)
     {
-        LogPrintf("TIMECCoinMiner -- terminated\n");
+        LogPrintf("TIMECoinMiner -- terminated\n");
         throw;
     }
     catch (const std::runtime_error &e)
     {
-        LogPrintf("TIMECCoinMiner -- runtime error: %s\n", e.what());
+        LogPrintf("TIMECoinMiner -- runtime error: %s\n", e.what());
         return;
     }
 }

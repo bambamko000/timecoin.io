@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,7 +20,7 @@ CMasternodeSync masternodeSync;
 
 void CMasternodeSync::Fail()
 {
-    nTIMECCoinLastFailure = GetTIMECCoin();
+    nTIMECoinLastFailure = GetTIMECoin();
     nRequestedMasternodeAssets = MASTERNODE_SYNC_FAILED;
 }
 
@@ -28,16 +28,16 @@ void CMasternodeSync::Reset()
 {
     nRequestedMasternodeAssets = MASTERNODE_SYNC_INITIAL;
     nRequestedMasternodeAttempt = 0;
-    nTIMECCoinAssetSyncStarted = GetTIMECCoin();
-    nTIMECCoinLastBumped = GetTIMECCoin();
-    nTIMECCoinLastFailure = 0;
+    nTIMECoinAssetSyncStarted = GetTIMECoin();
+    nTIMECoinLastBumped = GetTIMECoin();
+    nTIMECoinLastFailure = 0;
 }
 
-void CMasternodeSync::BumpAssetLastTIMECCoin(std::string strFuncName)
+void CMasternodeSync::BumpAssetLastTIMECoin(std::string strFuncName)
 {
     if(IsSynced() || IsFailed()) return;
-    nTIMECCoinLastBumped = GetTIMECCoin();
-    LogPrint("mnsync", "CMasternodeSync::BumpAssetLastTIMECCoin -- %s\n", strFuncName);
+    nTIMECoinLastBumped = GetTIMECoin();
+    LogPrint("mnsync", "CMasternodeSync::BumpAssetLastTIMECoin -- %s\n", strFuncName);
 }
 
 std::string CMasternodeSync::GetAssetName()
@@ -69,22 +69,22 @@ void CMasternodeSync::SwitchToNextAsset(CConnman& connman)
             break;
         case(MASTERNODE_SYNC_WAITING):
             ClearFulfilledRequests(connman);
-            LogPrintf("CMasternodeSync::SwitchToNextAsset -- Completed %s in %llds\n", GetAssetName(), GetTIMECCoin() - nTIMECCoinAssetSyncStarted);
+            LogPrintf("CMasternodeSync::SwitchToNextAsset -- Completed %s in %llds\n", GetAssetName(), GetTIMECoin() - nTIMECoinAssetSyncStarted);
             nRequestedMasternodeAssets = MASTERNODE_SYNC_LIST;
             LogPrintf("CMasternodeSync::SwitchToNextAsset -- Starting %s\n", GetAssetName());
             break;
         case(MASTERNODE_SYNC_LIST):
-            LogPrintf("CMasternodeSync::SwitchToNextAsset -- Completed %s in %llds\n", GetAssetName(), GetTIMECCoin() - nTIMECCoinAssetSyncStarted);
+            LogPrintf("CMasternodeSync::SwitchToNextAsset -- Completed %s in %llds\n", GetAssetName(), GetTIMECoin() - nTIMECoinAssetSyncStarted);
             nRequestedMasternodeAssets = MASTERNODE_SYNC_MNW;
             LogPrintf("CMasternodeSync::SwitchToNextAsset -- Starting %s\n", GetAssetName());
             break;
         case(MASTERNODE_SYNC_MNW):
-            LogPrintf("CMasternodeSync::SwitchToNextAsset -- Completed %s in %llds\n", GetAssetName(), GetTIMECCoin() - nTIMECCoinAssetSyncStarted);
+            LogPrintf("CMasternodeSync::SwitchToNextAsset -- Completed %s in %llds\n", GetAssetName(), GetTIMECoin() - nTIMECoinAssetSyncStarted);
             nRequestedMasternodeAssets = MASTERNODE_SYNC_GOVERNANCE;
             LogPrintf("CMasternodeSync::SwitchToNextAsset -- Starting %s\n", GetAssetName());
             break;
         case(MASTERNODE_SYNC_GOVERNANCE):
-            LogPrintf("CMasternodeSync::SwitchToNextAsset -- Completed %s in %llds\n", GetAssetName(), GetTIMECCoin() - nTIMECCoinAssetSyncStarted);
+            LogPrintf("CMasternodeSync::SwitchToNextAsset -- Completed %s in %llds\n", GetAssetName(), GetTIMECoin() - nTIMECoinAssetSyncStarted);
             nRequestedMasternodeAssets = MASTERNODE_SYNC_FINISHED;
             uiInterface.NotifyAdditionalDataSyncProgressChanged(1);
             //try to activate our masternode if possible
@@ -102,8 +102,8 @@ void CMasternodeSync::SwitchToNextAsset(CConnman& connman)
             break;
     }
     nRequestedMasternodeAttempt = 0;
-    nTIMECCoinAssetSyncStarted = GetTIMECCoin();
-    BumpAssetLastTIMECCoin("CMasternodeSync::SwitchToNextAsset");
+    nTIMECoinAssetSyncStarted = GetTIMECoin();
+    BumpAssetLastTIMECoin("CMasternodeSync::SwitchToNextAsset");
 }
 
 std::string CMasternodeSync::GetSyncStatus()
@@ -156,19 +156,19 @@ void CMasternodeSync::ProcessTick(CConnman& connman)
     if(nTick++ % MASTERNODE_SYNC_TICK_SECONDS != 0) return;
 
     // reset the sync process if the last call to this function was more than 60 minutes ago (client was in sleep mode)
-    static int64_t nTIMECCoinLastProcess = GetTIMECCoin();
-    if(GetTIMECCoin() - nTIMECCoinLastProcess > 60*60) {
+    static int64_t nTIMECoinLastProcess = GetTIMECoin();
+    if(GetTIMECoin() - nTIMECoinLastProcess > 60*60) {
         LogPrintf("CMasternodeSync::HasSyncFailures -- WARNING: no actions for too long, restarting sync...\n");
         Reset();
         SwitchToNextAsset(connman);
-        nTIMECCoinLastProcess = GetTIMECCoin();
+        nTIMECoinLastProcess = GetTIMECoin();
         return;
     }
-    nTIMECCoinLastProcess = GetTIMECCoin();
+    nTIMECoinLastProcess = GetTIMECoin();
 
     // reset sync status in case of any other sync failure
     if(IsFailed()) {
-        if(nTIMECCoinLastFailure + (1*60) < GetTIMECCoin()) { // 1 minute cooldown after failed sync
+        if(nTIMECoinLastFailure + (1*60) < GetTIMECoin()) { // 1 minute cooldown after failed sync
             LogPrintf("CMasternodeSync::HasSyncFailures -- WARNING: failed to sync, trying again...\n");
             Reset();
             SwitchToNextAsset(connman);
@@ -241,7 +241,7 @@ void CMasternodeSync::ProcessTick(CConnman& connman)
             // INITIAL TIMECOUT
 
             if(nRequestedMasternodeAssets == MASTERNODE_SYNC_WAITING) {
-                if(GetTIMECCoin() - nTIMECCoinLastBumped > MASTERNODE_SYNC_TIMECOUT_SECONDS) {
+                if(GetTIMECoin() - nTIMECoinLastBumped > MASTERNODE_SYNC_TIMECOUT_SECONDS) {
                     // At this point we know that:
                     // a) there are peers (because we are looping on at least one of them);
                     // b) we waited for at least MASTERNODE_SYNC_TIMECOUT_SECONDS since we reached
@@ -257,9 +257,9 @@ void CMasternodeSync::ProcessTick(CConnman& connman)
             // MNLIST : SYNC MASTERNODE LIST FROM OTHER CONNECTED CLIENTS
 
             if(nRequestedMasternodeAssets == MASTERNODE_SYNC_LIST) {
-                LogPrint("masternode", "CMasternodeSync::ProcessTick -- nTick %d nRequestedMasternodeAssets %d nTIMECCoinLastBumped %lld GetTIMECCoin() %lld diff %lld\n", nTick, nRequestedMasternodeAssets, nTIMECCoinLastBumped, GetTIMECCoin(), GetTIMECCoin() - nTIMECCoinLastBumped);
+                LogPrint("masternode", "CMasternodeSync::ProcessTick -- nTick %d nRequestedMasternodeAssets %d nTIMECoinLastBumped %lld GetTIMECoin() %lld diff %lld\n", nTick, nRequestedMasternodeAssets, nTIMECoinLastBumped, GetTIMECoin(), GetTIMECoin() - nTIMECoinLastBumped);
                 // check for timeout first
-                if(GetTIMECCoin() - nTIMECCoinLastBumped > MASTERNODE_SYNC_TIMECOUT_SECONDS) {
+                if(GetTIMECoin() - nTIMECoinLastBumped > MASTERNODE_SYNC_TIMECOUT_SECONDS) {
                     LogPrintf("CMasternodeSync::ProcessTick -- nTick %d nRequestedMasternodeAssets %d -- timeout\n", nTick, nRequestedMasternodeAssets);
                     if (nRequestedMasternodeAttempt == 0) {
                         LogPrintf("CMasternodeSync::ProcessTick -- ERROR: failed to sync %s\n", GetAssetName());
@@ -289,11 +289,11 @@ void CMasternodeSync::ProcessTick(CConnman& connman)
             // MNW : SYNC MASTERNODE PAYMENT VOTES FROM OTHER CONNECTED CLIENTS
 
             if(nRequestedMasternodeAssets == MASTERNODE_SYNC_MNW) {
-                LogPrint("mnpayments", "CMasternodeSync::ProcessTick -- nTick %d nRequestedMasternodeAssets %d nTIMECCoinLastBumped %lld GetTIMECCoin() %lld diff %lld\n", nTick, nRequestedMasternodeAssets, nTIMECCoinLastBumped, GetTIMECCoin(), GetTIMECCoin() - nTIMECCoinLastBumped);
+                LogPrint("mnpayments", "CMasternodeSync::ProcessTick -- nTick %d nRequestedMasternodeAssets %d nTIMECoinLastBumped %lld GetTIMECoin() %lld diff %lld\n", nTick, nRequestedMasternodeAssets, nTIMECoinLastBumped, GetTIMECoin(), GetTIMECoin() - nTIMECoinLastBumped);
                 // check for timeout first
                 // This might take a lot longer than MASTERNODE_SYNC_TIMECOUT_SECONDS due to new blocks,
                 // but that should be OK and it should timeout eventually.
-                if(GetTIMECCoin() - nTIMECCoinLastBumped > MASTERNODE_SYNC_TIMECOUT_SECONDS) {
+                if(GetTIMECoin() - nTIMECoinLastBumped > MASTERNODE_SYNC_TIMECOUT_SECONDS) {
                     LogPrintf("CMasternodeSync::ProcessTick -- nTick %d nRequestedMasternodeAssets %d -- timeout\n", nTick, nRequestedMasternodeAssets);
                     if (nRequestedMasternodeAttempt == 0) {
                         LogPrintf("CMasternodeSync::ProcessTick -- ERROR: failed to sync %s\n", GetAssetName());
@@ -336,10 +336,10 @@ void CMasternodeSync::ProcessTick(CConnman& connman)
             // GOVOBJ : SYNC GOVERNANCE ITEMS FROM OUR PEERS
 
             if(nRequestedMasternodeAssets == MASTERNODE_SYNC_GOVERNANCE) {
-                LogPrint("gobject", "CMasternodeSync::ProcessTick -- nTick %d nRequestedMasternodeAssets %d nTIMECCoinLastBumped %lld GetTIMECCoin() %lld diff %lld\n", nTick, nRequestedMasternodeAssets, nTIMECCoinLastBumped, GetTIMECCoin(), GetTIMECCoin() - nTIMECCoinLastBumped);
+                LogPrint("gobject", "CMasternodeSync::ProcessTick -- nTick %d nRequestedMasternodeAssets %d nTIMECoinLastBumped %lld GetTIMECoin() %lld diff %lld\n", nTick, nRequestedMasternodeAssets, nTIMECoinLastBumped, GetTIMECoin(), GetTIMECoin() - nTIMECoinLastBumped);
 
                 // check for timeout first
-                if(GetTIMECCoin() - nTIMECCoinLastBumped > MASTERNODE_SYNC_TIMECOUT_SECONDS) {
+                if(GetTIMECoin() - nTIMECoinLastBumped > MASTERNODE_SYNC_TIMECOUT_SECONDS) {
                     LogPrintf("CMasternodeSync::ProcessTick -- nTick %d nRequestedMasternodeAssets %d -- timeout\n", nTick, nRequestedMasternodeAssets);
                     if(nRequestedMasternodeAttempt == 0) {
                         LogPrintf("CMasternodeSync::ProcessTick -- WARNING: failed to sync %s\n", GetAssetName());
@@ -353,18 +353,18 @@ void CMasternodeSync::ProcessTick(CConnman& connman)
                 // only request obj sync once from each peer, then request votes on per-obj basis
                 if(netfulfilledman.HasFulfilledRequest(pnode->addr, "governance-sync")) {
                     int nObjsLeftToAsk = governance.RequestGovernanceObjectVotes(pnode, connman);
-                    static int64_t nTIMECCoinNoObjectsLeft = 0;
+                    static int64_t nTIMECoinNoObjectsLeft = 0;
                     // check for data
                     if(nObjsLeftToAsk == 0) {
                         static int nLastTick = 0;
                         static int nLastVotes = 0;
-                        if(nTIMECCoinNoObjectsLeft == 0) {
+                        if(nTIMECoinNoObjectsLeft == 0) {
                             // asked all objects for votes for the first time
-                            nTIMECCoinNoObjectsLeft = GetTIMECCoin();
+                            nTIMECoinNoObjectsLeft = GetTIMECoin();
                         }
                         // make sure the condition below is checked only once per tick
                         if(nLastTick == nTick) continue;
-                        if(GetTIMECCoin() - nTIMECCoinNoObjectsLeft > MASTERNODE_SYNC_TIMECOUT_SECONDS &&
+                        if(GetTIMECoin() - nTIMECoinNoObjectsLeft > MASTERNODE_SYNC_TIMECOUT_SECONDS &&
                             governance.GetVoteCount() - nLastVotes < std::max(int(0.0001 * nLastVotes), MASTERNODE_SYNC_TICK_SECONDS)
                         ) {
                             // We already asked for all objects, waited for MASTERNODE_SYNC_TIMECOUT_SECONDS
@@ -372,8 +372,8 @@ void CMasternodeSync::ProcessTick(CConnman& connman)
                             // (i.e. 1 per second) votes were recieved during the last tick.
                             // We can be pretty sure that we are done syncing.
                             LogPrintf("CMasternodeSync::ProcessTick -- nTick %d nRequestedMasternodeAssets %d -- asked for all objects, nothing to do\n", nTick, nRequestedMasternodeAssets);
-                            // reset nTIMECCoinNoObjectsLeft to be able to use the same condition on resync
-                            nTIMECCoinNoObjectsLeft = 0;
+                            // reset nTIMECoinNoObjectsLeft to be able to use the same condition on resync
+                            nTIMECoinNoObjectsLeft = 0;
                             SwitchToNextAsset(connman);
                             connman.ReleaseNodeVector(vNodesCopy);
                             return;
@@ -418,7 +418,7 @@ void CMasternodeSync::AcceptedBlockHeader(const CBlockIndex *pindexNew)
 
     if (!IsBlockchainSynced()) {
         // Postpone timeout each time new block header arrives while we are still syncing blockchain
-        BumpAssetLastTIMECCoin("CMasternodeSync::AcceptedBlockHeader");
+        BumpAssetLastTIMECoin("CMasternodeSync::AcceptedBlockHeader");
     }
 }
 
@@ -431,7 +431,7 @@ void CMasternodeSync::NotifyHeaderTip(const CBlockIndex *pindexNew, bool fInitia
 
     if (!IsBlockchainSynced()) {
         // Postpone timeout each time new block arrives while we are still syncing blockchain
-        BumpAssetLastTIMECCoin("CMasternodeSync::NotifyHeaderTip");
+        BumpAssetLastTIMECoin("CMasternodeSync::NotifyHeaderTip");
     }
 }
 
@@ -444,7 +444,7 @@ void CMasternodeSync::UpdatedBlockTip(const CBlockIndex *pindexNew, bool fInitia
 
     if (!IsBlockchainSynced()) {
         // Postpone timeout each time new block arrives while we are still syncing blockchain
-        BumpAssetLastTIMECCoin("CMasternodeSync::UpdatedBlockTip");
+        BumpAssetLastTIMECoin("CMasternodeSync::UpdatedBlockTip");
     }
 
     if (fInitialDownload) {

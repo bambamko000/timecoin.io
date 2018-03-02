@@ -45,10 +45,10 @@
 using namespace std;
 
 #if defined(NDEBUG)
-# error "TIMECCoin Core cannot be compiled without assertions."
+# error "TIMECoin Core cannot be compiled without assertions."
 #endif
 
-int64_t nTIMECCoinBestReceived = 0; // Used only to inform the wallet of when we last received a block
+int64_t nTIMECoinBestReceived = 0; // Used only to inform the wallet of when we last received a block
 
 struct COrphanTx {
     CTransaction tx;
@@ -152,7 +152,7 @@ struct CNodeState {
     //! Whether we've started headers synchronization with this peer.
     bool fSyncStarted;
     //! When to potentially disconnect peer for stalling headers download
-    int64_t nHeadersSyncTIMECCoinout;
+    int64_t nHeadersSyncTIMECoinout;
     //! Since when we're stalling block download progress (in microseconds), or 0.
     int64_t nStallingSince;
     list<QueuedBlock> vBlocksInFlight;
@@ -174,7 +174,7 @@ struct CNodeState {
         pindexLastCommonBlock = NULL;
         pindexBestHeaderSent = NULL;
         fSyncStarted = false;
-        nHeadersSyncTIMECCoinout = 0;
+        nHeadersSyncTIMECoinout = 0;
         nStallingSince = 0;
         nDownloadingSince = 0;
         nBlocksInFlight = 0;
@@ -205,7 +205,7 @@ void UpdatePreferredDownload(CNode* node, CNodeState* state)
     nPreferredDownload += state->fPreferredDownload;
 }
 
-void PushNodeVersion(CNode *pnode, CConnman& connman, int64_t nTIMECCoin)
+void PushNodeVersion(CNode *pnode, CConnman& connman, int64_t nTIMECoin)
 {
     ServiceFlags nLocalNodeServices = pnode->GetLocalServices();
     uint64_t nonce = pnode->GetLocalNonce();
@@ -216,7 +216,7 @@ void PushNodeVersion(CNode *pnode, CConnman& connman, int64_t nTIMECCoin)
     CAddress addrYou = (addr.IsRoutable() && !IsProxy(addr) ? addr : CAddress(CService(), addr.nServices));
     CAddress addrMe = CAddress(CService(), nLocalNodeServices);
 
-    connman.PushMessageWithVersion(pnode, INIT_PROTO_VERSION, NetMsgType::VERSION, PROTOCOL_VERSION, (uint64_t)nLocalNodeServices, nTIMECCoin, addrYou, addrMe,
+    connman.PushMessageWithVersion(pnode, INIT_PROTO_VERSION, NetMsgType::VERSION, PROTOCOL_VERSION, (uint64_t)nLocalNodeServices, nTIMECoin, addrYou, addrMe,
             nonce, strSubVersion, nNodeStartingHeight, ::fRelayTxes);
 
     if (fLogIPs)
@@ -234,11 +234,11 @@ void InitializeNode(CNode *pnode, CConnman& connman) {
         mapNodeState.emplace_hint(mapNodeState.end(), std::piecewise_construct, std::forward_as_tuple(nodeid), std::forward_as_tuple(addr, std::move(addrName)));
     }
     if(!pnode->fInbound)
-        PushNodeVersion(pnode, connman, GetTIMECCoin());
+        PushNodeVersion(pnode, connman, GetTIMECoin());
 }
 
-void FinalizeNode(NodeId nodeid, bool& fUpdateConnectionTIMECCoin) {
-    fUpdateConnectionTIMECCoin = false;
+void FinalizeNode(NodeId nodeid, bool& fUpdateConnectionTIMECoin) {
+    fUpdateConnectionTIMECoin = false;
     LOCK(cs_main);
     CNodeState *state = State(nodeid);
 
@@ -246,7 +246,7 @@ void FinalizeNode(NodeId nodeid, bool& fUpdateConnectionTIMECCoin) {
         nSyncStarted--;
 
     if (state->nMisbehavior == 0 && state->fCurrentlyConnected) {
-        fUpdateConnectionTIMECCoin = true;
+        fUpdateConnectionTIMECoin = true;
     }
 
     BOOST_FOREACH(const QueuedBlock& entry, state->vBlocksInFlight) {
@@ -280,7 +280,7 @@ bool MarkBlockAsReceived(const uint256& hash) {
         }
         if (state->vBlocksInFlight.begin() == itInFlight->second.second) {
             // First block on the queue was received, update the start download time for the next one
-            state->nDownloadingSince = std::max(state->nDownloadingSince, GetTIMECCoinMicros());
+            state->nDownloadingSince = std::max(state->nDownloadingSince, GetTIMECoinMicros());
         }
         state->vBlocksInFlight.erase(itInFlight->second.second);
         state->nBlocksInFlight--;
@@ -305,7 +305,7 @@ void MarkBlockAsInFlight(NodeId nodeid, const uint256& hash, const Consensus::Pa
     state->nBlocksInFlightValidHeaders += newentry.fValidatedHeaders;
     if (state->nBlocksInFlight == 1) {
         // We're starting a block download (batch) from this peer.
-        state->nDownloadingSince = GetTIMECCoinMicros();
+        state->nDownloadingSince = GetTIMECoinMicros();
     }
     if (state->nBlocksInFlightValidHeaders == 1 && pindex != NULL) {
         nPeersWithValidatedDownloads++;
@@ -349,7 +349,7 @@ void UpdateBlockAvailability(NodeId nodeid, const uint256 &hash) {
 // Requires cs_main
 bool CanDirectFetch(const Consensus::Params &consensusParams)
 {
-    return chainActive.Tip()->GetBlockTIMECCoin() > GetAdjustedTIMECCoin() - consensusParams.nPowTargetSpacing * 20;
+    return chainActive.Tip()->GetBlockTIMECoin() > GetAdjustedTIMECoin() - consensusParams.nPowTargetSpacing * 20;
 }
 
 // Requires cs_main
@@ -647,7 +647,7 @@ void PeerLogicValidation::UpdatedBlockTip(const CBlockIndex *pindexNew, const CB
         });
     }
 
-    nTIMECCoinBestReceived = GetTIMECCoin();
+    nTIMECoinBestReceived = GetTIMECoin();
 }
 
 void PeerLogicValidation::BlockChecked(const CBlock& block, const CValidationState& state) {
@@ -686,7 +686,7 @@ bool static AlreadyHave(const CInv& inv) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
             if (chainActive.Tip()->GetBlockHash() != hashRecentRejectsChainTip)
             {
                 // If the chain tip has changed previously rejected transactions
-                // might be now valid, e.g. due to a nLockTIMECCoin'd tx becoming valid,
+                // might be now valid, e.g. due to a nLockTIMECoin'd tx becoming valid,
                 // or a double-spend. Reset the rejects filter and give those
                 // txs a second chance.
                 hashRecentRejectsChainTip = chainActive.Tip()->GetBlockHash();
@@ -704,7 +704,7 @@ bool static AlreadyHave(const CInv& inv) EXCLUSIVE_LOCKS_REQUIRED(cs_main)
         return mapBlockIndex.count(inv.hash);
 
     /* 
-        TIMECCoin Related Inventory Messages
+        TIMECoin Related Inventory Messages
 
         --
 
@@ -763,7 +763,7 @@ static void RelayAddress(const CAddress& addr, bool fReachable, CConnman& connma
     if (hashSalt.IsNull())
         hashSalt = GetRandHash();
     uint64_t hashAddr = addr.GetHash();
-    uint256 hashRand = ArithToUint256(UintToArith256(hashSalt) ^ (hashAddr<<32) ^ ((GetTIMECCoin()+hashAddr)/(24*60*60)));
+    uint256 hashRand = ArithToUint256(UintToArith256(hashSalt) ^ (hashAddr<<32) ^ ((GetTIMECoin()+hashAddr)/(24*60*60)));
     hashRand = Hash(BEGIN(hashRand), END(hashRand));
     std::multimap<uint256, CNode*> mapMix;
 
@@ -819,8 +819,8 @@ void static ProcessGetData(CNode* pfrom, const Consensus::Params& consensusParam
                         // chain if they are valid, and no more than a month older (both in time, and in
                         // best equivalent proof of work) than the best header chain we know about.
                         send = mi->second->IsValid(BLOCK_VALID_SCRIPTS) && (pindexBestHeader != NULL) &&
-                            (pindexBestHeader->GetBlockTIMECCoin() - mi->second->GetBlockTIMECCoin() < nOneMonth) &&
-                            (GetBlockProofEquivalentTIMECCoin(*pindexBestHeader, *mi->second, *pindexBestHeader, consensusParams) < nOneMonth);
+                            (pindexBestHeader->GetBlockTIMECoin() - mi->second->GetBlockTIMECoin() < nOneMonth) &&
+                            (GetBlockProofEquivalentTIMECoin(*pindexBestHeader, *mi->second, *pindexBestHeader, consensusParams) < nOneMonth);
                         if (!send) {
                             LogPrintf("%s: ignoring request from peer=%i for old block that isn't in the main chain\n", __func__, pfrom->GetId());
                         }
@@ -829,7 +829,7 @@ void static ProcessGetData(CNode* pfrom, const Consensus::Params& consensusParam
                 // disconnect node in case we have reached the outbound limit for serving historical blocks
                 // never disconnect whitelisted nodes
                 static const int nOneWeek = 7 * 24 * 60 * 60; // assume > 1 week = historical
-                if (send && connman.OutboundTargetReached(true) && ( ((pindexBestHeader != NULL) && (pindexBestHeader->GetBlockTIMECCoin() - mi->second->GetBlockTIMECCoin() > nOneWeek)) || inv.type == MSG_FILTERED_BLOCK) && !pfrom->fWhitelisted)
+                if (send && connman.OutboundTargetReached(true) && ( ((pindexBestHeader != NULL) && (pindexBestHeader->GetBlockTIMECoin() - mi->second->GetBlockTIMECoin() > nOneWeek)) || inv.type == MSG_FILTERED_BLOCK) && !pfrom->fWhitelisted)
                 {
                     LogPrint("net", "historical block serving limit reached, disconnect peer=%d\n", pfrom->GetId());
 
@@ -1074,7 +1074,7 @@ void static ProcessGetData(CNode* pfrom, const Consensus::Params& consensusParam
     }
 }
 
-bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, int64_t nTIMECCoinReceived, CConnman& connman, std::atomic<bool>& interruptMsgProc)
+bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, int64_t nTIMECoinReceived, CConnman& connman, std::atomic<bool>& interruptMsgProc)
 {
     const CChainParams& chainparams = Params();
     RandAddSeedPerfmon();
@@ -1120,7 +1120,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             return false;
         }
 
-        int64_t nTIMECCoin;
+        int64_t nTIMECoin;
         CAddress addrMe;
         CAddress addrFrom;
         uint64_t nNonce = 1;
@@ -1132,7 +1132,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         int nStartingHeight = -1;
         bool fRelay = true;
 
-        vRecv >> nVersion >> nServiceInt >> nTIMECCoin >> addrMe;
+        vRecv >> nVersion >> nServiceInt >> nTIMECoin >> addrMe;
         nSendVersion = std::min(nVersion, PROTOCOL_VERSION);
         nServices = ServiceFlags(nServiceInt);
         if (!pfrom->fInbound)
@@ -1185,7 +1185,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
         // Be shy and don't send version until we hear
         if (pfrom->fInbound)
-            PushNodeVersion(pfrom, connman, GetAdjustedTIMECCoin());
+            PushNodeVersion(pfrom, connman, GetAdjustedTIMECoin());
 
         connman.PushMessageWithVersion(pfrom, INIT_PROTO_VERSION, NetMsgType::VERACK);
 
@@ -1252,9 +1252,9 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                   pfrom->nStartingHeight, addrMe.ToString(), pfrom->id,
                   remoteAddr);
 
-        int64_t nTIMECCoinOffset = nTIMECCoin - GetTIMECCoin();
-        pfrom->nTIMECCoinOffset = nTIMECCoinOffset;
-        AddTIMECCoinData(pfrom->addr, nTIMECCoinOffset);
+        int64_t nTIMECoinOffset = nTIMECoin - GetTIMECoin();
+        pfrom->nTIMECoinOffset = nTIMECoinOffset;
+        AddTIMECoinData(pfrom->addr, nTIMECoinOffset);
     }
 
 
@@ -1305,7 +1305,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
         // Store the new addresses
         vector<CAddress> vAddrOk;
-        int64_t nNow = GetAdjustedTIMECCoin();
+        int64_t nNow = GetAdjustedTIMECoin();
         int64_t nSince = nNow - 10 * 60;
         BOOST_FOREACH(CAddress& addr, vAddr)
         {
@@ -1315,11 +1315,11 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             if ((addr.nServices & REQUIRED_SERVICES) != REQUIRED_SERVICES)
                 continue;
 
-            if (addr.nTIMECCoin <= 100000000 || addr.nTIMECCoin > nNow + 10 * 60)
-                addr.nTIMECCoin = nNow - 5 * 24 * 60 * 60;
+            if (addr.nTIMECoin <= 100000000 || addr.nTIMECoin > nNow + 10 * 60)
+                addr.nTIMECoin = nNow - 5 * 24 * 60 * 60;
             pfrom->AddAddressKnown(addr);
             bool fReachable = IsReachable(addr);
-            if (addr.nTIMECCoin > nSince && !pfrom->fGetAddr && vAddr.size() <= 10 && addr.IsRoutable())
+            if (addr.nTIMECoin > nSince && !pfrom->fGetAddr && vAddr.size() <= 10 && addr.IsRoutable())
             {
                 RelayAddress(addr, fReachable, connman);
             }
@@ -1383,7 +1383,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             if (inv.type == MSG_BLOCK) {
                 UpdateBlockAvailability(pfrom->GetId(), inv.hash);
                 if (!fAlreadyHave && !fImporting && !fReindex && !mapBlocksInFlight.count(inv.hash)) {
-                    if (chainparams.DelayGetHeadersTIMECCoin() != 0 && pindexBestHeader->GetBlockTIMECCoin() < GetAdjustedTIMECCoin() - chainparams.DelayGetHeadersTIMECCoin()) {
+                    if (chainparams.DelayGetHeadersTIMECoin() != 0 && pindexBestHeader->GetBlockTIMECoin() < GetAdjustedTIMECoin() - chainparams.DelayGetHeadersTIMECoin()) {
                         // We are pretty far from being completely synced at the moment. If we would initiate a new
                         // chain of GETHEADERS/HEADERS now, we may end up downnloading the full chain from multiple
                         // peers at the same time, slowing down the initial sync. At the same time, we don't know
@@ -1642,7 +1642,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             connman.RelayTransaction(tx);
             vWorkQueue.push_back(inv.hash);
 
-            pfrom->nLastTXTIMECCoin = GetTIMECCoin();
+            pfrom->nLastTXTIMECoin = GetTIMECoin();
 
             LogPrint("mempool", "AcceptToMemoryPool: peer=%d: accepted %s (poolsz %u txn, %u kB)\n",
                 pfrom->id,
@@ -1817,7 +1817,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             LogPrint("net", "more getheaders (%d) to end to peer=%d (startheight:%d)\n", pindexLast->nHeight, pfrom->id, pfrom->nStartingHeight);
             connman.PushMessage(pfrom, NetMsgType::GETHEADERS, chainActive.GetLocator(pindexLast), uint256());
         } else {
-            if (chainparams.DelayGetHeadersTIMECCoin() != 0 && pindexBestHeader->GetBlockTIMECCoin() < GetAdjustedTIMECCoin() - chainparams.DelayGetHeadersTIMECCoin()) {
+            if (chainparams.DelayGetHeadersTIMECoin() != 0 && pindexBestHeader->GetBlockTIMECoin() < GetAdjustedTIMECoin() - chainparams.DelayGetHeadersTIMECoin()) {
                 // peer has sent us a HEADERS message below maximum size and we are still quite far from being fully
                 // synced, this means we probably got a bad peer for initial sync and need to continue with another one.
                 // By disconnecting we force to start a new iteration of initial headers sync in SendMessages
@@ -1909,7 +1909,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         bool fNewBlock = false;
         ProcessNewBlock(chainparams, &block, forceProcessing, NULL, &fNewBlock);
         if (fNewBlock)
-            pfrom->nLastBlockTIMECCoin = GetTIMECCoin();
+            pfrom->nLastBlockTIMECoin = GetTIMECoin();
     }
 
 
@@ -1988,7 +1988,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
     else if (strCommand == NetMsgType::PONG)
     {
-        int64_t pingUsecEnd = nTIMECCoinReceived;
+        int64_t pingUsecEnd = nTIMECoinReceived;
         uint64_t nonce = 0;
         size_t nAvail = vRecv.in_avail();
         bool bPingFinished = false;
@@ -2002,11 +2002,11 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                 if (nonce == pfrom->nPingNonceSent) {
                     // Matching pong received, this ping is no longer outstanding
                     bPingFinished = true;
-                    int64_t pingUsecTIMECCoin = pingUsecEnd - pfrom->nPingUsecStart;
-                    if (pingUsecTIMECCoin > 0) {
+                    int64_t pingUsecTIMECoin = pingUsecEnd - pfrom->nPingUsecStart;
+                    if (pingUsecTIMECoin > 0) {
                         // Successful ping time measurement, replace previous
-                        pfrom->nPingUsecTIMECCoin = pingUsecTIMECCoin;
-                        pfrom->nMinPingUsecTIMECCoin = std::min(pfrom->nMinPingUsecTIMECCoin, pingUsecTIMECCoin);
+                        pfrom->nPingUsecTIMECoin = pingUsecTIMECoin;
+                        pfrom->nMinPingUsecTIMECoin = std::min(pfrom->nMinPingUsecTIMECoin, pingUsecTIMECoin);
                     } else {
                         // This should never happen
                         sProblem = "Timing mishap";
@@ -2262,7 +2262,7 @@ bool ProcessMessages(CNode* pfrom, CConnman& connman, std::atomic<bool>& interru
         bool fRet = false;
         try
         {
-            fRet = ProcessMessage(pfrom, strCommand, vRecv, msg.nTIMECCoin, connman, interruptMsgProc);
+            fRet = ProcessMessage(pfrom, strCommand, vRecv, msg.nTIMECoin, connman, interruptMsgProc);
             if (interruptMsgProc)
                 return false;
             if (!pfrom->vRecvGetData.empty())
@@ -2316,7 +2316,7 @@ bool SendMessages(CNode* pto, CConnman& connman, std::atomic<bool>& interruptMsg
             // RPC ping request by user
             pingSend = true;
         }
-        if (pto->nPingNonceSent == 0 && pto->nPingUsecStart + PING_INTERVAL * 1000000 < GetTIMECCoinMicros()) {
+        if (pto->nPingNonceSent == 0 && pto->nPingUsecStart + PING_INTERVAL * 1000000 < GetTIMECoinMicros()) {
             // Ping automatically sent as a latency probe & keepalive.
             pingSend = true;
         }
@@ -2326,7 +2326,7 @@ bool SendMessages(CNode* pto, CConnman& connman, std::atomic<bool>& interruptMsg
                 GetRandBytes((unsigned char*)&nonce, sizeof(nonce));
             }
             pto->fPingQueued = false;
-            pto->nPingUsecStart = GetTIMECCoinMicros();
+            pto->nPingUsecStart = GetTIMECoinMicros();
             if (pto->nVersion > BIP0031_VERSION) {
                 pto->nPingNonceSent = nonce;
                 connman.PushMessage(pto, NetMsgType::PING, nonce);
@@ -2342,7 +2342,7 @@ bool SendMessages(CNode* pto, CConnman& connman, std::atomic<bool>& interruptMsg
             return true;
 
         // Address refresh broadcast
-        int64_t nNow = GetTIMECCoinMicros();
+        int64_t nNow = GetTIMECoinMicros();
         if (!IsInitialBlockDownload() && pto->nNextLocalAddrSend < nNow) {
             AdvertiseLocal(pto);
             pto->nNextLocalAddrSend = PoissonNextSend(nNow, AVG_LOCAL_ADDRESS_BROADCAST_INTERVAL);
@@ -2400,9 +2400,9 @@ bool SendMessages(CNode* pto, CConnman& connman, std::atomic<bool>& interruptMsg
         bool fFetch = state.fPreferredDownload || (nPreferredDownload == 0 && !pto->fClient && !pto->fOneShot); // Download if this is a nice peer, or we have no nice peers and this one might do.
         if (!state.fSyncStarted && !pto->fClient && !fImporting && !fReindex) {
             // Only actively request headers from a single peer, unless we're close to end of initial download.
-            if ((nSyncStarted == 0 && fFetch) || pindexBestHeader->GetBlockTIMECCoin() > GetAdjustedTIMECCoin() - 6 * 60 * 60) { // NOTE: was "close to today" and 24h in Bitcoin
+            if ((nSyncStarted == 0 && fFetch) || pindexBestHeader->GetBlockTIMECoin() > GetAdjustedTIMECoin() - 6 * 60 * 60) { // NOTE: was "close to today" and 24h in Bitcoin
                 state.fSyncStarted = true;
-                state.nHeadersSyncTIMECCoinout = GetTIMECCoinMicros() + HEADERS_DOWNLOAD_TIMECOUT_BASE + HEADERS_DOWNLOAD_TIMECOUT_PER_HEADER * (GetAdjustedTIMECCoin() - pindexBestHeader->GetBlockTIMECCoin())/(consensusParams.nPowTargetSpacing);
+                state.nHeadersSyncTIMECoinout = GetTIMECoinMicros() + HEADERS_DOWNLOAD_TIMECOUT_BASE + HEADERS_DOWNLOAD_TIMECOUT_PER_HEADER * (GetAdjustedTIMECoin() - pindexBestHeader->GetBlockTIMECoin())/(consensusParams.nPowTargetSpacing);
                 nSyncStarted++;
                 const CBlockIndex *pindexStart = pindexBestHeader;
                 /* If possible, start at the block preceding the currently
@@ -2419,7 +2419,7 @@ bool SendMessages(CNode* pto, CConnman& connman, std::atomic<bool>& interruptMsg
             }
         }
 
-        if (chainParams.DelayGetHeadersTIMECCoin() != 0 && pindexBestHeader->GetBlockTIMECCoin() >= GetAdjustedTIMECCoin() - chainParams.DelayGetHeadersTIMECCoin()) {
+        if (chainParams.DelayGetHeadersTIMECoin() != 0 && pindexBestHeader->GetBlockTIMECoin() >= GetAdjustedTIMECoin() - chainParams.DelayGetHeadersTIMECoin()) {
             // Headers chain has catched up enough so we can send out GETHEADER messages which were initially meant to
             // be sent directly after INV was received
             LOCK(pto->cs_inventory);
@@ -2435,7 +2435,7 @@ bool SendMessages(CNode* pto, CConnman& connman, std::atomic<bool>& interruptMsg
         // transactions become unconfirmed and spams other nodes.
         if (!fReindex && !fImporting && !IsInitialBlockDownload())
         {
-            GetMainSignals().Broadcast(nTIMECCoinBestReceived, &connman);
+            GetMainSignals().Broadcast(nTIMECoinBestReceived, &connman);
         }
 
         //
@@ -2603,7 +2603,7 @@ bool SendMessages(CNode* pto, CConnman& connman, std::atomic<bool>& interruptMsg
         }
 
         // Detect whether we're stalling
-        nNow = GetTIMECCoinMicros();
+        nNow = GetTIMECoinMicros();
         if (!pto->fDisconnect && state.nStallingSince && state.nStallingSince < nNow - 1000000 * BLOCK_STALLING_TIMECOUT) {
             // Stalling only triggers when the block download window cannot move. During normal steady state,
             // the download window should be much larger than the to-be-downloaded set of blocks, so disconnection
@@ -2620,26 +2620,26 @@ bool SendMessages(CNode* pto, CConnman& connman, std::atomic<bool>& interruptMsg
             QueuedBlock &queuedBlock = state.vBlocksInFlight.front();
             int nOtherPeersWithValidatedDownloads = nPeersWithValidatedDownloads - (state.nBlocksInFlightValidHeaders > 0);
             if (nNow > state.nDownloadingSince + consensusParams.nPowTargetSpacing * (BLOCK_DOWNLOAD_TIMECOUT_BASE + BLOCK_DOWNLOAD_TIMECOUT_PER_PEER * nOtherPeersWithValidatedDownloads)) {
-                LogPrintf("TIMECCoinout downloading block %s from peer=%d, disconnecting\n", queuedBlock.hash.ToString(), pto->id);
+                LogPrintf("TIMECoinout downloading block %s from peer=%d, disconnecting\n", queuedBlock.hash.ToString(), pto->id);
                 pto->fDisconnect = true;
             }
         }
         // Check for headers sync timeouts
-        if (state.fSyncStarted && state.nHeadersSyncTIMECCoinout < std::numeric_limits<int64_t>::max()) {
+        if (state.fSyncStarted && state.nHeadersSyncTIMECoinout < std::numeric_limits<int64_t>::max()) {
             // Detect whether this is a stalling initial-headers-sync peer
-            if (pindexBestHeader->GetBlockTIMECCoin() <= GetAdjustedTIMECCoin() - 6*60*60) { // was 24*60*60 in bitcoin
-                if (nNow > state.nHeadersSyncTIMECCoinout && nSyncStarted == 1 && (nPreferredDownload - state.fPreferredDownload >= 1)) {
+            if (pindexBestHeader->GetBlockTIMECoin() <= GetAdjustedTIMECoin() - 6*60*60) { // was 24*60*60 in bitcoin
+                if (nNow > state.nHeadersSyncTIMECoinout && nSyncStarted == 1 && (nPreferredDownload - state.fPreferredDownload >= 1)) {
                     // Disconnect a (non-whitelisted) peer if it is our only sync peer,
                     // and we have others we could be using instead.
                     // Note: If all our peers are inbound, then we won't
                     // disconnect our sync peer for stalling; we have bigger
                     // problems if we can't get any outbound peers.
                     if (!pto->fWhitelisted) {
-                        LogPrintf("TIMECCoinout downloading headers from peer=%d, disconnecting\n", pto->GetId());
+                        LogPrintf("TIMECoinout downloading headers from peer=%d, disconnecting\n", pto->GetId());
                         pto->fDisconnect = true;
                         return true;
                     } else {
-                        LogPrintf("TIMECCoinout downloading headers from whitelisted peer=%d, not disconnecting\n", pto->GetId());
+                        LogPrintf("TIMECoinout downloading headers from whitelisted peer=%d, not disconnecting\n", pto->GetId());
                         // Reset the headers sync state so that we have a
                         // chance to try downloading from a different peer.
                         // Note: this will also result in at least one more
@@ -2647,13 +2647,13 @@ bool SendMessages(CNode* pto, CConnman& connman, std::atomic<bool>& interruptMsg
                         // this peer (eventually).
                         state.fSyncStarted = false;
                         nSyncStarted--;
-                        state.nHeadersSyncTIMECCoinout = 0;
+                        state.nHeadersSyncTIMECoinout = 0;
                     }
                 }
             } else {
                 // After we've caught up once, reset the timeout so we can't trigger
                 // disconnect later.
-                state.nHeadersSyncTIMECCoinout = std::numeric_limits<int64_t>::max();
+                state.nHeadersSyncTIMECoinout = std::numeric_limits<int64_t>::max();
             }
         }
 

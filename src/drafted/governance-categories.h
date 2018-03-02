@@ -4,15 +4,15 @@
 
 	* means the category has an associated class
 	
-	CTIMECCoinNetwork: TIMEC NETWORK (ROOT)
+	CTIMECoinNetwork: TIMEC NETWORK (ROOT)
 	has:
 		vector<CNetworkVariable> vecNetworkVariables;
-		vector<CTIMECCoinProject> vecProjects;
+		vector<CTIMECoinProject> vecProjects;
 		vector<CGovernanceObject> vecProposals;
 		vector<CBudgetContract> vecContracts;
 		vector<CBudgetUsers> vecUsers;
 
-	CTIMECCoinProject:
+	CTIMECoinProject:
 	has:
 		name
 		employees

@@ -62,7 +62,7 @@ QVariant RecentRequestsTableModel::data(const QModelIndex &index, int role) cons
         switch(index.column())
         {
         case Date:
-            return GUIUtil::dateTIMECCoinStr(rec->date);
+            return GUIUtil::dateTIMECoinStr(rec->date);
         case Label:
             if(rec->recipient.label.isEmpty() && role == Qt::DisplayRole)
             {

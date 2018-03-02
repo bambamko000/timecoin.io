@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,7 +11,7 @@ CNetFulfilledRequestManager netfulfilledman;
 void CNetFulfilledRequestManager::AddFulfilledRequest(CAddress addr, std::string strRequest)
 {
     LOCK(cs_mapFulfilledRequests);
-    mapFulfilledRequests[addr][strRequest] = GetTIMECCoin() + Params().FulfilledRequestExpireTIMECCoin();
+    mapFulfilledRequests[addr][strRequest] = GetTIMECoin() + Params().FulfilledRequestExpireTIMECoin();
 }
 
 bool CNetFulfilledRequestManager::HasFulfilledRequest(CAddress addr, std::string strRequest)
@@ -21,7 +21,7 @@ bool CNetFulfilledRequestManager::HasFulfilledRequest(CAddress addr, std::string
 
     return  it != mapFulfilledRequests.end() &&
             it->second.find(strRequest) != it->second.end() &&
-            it->second[strRequest] > GetTIMECCoin();
+            it->second[strRequest] > GetTIMECoin();
 }
 
 void CNetFulfilledRequestManager::RemoveFulfilledRequest(CAddress addr, std::string strRequest)
@@ -38,7 +38,7 @@ void CNetFulfilledRequestManager::CheckAndRemove()
 {
     LOCK(cs_mapFulfilledRequests);
 
-    int64_t now = GetTIMECCoin();
+    int64_t now = GetTIMECoin();
     fulfilledreqmap_t::iterator it = mapFulfilledRequests.begin();
 
     while(it != mapFulfilledRequests.end()) {

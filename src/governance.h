@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -27,9 +27,9 @@ class CGovernanceVote;
 extern CGovernanceManager governance;
 
 struct ExpirationInfo {
-    ExpirationInfo(int64_t _nExpirationTIMECCoin, int _idFrom) : nExpirationTIMECCoin(_nExpirationTIMECCoin), idFrom(_idFrom) {}
+    ExpirationInfo(int64_t _nExpirationTIMECoin, int _idFrom) : nExpirationTIMECoin(_nExpirationTIMECoin), idFrom(_idFrom) {}
 
-    int64_t nExpirationTIMECCoin;
+    int64_t nExpirationTIMECoin;
     NodeId idFrom;
 };
 
@@ -39,7 +39,7 @@ static const int RATE_BUFFER_SIZE = 5;
 
 class CRateCheckBuffer {
 private:
-    std::vector<int64_t> vecTIMECCoinstamps;
+    std::vector<int64_t> vecTIMECoinstamps;
 
     int nDataStart;
 
@@ -49,24 +49,24 @@ private:
 
 public:
     CRateCheckBuffer()
-        : vecTIMECCoinstamps(RATE_BUFFER_SIZE),
+        : vecTIMECoinstamps(RATE_BUFFER_SIZE),
           nDataStart(0),
           nDataEnd(0),
           fBufferEmpty(true)
         {}
 
-    void AddTIMECCoinstamp(int64_t nTIMECCoinstamp)
+    void AddTIMECoinstamp(int64_t nTIMECoinstamp)
     {
         if((nDataEnd == nDataStart) && !fBufferEmpty) {
             // Buffer full, discard 1st element
             nDataStart = (nDataStart + 1) % RATE_BUFFER_SIZE;
         }
-        vecTIMECCoinstamps[nDataEnd] = nTIMECCoinstamp;
+        vecTIMECoinstamps[nDataEnd] = nTIMECoinstamp;
         nDataEnd = (nDataEnd + 1) % RATE_BUFFER_SIZE;
         fBufferEmpty = false;
     }
 
-    int64_t GetMinTIMECCoinstamp()
+    int64_t GetMinTIMECoinstamp()
     {
         int nIndex = nDataStart;
         int64_t nMin = numeric_limits<int64_t>::max();
@@ -74,15 +74,15 @@ public:
             return nMin;
         }
         do {
-            if(vecTIMECCoinstamps[nIndex] < nMin) {
-                nMin = vecTIMECCoinstamps[nIndex];
+            if(vecTIMECoinstamps[nIndex] < nMin) {
+                nMin = vecTIMECoinstamps[nIndex];
             }
             nIndex = (nIndex + 1) % RATE_BUFFER_SIZE;
         } while(nIndex != nDataEnd);
         return nMin;
     }
 
-    int64_t GetMaxTIMECCoinstamp()
+    int64_t GetMaxTIMECoinstamp()
     {
         int nIndex = nDataStart;
         int64_t nMax = 0;
@@ -90,8 +90,8 @@ public:
             return nMax;
         }
         do {
-            if(vecTIMECCoinstamps[nIndex] > nMax) {
-                nMax = vecTIMECCoinstamps[nIndex];
+            if(vecTIMECoinstamps[nIndex] > nMax) {
+                nMax = vecTIMECoinstamps[nIndex];
             }
             nIndex = (nIndex + 1) % RATE_BUFFER_SIZE;
         } while(nIndex != nDataEnd);
@@ -120,8 +120,8 @@ public:
         if(nCount < RATE_BUFFER_SIZE) {
             return 0.0;
         }
-        int64_t nMin = GetMinTIMECCoinstamp();
-        int64_t nMax = GetMaxTIMECCoinstamp();
+        int64_t nMin = GetMinTIMECoinstamp();
+        int64_t nMax = GetMaxTIMECoinstamp();
         if(nMin == nMax) {
             // multiple objects with the same timestamp => infinite rate
             return 1.0e10;
@@ -134,7 +134,7 @@ public:
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
     {
-        READWRITE(vecTIMECCoinstamps);
+        READWRITE(vecTIMECoinstamps);
         READWRITE(nDataStart);
         READWRITE(nDataEnd);
         READWRITE(fBufferEmpty);
@@ -226,7 +226,7 @@ private:
     static const int MAX_TIMEC_FUTURE_DEVIATION;
     static const int RELIABLE_PROPAGATION_TIMEC;
 
-    int64_t nTIMECCoinLastDiff;
+    int64_t nTIMECoinLastDiff;
 
     // keep track of current block height
     int nCachedBlockHeight;
@@ -249,7 +249,7 @@ private:
 
     uint256 nHashWatchdogCurrent;
 
-    int64_t nTIMECCoinWatchdogCurrent;
+    int64_t nTIMECoinWatchdogCurrent;
 
     object_ref_cache_t mapVoteToObject;
 
@@ -309,7 +309,7 @@ public:
 
     std::vector<CGovernanceVote> GetMatchingVotes(const uint256& nParentHash);
     std::vector<CGovernanceVote> GetCurrentVotes(const uint256& nParentHash, const COutPoint& mnCollateralOutpointFilter);
-    std::vector<CGovernanceObject*> GetAllNewerThan(int64_t nMoreThanTIMECCoin);
+    std::vector<CGovernanceObject*> GetAllNewerThan(int64_t nMoreThanTIMECoin);
 
     bool IsBudgetPaymentBlock(int nBlockHeight);
     void AddGovernanceObject(CGovernanceObject& govobj, CConnman& connman, CNode* pfrom = NULL);
@@ -329,7 +329,7 @@ public:
         mapErasedGovernanceObjects.clear();
         mapWatchdogObjects.clear();
         nHashWatchdogCurrent = uint256();
-        nTIMECCoinWatchdogCurrent = 0;
+        nTIMECoinWatchdogCurrent = 0;
         mapVoteToObject.Clear();
         mapInvalidVotes.Clear();
         mapOrphanVotes.Clear();
@@ -358,7 +358,7 @@ public:
         READWRITE(mapObjects);
         READWRITE(mapWatchdogObjects);
         READWRITE(nHashWatchdogCurrent);
-        READWRITE(nTIMECCoinWatchdogCurrent);
+        READWRITE(nTIMECoinWatchdogCurrent);
         READWRITE(mapLastMasternodeObject);
         if(ser_action.ForRead() && (strVersion != SERIALIZATION_VERSION_STRING)) {
             Clear();
@@ -367,8 +367,8 @@ public:
     }
 
     void UpdatedBlockTip(const CBlockIndex *pindex, CConnman& connman);
-    int64_t GetLastDiffTIMECCoin() { return nTIMECCoinLastDiff; }
-    void UpdateLastDiffTIMECCoin(int64_t nTIMECCoinIn) { nTIMECCoinLastDiff = nTIMECCoinIn; }
+    int64_t GetLastDiffTIMECoin() { return nTIMECoinLastDiff; }
+    void UpdateLastDiffTIMECoin(int64_t nTIMECoinIn) { nTIMECoinLastDiff = nTIMECoinIn; }
 
     int GetCachedBlockHeight() { return nCachedBlockHeight; }
 
@@ -433,7 +433,7 @@ private:
 
     void AddOrphanVote(const CGovernanceVote& vote)
     {
-        mapOrphanVotes.Insert(vote.GetHash(), vote_time_pair_t(vote, GetAdjustedTIMECCoin() + GOVERNANCE_ORPHAN_EXPIRATION_TIMEC));
+        mapOrphanVotes.Insert(vote.GetHash(), vote_time_pair_t(vote, GetAdjustedTIMECoin() + GOVERNANCE_ORPHAN_EXPIRATION_TIMEC));
     }
 
     bool ProcessVote(CNode* pfrom, const CGovernanceVote& vote, CGovernanceException& exception, CConnman& connman);

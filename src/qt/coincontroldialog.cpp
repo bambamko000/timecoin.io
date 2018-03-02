@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -781,9 +781,9 @@ void CoinControlDialog::updateView()
             itemOutput->setText(COLUMN_AMOUNT_INT64, strPad(QString::number(out.tx->vout[out.i].nValue), 15, " ")); // padding so that sorting works correctly
 
             // date
-            itemOutput->setText(COLUMN_DATE, GUIUtil::dateTIMECCoinStr(out.tx->GetTxTIMECCoin()));
-            itemOutput->setToolTip(COLUMN_DATE, GUIUtil::dateTIMECCoinStr(out.tx->GetTxTIMECCoin()));
-            itemOutput->setText(COLUMN_DATE_INT64, strPad(QString::number(out.tx->GetTxTIMECCoin()), 20, " "));
+            itemOutput->setText(COLUMN_DATE, GUIUtil::dateTIMECoinStr(out.tx->GetTxTIMECoin()));
+            itemOutput->setToolTip(COLUMN_DATE, GUIUtil::dateTIMECoinStr(out.tx->GetTxTIMECoin()));
+            itemOutput->setText(COLUMN_DATE_INT64, strPad(QString::number(out.tx->GetTxTIMECoin()), 20, " "));
 
 
             // PrivateSend rounds

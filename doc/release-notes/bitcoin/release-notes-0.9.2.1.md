@@ -94,7 +94,7 @@ Wallet:
 
 - Make GetAvailableCredit run GetHash() only once per transaction (performance improvement)
 - Lower paytxfee warning threshold from 0.25 BTC to 0.01 BTC
-- Fix importwallet nTIMECCoinFirstKey (trigger necessary rescans)
+- Fix importwallet nTIMECoinFirstKey (trigger necessary rescans)
 - Log BerkeleyDB version at startup
 - CWallet init fix
 
@@ -175,7 +175,7 @@ Thanks to everyone who contributed to this release:
 - jtimon
 - Kamil Domanski
 - langerhans
-- Luke TIMECCoinjr
+- Luke TIMECoinjr
 - Manuel Araoz
 - Mark Friedenbach
 - Matt Corallo

@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -104,7 +104,7 @@ namespace boost {
 
 using namespace std;
 
-//TIMECCoin only features
+//TIMECoin only features
 bool fMasterNode = false;
 bool fLiteMode = false;
 /**
@@ -127,8 +127,8 @@ bool fPrintToDebugLog = true;
 bool fDaemon = false;
 bool fServer = false;
 string strMiscWarning;
-bool fLogTIMECCoinstamps = DEFAULT_LOGTIMECSTAMPS;
-bool fLogTIMECCoinMicros = DEFAULT_LOGTIMECMICROS;
+bool fLogTIMECoinstamps = DEFAULT_LOGTIMECSTAMPS;
+bool fLogTIMECoinMicros = DEFAULT_LOGTIMECMICROS;
 bool fLogThreadNames = DEFAULT_LOGTHREADNAMES;
 bool fLogIPs = DEFAULT_LOGIPS;
 volatile bool fReopenDebugLog = false;
@@ -271,7 +271,7 @@ bool LogAcceptCategory(const char* category)
             const vector<string>& categories = mapMultiArgs["-debug"];
             ptrCategory.reset(new set<string>(categories.begin(), categories.end()));
             // thread_specific_ptr automatically deletes the set when the thread ends.
-            // "time" is a composite category enabling all TIMECCoin-related debug output
+            // "time" is a composite category enabling all TIMECoin-related debug output
             if(ptrCategory->count(string("time"))) {
                 ptrCategory->insert(string("privatesend"));
                 ptrCategory->insert(string("instantsend"));
@@ -298,18 +298,18 @@ bool LogAcceptCategory(const char* category)
  * suppress printing of the timestamp when multiple calls are made that don't
  * end in a newline. Initialize it to true, and hold/manage it, in the calling context.
  */
-static std::string LogTIMECCoinstampStr(const std::string &str, bool *fStartedNewLine)
+static std::string LogTIMECoinstampStr(const std::string &str, bool *fStartedNewLine)
 {
     string strStamped;
 
-    if (!fLogTIMECCoinstamps)
+    if (!fLogTIMECoinstamps)
         return str;
 
     if (*fStartedNewLine) {
-        int64_t nTIMECCoinMicros = GetLogTIMECCoinMicros();
-        strStamped = DateTIMECCoinStrFormat("%Y-%m-%d %H:%M:%S", nTIMECCoinMicros/1000000);
-        if (fLogTIMECCoinMicros)
-            strStamped += strprintf(".%06d", nTIMECCoinMicros%1000000);
+        int64_t nTIMECoinMicros = GetLogTIMECoinMicros();
+        strStamped = DateTIMECoinStrFormat("%Y-%m-%d %H:%M:%S", nTIMECoinMicros/1000000);
+        if (fLogTIMECoinMicros)
+            strStamped += strprintf(".%06d", nTIMECoinMicros%1000000);
         strStamped += ' ' + str;
     } else
         strStamped = str;
@@ -345,7 +345,7 @@ int LogPrintStr(const std::string &str)
     static bool fStartedNewLine = true;
 
     std::string strThreadLogged = LogThreadNameStr(str, &fStartedNewLine);
-    std::string strTIMECCoinstamped = LogTIMECCoinstampStr(strThreadLogged, &fStartedNewLine);
+    std::string strTIMECoinstamped = LogTIMECoinstampStr(strThreadLogged, &fStartedNewLine);
 
     if (!str.empty() && str[str.size()-1] == '\n')
         fStartedNewLine = true;
@@ -355,7 +355,7 @@ int LogPrintStr(const std::string &str)
     if (fPrintToConsole)
     {
         // print to console
-        ret = fwrite(strTIMECCoinstamped.data(), 1, strTIMECCoinstamped.size(), stdout);
+        ret = fwrite(strTIMECoinstamped.data(), 1, strTIMECoinstamped.size(), stdout);
         fflush(stdout);
     }
     else if (fPrintToDebugLog)
@@ -366,8 +366,8 @@ int LogPrintStr(const std::string &str)
         // buffer if we haven't opened the log yet
         if (fileout == NULL) {
             assert(vMsgsBeforeOpenLog);
-            ret = strTIMECCoinstamped.length();
-            vMsgsBeforeOpenLog->push_back(strTIMECCoinstamped);
+            ret = strTIMECoinstamped.length();
+            vMsgsBeforeOpenLog->push_back(strTIMECoinstamped);
         }
         else
         {
@@ -379,7 +379,7 @@ int LogPrintStr(const std::string &str)
                     setbuf(fileout, NULL); // unbuffered
             }
 
-            ret = FileWriteStr(strTIMECCoinstamped, fileout);
+            ret = FileWriteStr(strTIMECoinstamped, fileout);
         }
     }
     return ret;
@@ -516,13 +516,13 @@ void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
 boost::filesystem::path GetDefaultDataDir()
 {
     namespace fs = boost::filesystem;
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\TIMECCoinCore
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\TIMECCoinCore
-    // Mac: ~/Library/Application Support/TIMECCoinCore
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\TIMECoinCore
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\TIMECoinCore
+    // Mac: ~/Library/Application Support/TIMECoinCore
     // Unix: ~/.timecore
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "TIMECCoinCore";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "TIMECoinCore";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -532,7 +532,7 @@ boost::filesystem::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/TIMECCoinCore";
+    return pathRet / "Library/Application Support/TIMECoinCore";
 #else
     // Unix
     return pathRet / ".timecore";

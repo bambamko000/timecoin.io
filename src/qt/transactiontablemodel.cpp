@@ -304,7 +304,7 @@ QString TransactionTableModel::formatTxStatus(const TransactionRecord *wtx) cons
         status = tr("Open for %n more block(s)","",wtx->status.open_for);
         break;
     case TransactionStatus::OpenUntilDate:
-        status = tr("Open until %1").arg(GUIUtil::dateTIMECCoinStr(wtx->status.open_for));
+        status = tr("Open until %1").arg(GUIUtil::dateTIMECoinStr(wtx->status.open_for));
         break;
     case TransactionStatus::Offline:
         status = tr("Offline");
@@ -342,7 +342,7 @@ QString TransactionTableModel::formatTxDate(const TransactionRecord *wtx) const
 {
     if(wtx->time)
     {
-        return GUIUtil::dateTIMECCoinStr(wtx->time);
+        return GUIUtil::dateTIMECoinStr(wtx->time);
     }
     return QString();
 }

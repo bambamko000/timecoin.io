@@ -27,14 +27,14 @@ typedef std::map<int, uint256> MapCheckpoints;
 
 struct CCheckpointData {
     MapCheckpoints mapCheckpoints;
-    int64_t nTIMECCoinLastCheckpoint;
+    int64_t nTIMECoinLastCheckpoint;
     int64_t nTransactionsLastCheckpoint;
     double fTransactionsPerDay;
 };
 
 /**
  * CChainParams defines various tweakable parameters of a given instance of the
- * TIMECCoin system. There are three: the main network on which people trade goods
+ * TIMECoin system. There are three: the main network on which people trade goods
  * and services, the public test network which gets reset from time to time and
  * a regression test mode which is intended for private networks only. It has
  * minimal difficulty to ensure that blocks can be found instantly.
@@ -65,7 +65,7 @@ public:
     /** Policy: Filter transactions that do not match well-defined patterns */
     bool RequireStandard() const { return fRequireStandard; }
     int64_t MaxTipAge() const { return nMaxTipAge; }
-    int64_t DelayGetHeadersTIMECCoin() const { return nDelayGetHeadersTIMECCoin; }
+    int64_t DelayGetHeadersTIMECoin() const { return nDelayGetHeadersTIMECoin; }
     uint64_t PruneAfterHeight() const { return nPruneAfterHeight; }
     /** Make miner stop after a block is found. In RPC, don't return until nGenProcLimit blocks are generated */
     bool MineBlocksOnDemand() const { return fMineBlocksOnDemand; }
@@ -79,7 +79,7 @@ public:
     const std::vector<SeedSpec6>& FixedSeeds() const { return vFixedSeeds; }
     const CCheckpointData& Checkpoints() const { return checkpointData; }
     int PoolMaxTransactions() const { return nPoolMaxTransactions; }
-    int FulfilledRequestExpireTIMECCoin() const { return nFulfilledRequestExpireTIMECCoin; }
+    int FulfilledRequestExpireTIMECoin() const { return nFulfilledRequestExpireTIMECoin; }
     std::string SporkPubKey() const { return strSporkPubKey; }
 protected:
     CChainParams() {}
@@ -90,7 +90,7 @@ protected:
     std::vector<unsigned char> vAlertPubKey;
     int nDefaultPort;
     long nMaxTipAge;
-    int64_t nDelayGetHeadersTIMECCoin;
+    int64_t nDelayGetHeadersTIMECoin;
     uint64_t nPruneAfterHeight;
     std::vector<CDNSSeedData> vSeeds;
     std::vector<unsigned char> base58Prefixes[MAX_BASE58_TYPES];
@@ -105,7 +105,7 @@ protected:
     bool fTestnetToBeDeprecatedFieldRPC;
     CCheckpointData checkpointData;
     int nPoolMaxTransactions;
-    int nFulfilledRequestExpireTIMECCoin;
+    int nFulfilledRequestExpireTIMECoin;
     std::string strSporkPubKey;
     std::string strMasternodePaymentsPubKey;
 };

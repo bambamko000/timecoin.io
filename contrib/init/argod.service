@@ -1,5 +1,5 @@
 [Unit]
-Description=TIMECCoin's distributed currency daemon
+Description=TIMECoin's distributed currency daemon
 After=network.target
 
 [Service]
@@ -13,8 +13,8 @@ ExecStart=/usr/bin/timed -daemon -pid=/var/lib/timed/timed.pid \
 
 Restart=always
 PrivateTmp=true
-TIMECCoinoutStopSec=60s
-TIMECCoinoutStartSec=2s
+TIMECoinoutStopSec=60s
+TIMECoinoutStartSec=2s
 StartLimitInterval=120s
 StartLimitBurst=5
 

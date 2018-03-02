@@ -23,10 +23,10 @@ static const char* WWW_AUTH_HEADER_DATA = "Basic realm=\"jsonrpc\"";
 /** Simple one-shot callback timer to be used by the RPC mechanism to e.g.
  * re-lock the wellet.
  */
-class HTTPRPCTIMECCoinr : public RPCTIMECCoinrBase
+class HTTPRPCTIMECoinr : public RPCTIMECoinrBase
 {
 public:
-    HTTPRPCTIMECCoinr(struct event_base* eventBase, boost::function<void(void)>& func, int64_t millis) :
+    HTTPRPCTIMECoinr(struct event_base* eventBase, boost::function<void(void)>& func, int64_t millis) :
         ev(eventBase, false, func)
     {
         struct timeval tv;
@@ -38,19 +38,19 @@ private:
     HTTPEvent ev;
 };
 
-class HTTPRPCTIMECCoinrInterface : public RPCTIMECCoinrInterface
+class HTTPRPCTIMECoinrInterface : public RPCTIMECoinrInterface
 {
 public:
-    HTTPRPCTIMECCoinrInterface(struct event_base* base) : base(base)
+    HTTPRPCTIMECoinrInterface(struct event_base* base) : base(base)
     {
     }
     const char* Name()
     {
         return "HTTP";
     }
-    RPCTIMECCoinrBase* NewTIMECCoinr(boost::function<void(void)>& func, int64_t millis)
+    RPCTIMECoinrBase* NewTIMECoinr(boost::function<void(void)>& func, int64_t millis)
     {
-        return new HTTPRPCTIMECCoinr(base, func, millis);
+        return new HTTPRPCTIMECoinr(base, func, millis);
     }
 private:
     struct event_base* base;
@@ -60,7 +60,7 @@ private:
 /* Pre-base64-encoded authentication token */
 static std::string strRPCUserColonPass;
 /* Stored RPC timer interface (for unregistration) */
-static HTTPRPCTIMECCoinrInterface* httpRPCTIMECCoinrInterface = 0;
+static HTTPRPCTIMECoinrInterface* httpRPCTIMECoinrInterface = 0;
 
 static void JSONErrorReply(HTTPRequest* req, const UniValue& objError, const UniValue& id)
 {
@@ -230,8 +230,8 @@ bool StartHTTPRPC()
     RegisterHTTPHandler("/", true, HTTPReq_JSONRPC);
 
     assert(EventBase());
-    httpRPCTIMECCoinrInterface = new HTTPRPCTIMECCoinrInterface(EventBase());
-    RPCRegisterTIMECCoinrInterface(httpRPCTIMECCoinrInterface);
+    httpRPCTIMECoinrInterface = new HTTPRPCTIMECoinrInterface(EventBase());
+    RPCRegisterTIMECoinrInterface(httpRPCTIMECoinrInterface);
     return true;
 }
 
@@ -244,9 +244,9 @@ void StopHTTPRPC()
 {
     LogPrint("rpc", "Stopping HTTP RPC server\n");
     UnregisterHTTPHandler("/", true);
-    if (httpRPCTIMECCoinrInterface) {
-        RPCUnregisterTIMECCoinrInterface(httpRPCTIMECCoinrInterface);
-        delete httpRPCTIMECCoinrInterface;
-        httpRPCTIMECCoinrInterface = 0;
+    if (httpRPCTIMECoinrInterface) {
+        RPCUnregisterTIMECoinrInterface(httpRPCTIMECoinrInterface);
+        delete httpRPCTIMECoinrInterface;
+        httpRPCTIMECoinrInterface = 0;
     }
 }

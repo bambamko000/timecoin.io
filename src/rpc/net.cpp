@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -91,7 +91,7 @@ UniValue getpeerinfo(const UniValue& params, bool fHelp)
             "    \"minping\": n,              (numeric) minimum observed ping time (if any at all)\n"
             "    \"pingwait\": n,             (numeric) ping wait (if non-zero)\n"
             "    \"version\": v,              (numeric) The peer version, such as 7001\n"
-            "    \"subver\": \"/TIMECCoin Core:x.x.x/\",  (string) The string version\n"
+            "    \"subver\": \"/TIMECoin Core:x.x.x/\",  (string) The string version\n"
             "    \"inbound\": true|false,     (boolean) Inbound (true) or Outbound (false)\n"
             "    \"startingheight\": n,       (numeric) The starting height (block) of the peer\n"
             "    \"banscore\": n,             (numeric) The ban score\n"
@@ -139,10 +139,10 @@ UniValue getpeerinfo(const UniValue& params, bool fHelp)
         obj.push_back(Pair("lastrecv", stats.nLastRecv));
         obj.push_back(Pair("bytessent", stats.nSendBytes));
         obj.push_back(Pair("bytesrecv", stats.nRecvBytes));
-        obj.push_back(Pair("conntime", stats.nTIMECCoinConnected));
-        obj.push_back(Pair("timeoffset", stats.nTIMECCoinOffset));
-        if (stats.dPingTIMECCoin > 0.0)
-            obj.push_back(Pair("pingtime", stats.dPingTIMECCoin));
+        obj.push_back(Pair("conntime", stats.nTIMECoinConnected));
+        obj.push_back(Pair("timeoffset", stats.nTIMECoinOffset));
+        if (stats.dPingTIMECoin > 0.0)
+            obj.push_back(Pair("pingtime", stats.dPingTIMECoin));
         if (stats.dMinPing < std::numeric_limits<int64_t>::max()/1e6)
             obj.push_back(Pair("minping", stats.dMinPing));
         if (stats.dPingWait > 0.0)
@@ -355,15 +355,15 @@ UniValue getnettotals(const UniValue& params, bool fHelp)
     UniValue obj(UniValue::VOBJ);
     obj.push_back(Pair("totalbytesrecv", g_connman->GetTotalBytesRecv()));
     obj.push_back(Pair("totalbytessent", g_connman->GetTotalBytesSent()));
-    obj.push_back(Pair("timemillis", GetTIMECCoinMillis()));
+    obj.push_back(Pair("timemillis", GetTIMECoinMillis()));
 
     UniValue outboundLimit(UniValue::VOBJ);
-    outboundLimit.push_back(Pair("timeframe", g_connman->GetMaxOutboundTIMECCoinframe()));
+    outboundLimit.push_back(Pair("timeframe", g_connman->GetMaxOutboundTIMECoinframe()));
     outboundLimit.push_back(Pair("target", g_connman->GetMaxOutboundTarget()));
     outboundLimit.push_back(Pair("target_reached", g_connman->OutboundTargetReached(false)));
     outboundLimit.push_back(Pair("serve_historical_blocks", !g_connman->OutboundTargetReached(true)));
     outboundLimit.push_back(Pair("bytes_left_in_cycle", g_connman->GetOutboundTargetBytesLeft()));
-    outboundLimit.push_back(Pair("time_left_in_cycle", g_connman->GetMaxOutboundTIMECCoinLeftInCycle()));
+    outboundLimit.push_back(Pair("time_left_in_cycle", g_connman->GetMaxOutboundTIMECoinLeftInCycle()));
     obj.push_back(Pair("uploadtarget", outboundLimit));
     return obj;
 }
@@ -398,7 +398,7 @@ UniValue getnetworkinfo(const UniValue& params, bool fHelp)
             "\nResult:\n"
             "{\n"
             "  \"version\": xxxxx,                      (numeric) the server version\n"
-            "  \"subversion\": \"/TIMECCoin Core:x.x.x/\",     (string) the server subversion string\n"
+            "  \"subversion\": \"/TIMECoin Core:x.x.x/\",     (string) the server subversion string\n"
             "  \"protocolversion\": xxxxx,              (numeric) the protocol version\n"
             "  \"localservices\": \"xxxxxxxxxxxxxxxx\", (string) the services we offer to the network\n"
             "  \"localrelay\": true|false,              (bool) true if transaction relay is requested from peers\n"
@@ -438,7 +438,7 @@ UniValue getnetworkinfo(const UniValue& params, bool fHelp)
     if(g_connman)
         obj.push_back(Pair("localservices", strprintf("%016x", g_connman->GetLocalServices())));
     obj.push_back(Pair("localrelay",     fRelayTxes));
-    obj.push_back(Pair("timeoffset",    GetTIMECCoinOffset()));
+    obj.push_back(Pair("timeoffset",    GetTIMECoinOffset()));
     if (g_connman) {
         obj.push_back(Pair("networkactive", g_connman->GetNetworkActive()));
         obj.push_back(Pair("connections",   (int)g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL)));
@@ -508,15 +508,15 @@ UniValue setban(const UniValue& params, bool fHelp)
         if (isSubnet ? g_connman->IsBanned(subNet) : g_connman->IsBanned(netAddr))
             throw JSONRPCError(RPC_CLIENT_NODE_ALREADY_ADDED, "Error: IP/Subnet already banned");
 
-        int64_t banTIMECCoin = 0; //use standard bantime if not specified
+        int64_t banTIMECoin = 0; //use standard bantime if not specified
         if (params.size() >= 3 && !params[2].isNull())
-            banTIMECCoin = params[2].get_int64();
+            banTIMECoin = params[2].get_int64();
 
         bool absolute = false;
         if (params.size() == 4 && params[3].isTrue())
             absolute = true;
 
-        isSubnet ? g_connman->Ban(subNet, BanReasonManuallyAdded, banTIMECCoin, absolute) : g_connman->Ban(netAddr, BanReasonManuallyAdded, banTIMECCoin, absolute);
+        isSubnet ? g_connman->Ban(subNet, BanReasonManuallyAdded, banTIMECoin, absolute) : g_connman->Ban(netAddr, BanReasonManuallyAdded, banTIMECoin, absolute);
     }
     else if(strCommand == "remove")
     {
@@ -550,7 +550,7 @@ UniValue listbanned(const UniValue& params, bool fHelp)
         UniValue rec(UniValue::VOBJ);
         rec.push_back(Pair("address", (*it).first.ToString()));
         rec.push_back(Pair("banned_until", banEntry.nBanUntil));
-        rec.push_back(Pair("ban_created", banEntry.nCreateTIMECCoin));
+        rec.push_back(Pair("ban_created", banEntry.nCreateTIMECoin));
         rec.push_back(Pair("ban_reason", banEntry.banReasonToString()));
 
         bannedAddresses.push_back(rec);

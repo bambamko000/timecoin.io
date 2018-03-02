@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -140,7 +140,7 @@ public:
     /// Passively run mixing in the background according to the configuration in settings
     bool DoAutomaticDenominating(CConnman& connman, bool fDryRun=false);
 
-    void CheckTIMECCoinout();
+    void CheckTIMECoinout();
 
     void UpdatedBlockTip(const CBlockIndex *pindex);
 };

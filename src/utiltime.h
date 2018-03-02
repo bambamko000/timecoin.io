@@ -10,8 +10,8 @@
 #include <string>
 
 /**
- * GetTIMECCoinMicros() and GetTIMECCoinMillis() both return the system time, but in
- * different units. GetTIMECCoin() returns the sytem time in seconds, but also
+ * GetTIMECoinMicros() and GetTIMECoinMillis() both return the system time, but in
+ * different units. GetTIMECoin() returns the sytem time in seconds, but also
  * supports mocktime, where the time can be specified by the user, eg for
  * testing (eg with the setmocktime rpc, or -mocktime argument).
  *
@@ -19,15 +19,15 @@
  * compare numbers with different units, or compare a mocktime to system time).
  */
 
-int64_t GetTIMECCoin();
-int64_t GetTIMECCoinMillis();
-int64_t GetTIMECCoinMicros();
-int64_t GetSystemTIMECCoinInSeconds(); // Like GetTIMECCoin(), but not mockable
-int64_t GetLogTIMECCoinMicros();
-void SetMockTIMECCoin(int64_t nMockTIMECCoinIn);
+int64_t GetTIMECoin();
+int64_t GetTIMECoinMillis();
+int64_t GetTIMECoinMicros();
+int64_t GetSystemTIMECoinInSeconds(); // Like GetTIMECoin(), but not mockable
+int64_t GetLogTIMECoinMicros();
+void SetMockTIMECoin(int64_t nMockTIMECoinIn);
 void MilliSleep(int64_t n);
 
-std::string DateTIMECCoinStrFormat(const char* pszFormat, int64_t nTIMECCoin);
-std::string DurationToDHMS(int64_t nDurationTIMECCoin);
+std::string DateTIMECoinStrFormat(const char* pszFormat, int64_t nTIMECoin);
+std::string DurationToDHMS(int64_t nDurationTIMECoin);
 
 #endif // BITCOIN_UTILTIMEC_H

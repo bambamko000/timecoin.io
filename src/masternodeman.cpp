@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -62,7 +62,7 @@ CMasternodeMan::CMasternodeMan()
   fMasternodesAdded(false),
   fMasternodesRemoved(false),
   vecDirtyGovernanceObjectHashes(),
-  nLastWatchdogVoteTIMECCoin(0),
+  nLastWatchdogVoteTIMECoin(0),
   mapSeenMasternodeBroadcast(),
   mapSeenMasternodePing(),
   nDsqCount(0)
@@ -90,7 +90,7 @@ void CMasternodeMan::AskForMN(CNode* pnode, const COutPoint& outpoint, CConnman&
     if (it1 != mWeAskedForMasternodeListEntry.end()) {
         std::map<CNetAddr, int64_t>::iterator it2 = it1->second.find(pnode->addr);
         if (it2 != it1->second.end()) {
-            if (GetTIMECCoin() < it2->second) {
+            if (GetTIMECoin() < it2->second) {
                 // we've asked recently, should not repeat too often or we could get banned
                 return;
             }
@@ -104,7 +104,7 @@ void CMasternodeMan::AskForMN(CNode* pnode, const COutPoint& outpoint, CConnman&
         // we never asked any node for this outpoint
         LogPrintf("CMasternodeMan::AskForMN -- Asking peer %s for missing masternode entry for the first time: %s\n", pnode->addr.ToString(), outpoint.ToStringShort());
     }
-    mWeAskedForMasternodeListEntry[outpoint][pnode->addr] = GetTIMECCoin() + DSEG_UPDATE_SECONDS;
+    mWeAskedForMasternodeListEntry[outpoint][pnode->addr] = GetTIMECoin() + DSEG_UPDATE_SECONDS;
 
     connman.PushMessage(pnode, NetMsgType::DSEG, CTxIn(outpoint));
 }
@@ -151,7 +151,7 @@ void CMasternodeMan::Check()
 {
     LOCK(cs);
 
-    LogPrint("masternode", "CMasternodeMan::Check -- nLastWatchdogVoteTIMECCoin=%d, IsWatchdogActive()=%d\n", nLastWatchdogVoteTIMECCoin, IsWatchdogActive());
+    LogPrint("masternode", "CMasternodeMan::Check -- nLastWatchdogVoteTIMECoin=%d, IsWatchdogActive()=%d\n", nLastWatchdogVoteTIMECoin, IsWatchdogActive());
 
     for (auto& mnpair : mapMasternodes) {
         mnpair.second.Check();
@@ -220,7 +220,7 @@ void CMasternodeMan::CheckAndRemove(CConnman& connman)
                         nAskForMnbRecovery--;
                     }
                     // wait for mnb recovery replies for MNB_RECOVERY_WAIT_SECONDS seconds
-                    mMnbRecoveryRequests[hash] = std::make_pair(GetTIMECCoin() + MNB_RECOVERY_WAIT_SECONDS, setRequested);
+                    mMnbRecoveryRequests[hash] = std::make_pair(GetTIMECoin() + MNB_RECOVERY_WAIT_SECONDS, setRequested);
                 }
                 ++it;
             }
@@ -230,7 +230,7 @@ void CMasternodeMan::CheckAndRemove(CConnman& connman)
         LogPrint("masternode", "CMasternodeMan::CheckAndRemove -- mMnbRecoveryGoodReplies size=%d\n", (int)mMnbRecoveryGoodReplies.size());
         std::map<uint256, std::vector<CMasternodeBroadcast> >::iterator itMnbReplies = mMnbRecoveryGoodReplies.begin();
         while(itMnbReplies != mMnbRecoveryGoodReplies.end()){
-            if(mMnbRecoveryRequests[itMnbReplies->first].first < GetTIMECCoin()) {
+            if(mMnbRecoveryRequests[itMnbReplies->first].first < GetTIMECoin()) {
                 // all nodes we asked should have replied now
                 if(itMnbReplies->second.size() >= MNB_RECOVERY_QUORUM_REQUIRED) {
                     // majority of nodes we asked agrees that this mn doesn't require new mnb, reprocess one of new mnbs
@@ -255,7 +255,7 @@ void CMasternodeMan::CheckAndRemove(CConnman& connman)
         while(itMnbRequest != mMnbRecoveryRequests.end()){
             // Allow this mnb to be re-verified again after MNB_RECOVERY_RETRY_SECONDS seconds
             // if mn is still in MASTERNODE_NEW_START_REQUIRED state.
-            if(GetTIMECCoin() - itMnbRequest->second.first > MNB_RECOVERY_RETRY_SECONDS) {
+            if(GetTIMECoin() - itMnbRequest->second.first > MNB_RECOVERY_RETRY_SECONDS) {
                 mMnbRecoveryRequests.erase(itMnbRequest++);
             } else {
                 ++itMnbRequest;
@@ -265,7 +265,7 @@ void CMasternodeMan::CheckAndRemove(CConnman& connman)
         // check who's asked for the Masternode list
         std::map<CNetAddr, int64_t>::iterator it1 = mAskedUsForMasternodeList.begin();
         while(it1 != mAskedUsForMasternodeList.end()){
-            if((*it1).second < GetTIMECCoin()) {
+            if((*it1).second < GetTIMECoin()) {
                 mAskedUsForMasternodeList.erase(it1++);
             } else {
                 ++it1;
@@ -275,7 +275,7 @@ void CMasternodeMan::CheckAndRemove(CConnman& connman)
         // check who we asked for the Masternode list
         it1 = mWeAskedForMasternodeList.begin();
         while(it1 != mWeAskedForMasternodeList.end()){
-            if((*it1).second < GetTIMECCoin()){
+            if((*it1).second < GetTIMECoin()){
                 mWeAskedForMasternodeList.erase(it1++);
             } else {
                 ++it1;
@@ -287,7 +287,7 @@ void CMasternodeMan::CheckAndRemove(CConnman& connman)
         while(it2 != mWeAskedForMasternodeListEntry.end()){
             std::map<CNetAddr, int64_t>::iterator it3 = it2->second.begin();
             while(it3 != it2->second.end()){
-                if(it3->second < GetTIMECCoin()){
+                if(it3->second < GetTIMECoin()){
                     it2->second.erase(it3++);
                 } else {
                     ++it3;
@@ -351,7 +351,7 @@ void CMasternodeMan::Clear()
     mapSeenMasternodeBroadcast.clear();
     mapSeenMasternodePing.clear();
     nDsqCount = 0;
-    nLastWatchdogVoteTIMECCoin = 0;
+    nLastWatchdogVoteTIMECoin = 0;
 }
 
 int CMasternodeMan::CountMasternodes(int nProtocolVersion)
@@ -406,7 +406,7 @@ void CMasternodeMan::DsegUpdate(CNode* pnode, CConnman& connman)
     if(Params().NetworkIDString() == CBaseChainParams::MAIN) {
         if(!(pnode->addr.IsRFC1918() || pnode->addr.IsLocal())) {
             std::map<CNetAddr, int64_t>::iterator it = mWeAskedForMasternodeList.find(pnode->addr);
-            if(it != mWeAskedForMasternodeList.end() && GetTIMECCoin() < (*it).second) {
+            if(it != mWeAskedForMasternodeList.end() && GetTIMECoin() < (*it).second) {
                 LogPrintf("CMasternodeMan::DsegUpdate -- we already asked %s for the list; skipping...\n", pnode->addr.ToString());
                 return;
             }
@@ -414,7 +414,7 @@ void CMasternodeMan::DsegUpdate(CNode* pnode, CConnman& connman)
     }
 
     connman.PushMessage(pnode, NetMsgType::DSEG, CTxIn());
-    int64_t askAgain = GetTIMECCoin() + DSEG_UPDATE_SECONDS;
+    int64_t askAgain = GetTIMECoin() + DSEG_UPDATE_SECONDS;
     mWeAskedForMasternodeList[pnode->addr] = askAgain;
 
     LogPrint("masternode", "CMasternodeMan::DsegUpdate -- asked %s for the list\n", pnode->addr.ToString());
@@ -485,12 +485,12 @@ bool CMasternodeMan::Has(const COutPoint& outpoint)
 //
 // Deterministically select the oldest/best masternode to pay on the network
 //
-bool CMasternodeMan::GetNextMasternodeInQueueForPayment(bool fFilterSigTIMECCoin, int& nCountRet, masternode_info_t& mnInfoRet)
+bool CMasternodeMan::GetNextMasternodeInQueueForPayment(bool fFilterSigTIMECoin, int& nCountRet, masternode_info_t& mnInfoRet)
 {
-    return GetNextMasternodeInQueueForPayment(nCachedBlockHeight, fFilterSigTIMECCoin, nCountRet, mnInfoRet);
+    return GetNextMasternodeInQueueForPayment(nCachedBlockHeight, fFilterSigTIMECoin, nCountRet, mnInfoRet);
 }
 
-bool CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight, bool fFilterSigTIMECCoin, int& nCountRet, masternode_info_t& mnInfoRet)
+bool CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight, bool fFilterSigTIMECoin, int& nCountRet, masternode_info_t& mnInfoRet)
 {
     mnInfoRet = masternode_info_t();
     nCountRet = 0;
@@ -521,7 +521,7 @@ bool CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight, bool f
         if(mnpayments.IsScheduled(mnpair.second, nBlockHeight)) continue;
 
         //it's too new, wait for a cycle
-        if(fFilterSigTIMECCoin && mnpair.second.sigTIMECCoin + (nMnCount*2.6*60) > GetAdjustedTIMECCoin()) continue;
+        if(fFilterSigTIMECoin && mnpair.second.sigTIMECoin + (nMnCount*2.6*60) > GetAdjustedTIMECoin()) continue;
 
         //make sure it has at least as many confirmations as there are masternodes
         if(GetUTXOConfirmations(mnpair.first) < nMnCount) continue;
@@ -532,7 +532,7 @@ bool CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight, bool f
     nCountRet = (int)vecMasternodeLastPaid.size();
 
     //when the network is in the process of upgrading, don't penalize nodes that recently restarted
-    if(fFilterSigTIMECCoin && nCountRet < nMnCount/3)
+    if(fFilterSigTIMECoin && nCountRet < nMnCount/3)
         return GetNextMasternodeInQueueForPayment(nBlockHeight, false, nCountRet, mnInfoRet);
 
     // Sort them low to high
@@ -740,7 +740,7 @@ std::pair<CService, std::set<uint256> > CMasternodeMan::PopScheduledMnbRequestCo
 
 void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv, CConnman& connman)
 {
-    if(fLiteMode) return; // disable all TIMECCoin specific functionality
+    if(fLiteMode) return; // disable all TIMECoin specific functionality
 
     if (strCommand == NetMsgType::MNANNOUNCE) { //Masternode Broadcast
 
@@ -790,10 +790,10 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         CMasternode* pmn = Find(mnp.vin.prevout);
 
         // if masternode uses sentinel ping instead of watchdog
-        // we shoud update nTIMECCoinLastWatchdogVote here if sentinel
+        // we shoud update nTIMECoinLastWatchdogVote here if sentinel
         // ping flag is actual
         if(pmn && mnp.fSentinelIsCurrent)
-            UpdateWatchdogVoteTIMECCoin(mnp.vin.prevout, mnp.sigTIMECCoin);
+            UpdateWatchdogVoteTIMECoin(mnp.vin.prevout, mnp.sigTIMECoin);
 
         // too late, new MNANNOUNCE is required
         if(pmn && pmn->IsNewStartRequired()) return;
@@ -832,12 +832,12 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
             if(!isLocal && Params().NetworkIDString() == CBaseChainParams::MAIN) {
                 std::map<CNetAddr, int64_t>::iterator it = mAskedUsForMasternodeList.find(pfrom->addr);
-                if (it != mAskedUsForMasternodeList.end() && it->second > GetTIMECCoin()) {
+                if (it != mAskedUsForMasternodeList.end() && it->second > GetTIMECoin()) {
                     Misbehaving(pfrom->GetId(), 34);
                     LogPrintf("DSEG -- peer already asked me for the list, peer=%d\n", pfrom->id);
                     return;
                 }
-                int64_t askAgain = GetTIMECCoin() + DSEG_UPDATE_SECONDS;
+                int64_t askAgain = GetTIMECoin() + DSEG_UPDATE_SECONDS;
                 mAskedUsForMasternodeList[pfrom->addr] = askAgain;
             }
         } //else, asking for a specific node which is ok
@@ -858,7 +858,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             pfrom->PushInventory(CInv(MSG_MASTERNODE_PING, hashMNP));
             nInvCount++;
 
-            mapSeenMasternodeBroadcast.insert(std::make_pair(hashMNB, std::make_pair(GetTIMECCoin(), mnb)));
+            mapSeenMasternodeBroadcast.insert(std::make_pair(hashMNB, std::make_pair(GetTIMECoin(), mnb)));
             mapSeenMasternodePing.insert(std::make_pair(hashMNP, mnp));
 
             if (vin.prevout == mnpair.first) {
@@ -1330,19 +1330,19 @@ void CMasternodeMan::UpdateMasternodeList(CMasternodeBroadcast mnb, CConnman& co
 {
     LOCK2(cs_main, cs);
     mapSeenMasternodePing.insert(std::make_pair(mnb.lastPing.GetHash(), mnb.lastPing));
-    mapSeenMasternodeBroadcast.insert(std::make_pair(mnb.GetHash(), std::make_pair(GetTIMECCoin(), mnb)));
+    mapSeenMasternodeBroadcast.insert(std::make_pair(mnb.GetHash(), std::make_pair(GetTIMECoin(), mnb)));
 
     LogPrintf("CMasternodeMan::UpdateMasternodeList -- masternode=%s  addr=%s\n", mnb.vin.prevout.ToStringShort(), mnb.addr.ToString());
 
     CMasternode* pmn = Find(mnb.vin.prevout);
     if(pmn == NULL) {
         if(Add(mnb)) {
-            masternodeSync.BumpAssetLastTIMECCoin("CMasternodeMan::UpdateMasternodeList - new");
+            masternodeSync.BumpAssetLastTIMECoin("CMasternodeMan::UpdateMasternodeList - new");
         }
     } else {
         CMasternodeBroadcast mnbOld = mapSeenMasternodeBroadcast[CMasternodeBroadcast(*pmn).GetHash()].second;
         if(pmn->UpdateFromNewBroadcast(mnb, connman)) {
-            masternodeSync.BumpAssetLastTIMECCoin("CMasternodeMan::UpdateMasternodeList - seen");
+            masternodeSync.BumpAssetLastTIMECoin("CMasternodeMan::UpdateMasternodeList - seen");
             mapSeenMasternodeBroadcast.erase(mnbOld.GetHash());
         }
     }
@@ -1362,24 +1362,24 @@ bool CMasternodeMan::CheckMnbAndUpdateMasternodeList(CNode* pfrom, CMasternodeBr
         if(mapSeenMasternodeBroadcast.count(hash) && !mnb.fRecovery) { //seen
             LogPrint("masternode", "CMasternodeMan::CheckMnbAndUpdateMasternodeList -- masternode=%s seen\n", mnb.vin.prevout.ToStringShort());
             // less then 2 pings left before this MN goes into non-recoverable state, bump sync timeout
-            if(GetTIMECCoin() - mapSeenMasternodeBroadcast[hash].first > MASTERNODE_NEW_START_REQUIRED_SECONDS - MASTERNODE_MIN_MNP_SECONDS * 2) {
+            if(GetTIMECoin() - mapSeenMasternodeBroadcast[hash].first > MASTERNODE_NEW_START_REQUIRED_SECONDS - MASTERNODE_MIN_MNP_SECONDS * 2) {
                 LogPrint("masternode", "CMasternodeMan::CheckMnbAndUpdateMasternodeList -- masternode=%s seen update\n", mnb.vin.prevout.ToStringShort());
-                mapSeenMasternodeBroadcast[hash].first = GetTIMECCoin();
-                masternodeSync.BumpAssetLastTIMECCoin("CMasternodeMan::CheckMnbAndUpdateMasternodeList - seen");
+                mapSeenMasternodeBroadcast[hash].first = GetTIMECoin();
+                masternodeSync.BumpAssetLastTIMECoin("CMasternodeMan::CheckMnbAndUpdateMasternodeList - seen");
             }
             // did we ask this node for it?
-            if(pfrom && IsMnbRecoveryRequested(hash) && GetTIMECCoin() < mMnbRecoveryRequests[hash].first) {
+            if(pfrom && IsMnbRecoveryRequested(hash) && GetTIMECoin() < mMnbRecoveryRequests[hash].first) {
                 LogPrint("masternode", "CMasternodeMan::CheckMnbAndUpdateMasternodeList -- mnb=%s seen request\n", hash.ToString());
                 if(mMnbRecoveryRequests[hash].second.count(pfrom->addr)) {
                     LogPrint("masternode", "CMasternodeMan::CheckMnbAndUpdateMasternodeList -- mnb=%s seen request, addr=%s\n", hash.ToString(), pfrom->addr.ToString());
                     // do not allow node to send same mnb multiple times in recovery mode
                     mMnbRecoveryRequests[hash].second.erase(pfrom->addr);
                     // does it have newer lastPing?
-                    if(mnb.lastPing.sigTIMECCoin > mapSeenMasternodeBroadcast[hash].second.lastPing.sigTIMECCoin) {
+                    if(mnb.lastPing.sigTIMECoin > mapSeenMasternodeBroadcast[hash].second.lastPing.sigTIMECoin) {
                         // simulate Check
                         CMasternode mnTemp = CMasternode(mnb);
                         mnTemp.Check();
-                        LogPrint("masternode", "CMasternodeMan::CheckMnbAndUpdateMasternodeList -- mnb=%s seen request, addr=%s, better lastPing: %d min ago, projected mn state: %s\n", hash.ToString(), pfrom->addr.ToString(), (GetAdjustedTIMECCoin() - mnb.lastPing.sigTIMECCoin)/60, mnTemp.GetStateString());
+                        LogPrint("masternode", "CMasternodeMan::CheckMnbAndUpdateMasternodeList -- mnb=%s seen request, addr=%s, better lastPing: %d min ago, projected mn state: %s\n", hash.ToString(), pfrom->addr.ToString(), (GetAdjustedTIMECoin() - mnb.lastPing.sigTIMECoin)/60, mnTemp.GetStateString());
                         if(mnTemp.IsValidStateForAutoStart(mnTemp.nActiveState)) {
                             // this node thinks it's a good one
                             LogPrint("masternode", "CMasternodeMan::CheckMnbAndUpdateMasternodeList -- masternode=%s seen good\n", mnb.vin.prevout.ToStringShort());
@@ -1390,7 +1390,7 @@ bool CMasternodeMan::CheckMnbAndUpdateMasternodeList(CNode* pfrom, CMasternodeBr
             }
             return true;
         }
-        mapSeenMasternodeBroadcast.insert(std::make_pair(hash, std::make_pair(GetTIMECCoin(), mnb)));
+        mapSeenMasternodeBroadcast.insert(std::make_pair(hash, std::make_pair(GetTIMECoin(), mnb)));
 
         LogPrint("masternode", "CMasternodeMan::CheckMnbAndUpdateMasternodeList -- masternode=%s new\n", mnb.vin.prevout.ToStringShort());
 
@@ -1416,14 +1416,14 @@ bool CMasternodeMan::CheckMnbAndUpdateMasternodeList(CNode* pfrom, CMasternodeBr
 
     if(mnb.CheckOutpoint(nDos)) {
         Add(mnb);
-        masternodeSync.BumpAssetLastTIMECCoin("CMasternodeMan::CheckMnbAndUpdateMasternodeList - new");
+        masternodeSync.BumpAssetLastTIMECoin("CMasternodeMan::CheckMnbAndUpdateMasternodeList - new");
         // if it matches our Masternode privkey...
         if(fMasterNode && mnb.pubKeyMasternode == activeMasternode.pubKeyMasternode) {
             mnb.nPoSeBanScore = -MASTERNODE_POSE_BAN_MAX_SCORE;
             if(mnb.nProtocolVersion == PROTOCOL_VERSION) {
                 // ... and PROTOCOL_VERSION, then we've been remotely activated ...
-                LogPrintf("CMasternodeMan::CheckMnbAndUpdateMasternodeList -- Got NEW Masternode entry: masternode=%s  sigTIMECCoin=%lld  addr=%s\n",
-                            mnb.vin.prevout.ToStringShort(), mnb.sigTIMECCoin, mnb.addr.ToString());
+                LogPrintf("CMasternodeMan::CheckMnbAndUpdateMasternodeList -- Got NEW Masternode entry: masternode=%s  sigTIMECoin=%lld  addr=%s\n",
+                            mnb.vin.prevout.ToStringShort(), mnb.sigTIMECoin, mnb.addr.ToString());
                 activeMasternode.ManageState(connman);
             } else {
                 // ... otherwise we need to reactivate our node, do not add it to the list and do not relay
@@ -1462,22 +1462,22 @@ void CMasternodeMan::UpdateLastPaid(const CBlockIndex* pindex)
     IsFirstRun = false;
 }
 
-void CMasternodeMan::UpdateWatchdogVoteTIMECCoin(const COutPoint& outpoint, uint64_t nVoteTIMECCoin)
+void CMasternodeMan::UpdateWatchdogVoteTIMECoin(const COutPoint& outpoint, uint64_t nVoteTIMECoin)
 {
     LOCK(cs);
     CMasternode* pmn = Find(outpoint);
     if(!pmn) {
         return;
     }
-    pmn->UpdateWatchdogVoteTIMECCoin(nVoteTIMECCoin);
-    nLastWatchdogVoteTIMECCoin = GetTIMECCoin();
+    pmn->UpdateWatchdogVoteTIMECoin(nVoteTIMECoin);
+    nLastWatchdogVoteTIMECoin = GetTIMECoin();
 }
 
 bool CMasternodeMan::IsWatchdogActive()
 {
     LOCK(cs);
     // Check if any masternodes have voted recently, otherwise return false
-    return (GetTIMECCoin() - nLastWatchdogVoteTIMECCoin) <= MASTERNODE_WATCHDOG_MAX_SECONDS;
+    return (GetTIMECoin() - nLastWatchdogVoteTIMECoin) <= MASTERNODE_WATCHDOG_MAX_SECONDS;
 }
 
 bool CMasternodeMan::AddGovernanceVote(const COutPoint& outpoint, uint256 nGovernanceObjectHash)
@@ -1510,11 +1510,11 @@ void CMasternodeMan::CheckMasternode(const CPubKey& pubKeyMasternode, bool fForc
     }
 }
 
-bool CMasternodeMan::IsMasternodePingedWithin(const COutPoint& outpoint, int nSeconds, int64_t nTIMECCoinToCheckAt)
+bool CMasternodeMan::IsMasternodePingedWithin(const COutPoint& outpoint, int nSeconds, int64_t nTIMECoinToCheckAt)
 {
     LOCK(cs);
     CMasternode* pmn = Find(outpoint);
-    return pmn ? pmn->IsPingedWithin(nSeconds, nTIMECCoinToCheckAt) : false;
+    return pmn ? pmn->IsPingedWithin(nSeconds, nTIMECoinToCheckAt) : false;
 }
 
 void CMasternodeMan::SetMasternodeLastPing(const COutPoint& outpoint, const CMasternodePing& mnp)
@@ -1526,10 +1526,10 @@ void CMasternodeMan::SetMasternodeLastPing(const COutPoint& outpoint, const CMas
     }
     pmn->lastPing = mnp;
     // if masternode uses sentinel ping instead of watchdog
-    // we shoud update nTIMECCoinLastWatchdogVote here if sentinel
+    // we shoud update nTIMECoinLastWatchdogVote here if sentinel
     // ping flag is actual
     if(mnp.fSentinelIsCurrent) {
-        UpdateWatchdogVoteTIMECCoin(mnp.vin.prevout, mnp.sigTIMECCoin);
+        UpdateWatchdogVoteTIMECoin(mnp.vin.prevout, mnp.sigTIMECoin);
     }
     mapSeenMasternodePing.insert(std::make_pair(mnp.GetHash(), mnp));
 

@@ -21,10 +21,10 @@
 using namespace std;
 
 CTxMemPoolEntry::CTxMemPoolEntry(const CTransaction& _tx, const CAmount& _nFee,
-                                 int64_t _nTIMECCoin, double _entryPriority, unsigned int _entryHeight,
+                                 int64_t _nTIMECoin, double _entryPriority, unsigned int _entryHeight,
                                  bool poolHasNoInputsOf, CAmount _inChainInputValue,
                                  bool _spendsCoinbase, unsigned int _sigOps, LockPoints lp):
-    tx(_tx), nFee(_nFee), nTIMECCoin(_nTIMECCoin), entryPriority(_entryPriority), entryHeight(_entryHeight),
+    tx(_tx), nFee(_nFee), nTIMECoin(_nTIMECoin), entryPriority(_entryPriority), entryHeight(_entryHeight),
     hadNoDependencies(poolHasNoInputsOf), inChainInputValue(_inChainInputValue),
     spendsCoinbase(_spendsCoinbase), sigOpCount(_sigOps), lockPoints(lp)
 {
@@ -430,13 +430,13 @@ void CTxMemPool::addAddressIndex(const CTxMemPoolEntry &entry, const CCoinsViewC
         if (prevout.scriptPubKey.IsPayToScriptHash()) {
             vector<unsigned char> hashBytes(prevout.scriptPubKey.begin()+2, prevout.scriptPubKey.begin()+22);
             CMempoolAddressDeltaKey key(2, uint160(hashBytes), txhash, j, 1);
-            CMempoolAddressDelta delta(entry.GetTIMECCoin(), prevout.nValue * -1, input.prevout.hash, input.prevout.n);
+            CMempoolAddressDelta delta(entry.GetTIMECoin(), prevout.nValue * -1, input.prevout.hash, input.prevout.n);
             mapAddress.insert(make_pair(key, delta));
             inserted.push_back(key);
         } else if (prevout.scriptPubKey.IsPayToPublicKeyHash()) {
             vector<unsigned char> hashBytes(prevout.scriptPubKey.begin()+3, prevout.scriptPubKey.begin()+23);
             CMempoolAddressDeltaKey key(1, uint160(hashBytes), txhash, j, 1);
-            CMempoolAddressDelta delta(entry.GetTIMECCoin(), prevout.nValue * -1, input.prevout.hash, input.prevout.n);
+            CMempoolAddressDelta delta(entry.GetTIMECoin(), prevout.nValue * -1, input.prevout.hash, input.prevout.n);
             mapAddress.insert(make_pair(key, delta));
             inserted.push_back(key);
         }
@@ -447,13 +447,13 @@ void CTxMemPool::addAddressIndex(const CTxMemPoolEntry &entry, const CCoinsViewC
         if (out.scriptPubKey.IsPayToScriptHash()) {
             vector<unsigned char> hashBytes(out.scriptPubKey.begin()+2, out.scriptPubKey.begin()+22);
             CMempoolAddressDeltaKey key(2, uint160(hashBytes), txhash, k, 0);
-            mapAddress.insert(make_pair(key, CMempoolAddressDelta(entry.GetTIMECCoin(), out.nValue)));
+            mapAddress.insert(make_pair(key, CMempoolAddressDelta(entry.GetTIMECoin(), out.nValue)));
             inserted.push_back(key);
         } else if (out.scriptPubKey.IsPayToPublicKeyHash()) {
             vector<unsigned char> hashBytes(out.scriptPubKey.begin()+3, out.scriptPubKey.begin()+23);
             std::pair<addressDeltaMap::iterator,bool> ret;
             CMempoolAddressDeltaKey key(1, uint160(hashBytes), txhash, k, 0);
-            mapAddress.insert(make_pair(key, CMempoolAddressDelta(entry.GetTIMECCoin(), out.nValue)));
+            mapAddress.insert(make_pair(key, CMempoolAddressDelta(entry.GetTIMECoin(), out.nValue)));
             inserted.push_back(key);
         }
     }
@@ -720,7 +720,7 @@ void CTxMemPool::removeForBlock(const std::vector<CTransaction>& vtx, unsigned i
     }
     // After the txs in the new block have been removed from the mempool, update policy estimates
     minerPolicyEstimator->processBlock(nBlockHeight, entries, fCurrentEstimate);
-    lastRollingFeeUpdate = GetTIMECCoin();
+    lastRollingFeeUpdate = GetTIMECoin();
     blockSinceLastRollingFeeBump = true;
 }
 
@@ -731,7 +731,7 @@ void CTxMemPool::_clear()
     mapNextTx.clear();
     totalTxSize = 0;
     cachedInnerUsage = 0;
-    lastRollingFeeUpdate = GetTIMECCoin();
+    lastRollingFeeUpdate = GetTIMECoin();
     blockSinceLastRollingFeeBump = false;
     rollingMinimumFeeRate = 0;
     ++nTransactionsUpdated;
@@ -1009,7 +1009,7 @@ int CTxMemPool::Expire(int64_t time) {
     LOCK(cs);
     indexed_transaction_set::nth_index<2>::type::iterator it = mapTx.get<2>().begin();
     setEntries toremove;
-    while (it != mapTx.get<2>().end() && it->GetTIMECCoin() < time) {
+    while (it != mapTx.get<2>().end() && it->GetTIMECoin() < time) {
         toremove.insert(mapTx.project<0>(it));
         it++;
     }
@@ -1072,7 +1072,7 @@ CFeeRate CTxMemPool::GetMinFee(size_t sizelimit) const {
     if (!blockSinceLastRollingFeeBump || rollingMinimumFeeRate == 0)
         return CFeeRate(rollingMinimumFeeRate);
 
-    int64_t time = GetTIMECCoin();
+    int64_t time = GetTIMECoin();
     if (time > lastRollingFeeUpdate + 10) {
         double halflife = ROLLING_FEE_HALFLIFE;
         if (DynamicMemoryUsage() < sizelimit / 4)

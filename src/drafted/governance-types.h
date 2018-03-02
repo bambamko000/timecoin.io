@@ -16,9 +16,9 @@ enum GovernanceObjectType {
     ValueOverride = 1, 
 
     // -------------------------------
-    // TIMECCoinNetwork - is the root node
-    TIMECCoinNetwork = 1000,
-    TIMECCoinNetworkVariable = 1001,
+    // TIMECoinNetwork - is the root node
+    TIMECoinNetwork = 1000,
+    TIMECoinNetworkVariable = 1001,
     Category = 1002,
 
     // Actors

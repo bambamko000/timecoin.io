@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -30,11 +30,11 @@ using namespace std;
 void EnsureWalletIsUnlocked();
 bool EnsureWalletIsAvailable(bool avoidException);
 
-std::string static EncodeDumpTIMECCoin(int64_t nTIMECCoin) {
-    return DateTIMECCoinStrFormat("%Y-%m-%dT%H:%M:%SZ", nTIMECCoin);
+std::string static EncodeDumpTIMECoin(int64_t nTIMECoin) {
+    return DateTIMECoinStrFormat("%Y-%m-%dT%H:%M:%SZ", nTIMECoin);
 }
 
-int64_t static DecodeDumpTIMECCoin(const std::string &str) {
+int64_t static DecodeDumpTIMECoin(const std::string &str) {
     static const boost::posix_time::ptime epoch = boost::posix_time::from_time_t(0);
     static const std::locale loc(std::locale::classic(),
         new boost::posix_time::time_input_facet("%Y-%m-%dT%H:%M:%SZ"));
@@ -135,13 +135,13 @@ UniValue importprivkey(const UniValue& params, bool fHelp)
         if (pwalletMain->HaveKey(vchAddress))
             return NullUniValue;
 
-        pwalletMain->mapKeyMetadata[vchAddress].nCreateTIMECCoin = 1;
+        pwalletMain->mapKeyMetadata[vchAddress].nCreateTIMECoin = 1;
 
         if (!pwalletMain->AddKeyPubKey(key, pubkey))
             throw JSONRPCError(RPC_WALLET_ERROR, "Error adding key to wallet");
 
         // whenever a key is imported, we need to scan the whole chain
-        pwalletMain->nTIMECCoinFirstKey = 1; // 0 would be considered 'no value'
+        pwalletMain->nTIMECoinFirstKey = 1; // 0 would be considered 'no value'
 
         if (fRescan) {
             pwalletMain->ScanForWalletTransactions(chainActive.Genesis(), true);
@@ -232,7 +232,7 @@ UniValue importaddress(const UniValue& params, bool fHelp)
         std::vector<unsigned char> data(ParseHex(params[0].get_str()));
         ImportScript(CScript(data.begin(), data.end()), strLabel, fP2SH);
     } else {
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid TIMECCoin address or script");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid TIMECoin address or script");
     }
 
     if (fRescan)
@@ -334,7 +334,7 @@ UniValue importwallet(const UniValue& params, bool fHelp)
     if (!file.is_open())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Cannot open wallet dump file");
 
-    int64_t nTIMECCoinBegin = chainActive.Tip()->GetBlockTIMECCoin();
+    int64_t nTIMECoinBegin = chainActive.Tip()->GetBlockTIMECoin();
 
     bool fGood = true;
 
@@ -364,7 +364,7 @@ UniValue importwallet(const UniValue& params, bool fHelp)
             LogPrintf("Skipping import of %s (key already present)\n", CBitcoinAddress(keyid).ToString());
             continue;
         }
-        int64_t nTIMECCoin = DecodeDumpTIMECCoin(vstr[1]);
+        int64_t nTIMECoin = DecodeDumpTIMECoin(vstr[1]);
         std::string strLabel;
         bool fLabel = true;
         for (unsigned int nStr = 2; nStr < vstr.size(); nStr++) {
@@ -384,20 +384,20 @@ UniValue importwallet(const UniValue& params, bool fHelp)
             fGood = false;
             continue;
         }
-        pwalletMain->mapKeyMetadata[keyid].nCreateTIMECCoin = nTIMECCoin;
+        pwalletMain->mapKeyMetadata[keyid].nCreateTIMECoin = nTIMECoin;
         if (fLabel)
             pwalletMain->SetAddressBook(keyid, strLabel, "receive");
-        nTIMECCoinBegin = std::min(nTIMECCoinBegin, nTIMECCoin);
+        nTIMECoinBegin = std::min(nTIMECoinBegin, nTIMECoin);
     }
     file.close();
     pwalletMain->ShowProgress("", 100); // hide progress dialog in GUI
 
     CBlockIndex *pindex = chainActive.Tip();
-    while (pindex && pindex->pprev && pindex->GetBlockTIMECCoin() > nTIMECCoinBegin - 7200)
+    while (pindex && pindex->pprev && pindex->GetBlockTIMECoin() > nTIMECoinBegin - 7200)
         pindex = pindex->pprev;
 
-    if (!pwalletMain->nTIMECCoinFirstKey || nTIMECCoinBegin < pwalletMain->nTIMECCoinFirstKey)
-        pwalletMain->nTIMECCoinFirstKey = nTIMECCoinBegin;
+    if (!pwalletMain->nTIMECoinFirstKey || nTIMECoinBegin < pwalletMain->nTIMECoinFirstKey)
+        pwalletMain->nTIMECoinFirstKey = nTIMECoinBegin;
 
     LogPrintf("Rescanning last %i blocks\n", chainActive.Height() - pindex->nHeight + 1);
     pwalletMain->ScanForWalletTransactions(pindex);
@@ -530,9 +530,9 @@ UniValue importelectrumwallet(const UniValue& params, bool fHelp)
         nStartHeight = chainActive.Height();
 
     // Assume that electrum wallet was created at that block
-    int nTIMECCoinBegin = chainActive[nStartHeight]->GetBlockTIMECCoin();
-    if (!pwalletMain->nTIMECCoinFirstKey || nTIMECCoinBegin < pwalletMain->nTIMECCoinFirstKey)
-        pwalletMain->nTIMECCoinFirstKey = nTIMECCoinBegin;
+    int nTIMECoinBegin = chainActive[nStartHeight]->GetBlockTIMECoin();
+    if (!pwalletMain->nTIMECoinFirstKey || nTIMECoinBegin < pwalletMain->nTIMECoinFirstKey)
+        pwalletMain->nTIMECoinFirstKey = nTIMECoinBegin;
 
     LogPrintf("Rescanning %i blocks\n", chainActive.Height() - nStartHeight + 1);
     pwalletMain->ScanForWalletTransactions(chainActive[nStartHeight], true);
@@ -570,7 +570,7 @@ UniValue dumpprivkey(const UniValue& params, bool fHelp)
     string strAddress = params[0].get_str();
     CBitcoinAddress address;
     if (!address.SetString(strAddress))
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid TIMECCoin address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid TIMECoin address");
     CKeyID keyID;
     if (!address.GetKeyID(keyID))
         throw JSONRPCError(RPC_TYPE_ERROR, "Address does not refer to a key");
@@ -653,7 +653,7 @@ UniValue dumpwallet(const UniValue& params, bool fHelp)
 
     std::map<CKeyID, int64_t> mapKeyBirth;
     std::set<CKeyID> setKeyPool;
-    pwalletMain->GetKeyBirthTIMECCoins(mapKeyBirth);
+    pwalletMain->GetKeyBirthTIMECoins(mapKeyBirth);
     pwalletMain->GetAllReserveKeys(setKeyPool);
 
     // sort time/key pairs
@@ -665,10 +665,10 @@ UniValue dumpwallet(const UniValue& params, bool fHelp)
     std::sort(vKeyBirth.begin(), vKeyBirth.end());
 
     // produce output
-    file << strprintf("# Wallet dump created by TIMECCoin Core %s (%s)\n", CLIENT_BUILD, CLIENT_DATE);
-    file << strprintf("# * Created on %s\n", EncodeDumpTIMECCoin(GetTIMECCoin()));
+    file << strprintf("# Wallet dump created by TIMECoin Core %s (%s)\n", CLIENT_BUILD, CLIENT_DATE);
+    file << strprintf("# * Created on %s\n", EncodeDumpTIMECoin(GetTIMECoin()));
     file << strprintf("# * Best block at time of backup was %i (%s),\n", chainActive.Height(), chainActive.Tip()->GetBlockHash().ToString());
-    file << strprintf("#   mined on %s\n", EncodeDumpTIMECCoin(chainActive.Tip()->GetBlockTIMECCoin()));
+    file << strprintf("#   mined on %s\n", EncodeDumpTIMECoin(chainActive.Tip()->GetBlockTIMECoin()));
     file << "\n";
 
     // add the base58check encoded extended master if the wallet uses HD
@@ -717,11 +717,11 @@ UniValue dumpwallet(const UniValue& params, bool fHelp)
 
     for (std::vector<std::pair<int64_t, CKeyID> >::const_iterator it = vKeyBirth.begin(); it != vKeyBirth.end(); it++) {
         const CKeyID &keyid = it->second;
-        std::string strTIMECCoin = EncodeDumpTIMECCoin(it->first);
+        std::string strTIMECoin = EncodeDumpTIMECoin(it->first);
         std::string strAddr = CBitcoinAddress(keyid).ToString();
         CKey key;
         if (pwalletMain->GetKey(keyid, key)) {
-            file << strprintf("%s %s ", CBitcoinSecret(key).ToString(), strTIMECCoin);
+            file << strprintf("%s %s ", CBitcoinSecret(key).ToString(), strTIMECoin);
             if (pwalletMain->mapAddressBook.count(keyid)) {
                 file << strprintf("label=%s", EncodeDumpString(pwalletMain->mapAddressBook[keyid].name));
             } else if (setKeyPool.count(keyid)) {

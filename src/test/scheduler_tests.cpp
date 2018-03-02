@@ -15,16 +15,16 @@
 
 BOOST_AUTO_TEST_SUITE(scheduler_tests)
 
-static void microTask(CScheduler& s, boost::mutex& mutex, int& counter, int delta, boost::chrono::system_clock::time_point rescheduleTIMECCoin)
+static void microTask(CScheduler& s, boost::mutex& mutex, int& counter, int delta, boost::chrono::system_clock::time_point rescheduleTIMECoin)
 {
     {
         boost::unique_lock<boost::mutex> lock(mutex);
         counter += delta;
     }
-    boost::chrono::system_clock::time_point noTIMECCoin = boost::chrono::system_clock::time_point::min();
-    if (rescheduleTIMECCoin != noTIMECCoin) {
-        CScheduler::Function f = boost::bind(&microTask, boost::ref(s), boost::ref(mutex), boost::ref(counter), -delta + 1, noTIMECCoin);
-        s.schedule(f, rescheduleTIMECCoin);
+    boost::chrono::system_clock::time_point noTIMECoin = boost::chrono::system_clock::time_point::min();
+    if (rescheduleTIMECoin != noTIMECoin) {
+        CScheduler::Function f = boost::bind(&microTask, boost::ref(s), boost::ref(mutex), boost::ref(counter), -delta + 1, noTIMECoin);
+        s.schedule(f, rescheduleTIMECoin);
     }
 }
 

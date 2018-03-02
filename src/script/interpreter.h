@@ -100,7 +100,7 @@ public:
         return false;
     }
 
-    virtual bool CheckLockTIMECCoin(const CScriptNum& nLockTIMECCoin) const
+    virtual bool CheckLockTIMECoin(const CScriptNum& nLockTIMECoin) const
     {
          return false;
     }
@@ -125,7 +125,7 @@ protected:
 public:
     TransactionSignatureChecker(const CTransaction* txToIn, unsigned int nInIn) : txTo(txToIn), nIn(nInIn) {}
     bool CheckSig(const std::vector<unsigned char>& scriptSig, const std::vector<unsigned char>& vchPubKey, const CScript& scriptCode) const;
-    bool CheckLockTIMECCoin(const CScriptNum& nLockTIMECCoin) const;
+    bool CheckLockTIMECoin(const CScriptNum& nLockTIMECoin) const;
     bool CheckSequence(const CScriptNum& nSequence) const;
 };
 

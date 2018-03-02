@@ -169,7 +169,7 @@ QVariant FreedesktopImage::toVariant(const QImage &img)
     return QVariant(FreedesktopImage::metaType(), &fimg);
 }
 
-void Notificator::notifyDBus(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTIMECCoinout)
+void Notificator::notifyDBus(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTIMECoinout)
 {
     Q_UNUSED(cls);
     // Arguments for DBus call:
@@ -218,15 +218,15 @@ void Notificator::notifyDBus(Class cls, const QString &title, const QString &tex
     hints["icon_data"] = FreedesktopImage::toVariant(tmpicon.pixmap(FREEDESKTOP_NOTIFICATION_ICON_SIZE).toImage());
     args.append(hints);
 
-    // TIMECCoinout (in msec)
-    args.append(millisTIMECCoinout);
+    // TIMECoinout (in msec)
+    args.append(millisTIMECoinout);
 
     // "Fire and forget"
     interface->callWithArgumentList(QDBus::NoBlock, "Notify", args);
 }
 #endif
 
-void Notificator::notifySystray(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTIMECCoinout)
+void Notificator::notifySystray(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTIMECoinout)
 {
     Q_UNUSED(icon);
     QSystemTrayIcon::MessageIcon sicon = QSystemTrayIcon::NoIcon;
@@ -236,7 +236,7 @@ void Notificator::notifySystray(Class cls, const QString &title, const QString &
     case Warning: sicon = QSystemTrayIcon::Warning; break;
     case Critical: sicon = QSystemTrayIcon::Critical; break;
     }
-    trayIcon->showMessage(title, text, sicon, millisTIMECCoinout);
+    trayIcon->showMessage(title, text, sicon, millisTIMECoinout);
 }
 
 // Based on Qt's tray icon implementation
@@ -294,17 +294,17 @@ void Notificator::notifyMacUserNotificationCenter(Class cls, const QString &titl
 
 #endif
 
-void Notificator::notify(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTIMECCoinout)
+void Notificator::notify(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTIMECoinout)
 {
     switch(mode)
     {
 #ifdef USE_DBUS
     case Freedesktop:
-        notifyDBus(cls, title, text, icon, millisTIMECCoinout);
+        notifyDBus(cls, title, text, icon, millisTIMECoinout);
         break;
 #endif
     case QSystemTray:
-        notifySystray(cls, title, text, icon, millisTIMECCoinout);
+        notifySystray(cls, title, text, icon, millisTIMECoinout);
         break;
 #ifdef Q_OS_MAC
     case UserNotificationCenter:

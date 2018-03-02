@@ -370,15 +370,15 @@ BOOST_AUTO_TEST_CASE(addrman_getaddr)
     BOOST_CHECK(vAddr1.size() == 0);
 
     CAddress addr1 = CAddress(ResolveService("250.250.2.1", 8333), NODE_NONE);
-    addr1.nTIMECCoin = GetAdjustedTIMECCoin(); // Set time so isTerrible = false
+    addr1.nTIMECoin = GetAdjustedTIMECoin(); // Set time so isTerrible = false
     CAddress addr2 = CAddress(ResolveService("250.251.2.2", 9999), NODE_NONE);
-    addr2.nTIMECCoin = GetAdjustedTIMECCoin();
+    addr2.nTIMECoin = GetAdjustedTIMECoin();
     CAddress addr3 = CAddress(ResolveService("251.252.2.3", 8333), NODE_NONE);
-    addr3.nTIMECCoin = GetAdjustedTIMECCoin();
+    addr3.nTIMECoin = GetAdjustedTIMECoin();
     CAddress addr4 = CAddress(ResolveService("252.253.3.4", 8333), NODE_NONE);
-    addr4.nTIMECCoin = GetAdjustedTIMECCoin();
+    addr4.nTIMECoin = GetAdjustedTIMECoin();
     CAddress addr5 = CAddress(ResolveService("252.254.4.5", 8333), NODE_NONE);
-    addr5.nTIMECCoin = GetAdjustedTIMECCoin();
+    addr5.nTIMECoin = GetAdjustedTIMECoin();
     CNetAddr source1 = ResolveIP("250.1.2.1");
     CNetAddr source2 = ResolveIP("250.2.3.3");
 
@@ -406,7 +406,7 @@ BOOST_AUTO_TEST_CASE(addrman_getaddr)
         CAddress addr = CAddress(ResolveService(strAddr), NODE_NONE);
         
         // Ensure that for all addrs in addrman, isTerrible == false.
-        addr.nTIMECCoin = GetAdjustedTIMECCoin();
+        addr.nTIMECoin = GetAdjustedTIMECoin();
         addrman.Add(addr, ResolveIP(strAddr));
         if (i % 8 == 0)
             addrman.Good(addr);

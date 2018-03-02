@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -81,20 +81,20 @@ public:
     // memory only
     CScript prevPubKey;
     bool fHasSig; // flag to indicate if signed
-    int nSentTIMECCoins; //times we've sent this anonymously
+    int nSentTIMECoins; //times we've sent this anonymously
 
     CTxDSIn(const CTxIn& txin, const CScript& script) :
         CTxIn(txin),
         prevPubKey(script),
         fHasSig(false),
-        nSentTIMECCoins(0)
+        nSentTIMECoins(0)
         {}
 
     CTxDSIn() :
         CTxIn(),
         prevPubKey(),
         fHasSig(false),
-        nSentTIMECCoins(0)
+        nSentTIMECoins(0)
         {}
 };
 
@@ -143,7 +143,7 @@ class CDarksendQueue
 public:
     int nDenom;
     CTxIn vin;
-    int64_t nTIMECCoin;
+    int64_t nTIMECoin;
     bool fReady; //ready for submit
     std::vector<unsigned char> vchSig;
     // memory only
@@ -152,16 +152,16 @@ public:
     CDarksendQueue() :
         nDenom(0),
         vin(CTxIn()),
-        nTIMECCoin(0),
+        nTIMECoin(0),
         fReady(false),
         vchSig(std::vector<unsigned char>()),
         fTried(false)
         {}
 
-    CDarksendQueue(int nDenom, COutPoint outpoint, int64_t nTIMECCoin, bool fReady) :
+    CDarksendQueue(int nDenom, COutPoint outpoint, int64_t nTIMECoin, bool fReady) :
         nDenom(nDenom),
         vin(CTxIn(outpoint)),
-        nTIMECCoin(nTIMECCoin),
+        nTIMECoin(nTIMECoin),
         fReady(fReady),
         vchSig(std::vector<unsigned char>()),
         fTried(false)
@@ -173,7 +173,7 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(nDenom);
         READWRITE(vin);
-        READWRITE(nTIMECCoin);
+        READWRITE(nTIMECoin);
         READWRITE(fReady);
         READWRITE(vchSig);
     }
@@ -192,17 +192,17 @@ public:
     bool Relay(CConnman &connman);
 
     /// Is this queue expired?
-    bool IsExpired() { return GetAdjustedTIMECCoin() - nTIMECCoin > PRIVATESEND_QUEUE_TIMECOUT; }
+    bool IsExpired() { return GetAdjustedTIMECoin() - nTIMECoin > PRIVATESEND_QUEUE_TIMECOUT; }
 
     std::string ToString()
     {
-        return strprintf("nDenom=%d, nTIMECCoin=%lld, fReady=%s, fTried=%s, masternode=%s",
-                        nDenom, nTIMECCoin, fReady ? "true" : "false", fTried ? "true" : "false", vin.prevout.ToStringShort());
+        return strprintf("nDenom=%d, nTIMECoin=%lld, fReady=%s, fTried=%s, masternode=%s",
+                        nDenom, nTIMECoin, fReady ? "true" : "false", fTried ? "true" : "false", vin.prevout.ToStringShort());
     }
 
     friend bool operator==(const CDarksendQueue& a, const CDarksendQueue& b)
     {
-        return a.nDenom == b.nDenom && a.vin.prevout == b.vin.prevout && a.nTIMECCoin == b.nTIMECCoin && a.fReady == b.fReady;
+        return a.nDenom == b.nDenom && a.vin.prevout == b.vin.prevout && a.nTIMECoin == b.nTIMECoin && a.fReady == b.fReady;
     }
 };
 
@@ -219,22 +219,22 @@ public:
     CTransaction tx;
     CTxIn vin;
     std::vector<unsigned char> vchSig;
-    int64_t sigTIMECCoin;
+    int64_t sigTIMECoin;
 
     CDarksendBroadcastTx() :
         nConfirmedHeight(-1),
         tx(),
         vin(),
         vchSig(),
-        sigTIMECCoin(0)
+        sigTIMECoin(0)
         {}
 
-    CDarksendBroadcastTx(CTransaction tx, COutPoint outpoint, int64_t sigTIMECCoin) :
+    CDarksendBroadcastTx(CTransaction tx, COutPoint outpoint, int64_t sigTIMECoin) :
         nConfirmedHeight(-1),
         tx(tx),
         vin(CTxIn(outpoint)),
         vchSig(),
-        sigTIMECCoin(sigTIMECCoin)
+        sigTIMECoin(sigTIMECoin)
         {}
 
     ADD_SERIALIZE_METHODS;
@@ -244,7 +244,7 @@ public:
         READWRITE(tx);
         READWRITE(vin);
         READWRITE(vchSig);
-        READWRITE(sigTIMECCoin);
+        READWRITE(sigTIMECoin);
     }
 
     friend bool operator==(const CDarksendBroadcastTx& a, const CDarksendBroadcastTx& b)
@@ -279,7 +279,7 @@ protected:
     std::vector<CDarkSendEntry> vecEntries; // Masternode/clients entries
 
     PoolState nState; // should be one of the POOL_STATE_XXX values
-    int64_t nTIMECCoinLastSuccessfulStep; // the time when last successful mixing step was performed, in UTC milliseconds
+    int64_t nTIMECoinLastSuccessfulStep; // the time when last successful mixing step was performed, in UTC milliseconds
 
     int nSessionID; // 0 if no mixing session is active
 

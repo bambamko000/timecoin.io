@@ -242,7 +242,7 @@ private:
     int cachedTxLocks;
     int cachedPrivateSendRounds;
 
-    QTimer *pollTIMECCoinr;
+    QTimer *pollTIMECoinr;
 
     void subscribeToCoreSignals();
     void unsubscribeFromCoreSignals();

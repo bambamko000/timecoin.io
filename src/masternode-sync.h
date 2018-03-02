@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #ifndef MASTERNODE_SYNC_H
@@ -40,12 +40,12 @@ private:
     // Count peers we've requested the asset from
     int nRequestedMasternodeAttempt;
 
-    // TIMECCoin when current masternode asset sync started
-    int64_t nTIMECCoinAssetSyncStarted;
+    // TIMECoin when current masternode asset sync started
+    int64_t nTIMECoinAssetSyncStarted;
     // ... last bumped
-    int64_t nTIMECCoinLastBumped;
+    int64_t nTIMECoinLastBumped;
     // ... or failed
-    int64_t nTIMECCoinLastFailure;
+    int64_t nTIMECoinLastFailure;
 
     void Fail();
     void ClearFulfilledRequests(CConnman& connman);
@@ -64,8 +64,8 @@ public:
 
     int GetAssetID() { return nRequestedMasternodeAssets; }
     int GetAttempt() { return nRequestedMasternodeAttempt; }
-    void BumpAssetLastTIMECCoin(std::string strFuncName);
-    int64_t GetAssetStartTIMECCoin() { return nTIMECCoinAssetSyncStarted; }
+    void BumpAssetLastTIMECoin(std::string strFuncName);
+    int64_t GetAssetStartTIMECoin() { return nTIMECoinAssetSyncStarted; }
     std::string GetAssetName();
     std::string GetSyncStatus();
 

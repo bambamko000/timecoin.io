@@ -64,7 +64,7 @@ struct TestMemPoolEntryHelper
 {
     // Default values
     CAmount nFee;
-    int64_t nTIMECCoin;
+    int64_t nTIMECoin;
     double dPriority;
     unsigned int nHeight;
     bool hadNoDependencies;
@@ -73,14 +73,14 @@ struct TestMemPoolEntryHelper
     LockPoints lp;
 
     TestMemPoolEntryHelper() :
-        nFee(0), nTIMECCoin(0), dPriority(0.0), nHeight(1),
+        nFee(0), nTIMECoin(0), dPriority(0.0), nHeight(1),
         hadNoDependencies(false), spendsCoinbase(false), sigOpCount(1) { }
 
     CTxMemPoolEntry FromTx(CMutableTransaction &tx, CTxMemPool *pool = NULL);
 
     // Change the default value
     TestMemPoolEntryHelper &Fee(CAmount _fee) { nFee = _fee; return *this; }
-    TestMemPoolEntryHelper &TIMECCoin(int64_t _time) { nTIMECCoin = _time; return *this; }
+    TestMemPoolEntryHelper &TIMECoin(int64_t _time) { nTIMECoin = _time; return *this; }
     TestMemPoolEntryHelper &Priority(double _priority) { dPriority = _priority; return *this; }
     TestMemPoolEntryHelper &Height(unsigned int _height) { nHeight = _height; return *this; }
     TestMemPoolEntryHelper &HadNoDependencies(bool _hnd) { hadNoDependencies = _hnd; return *this; }

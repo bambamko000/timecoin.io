@@ -54,7 +54,7 @@ public:
        @{*/
     Status status;
     qint64 depth;
-    qint64 open_for; /**< TIMECCoinstamp if status==OpenUntilDate, otherwise number
+    qint64 open_for; /**< TIMECoinstamp if status==OpenUntilDate, otherwise number
                       of additional blocks that need to be mined before
                       finalization */
     /**@}*/

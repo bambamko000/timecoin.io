@@ -11,7 +11,7 @@
 #endif
 #include "serialize.h"        // for begin_ptr(vec)
 #include "util.h"             // for LogPrint()
-#include "utilstrencodings.h" // for GetTIMECCoin()
+#include "utilstrencodings.h" // for GetTIMECoin()
 
 #include <limits>
 
@@ -53,9 +53,9 @@ void RandAddSeedPerfmon()
 
     // This can take up to 2 seconds, so only do it every 10 minutes
     static int64_t nLastPerfmon;
-    if (GetTIMECCoin() < nLastPerfmon + 10 * 60)
+    if (GetTIMECoin() < nLastPerfmon + 10 * 60)
         return;
-    nLastPerfmon = GetTIMECCoin();
+    nLastPerfmon = GetTIMECoin();
 
     std::vector<unsigned char> vData(250000, 0);
     long ret = 0;

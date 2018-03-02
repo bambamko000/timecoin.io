@@ -1,9 +1,9 @@
 Masternode config
 =======================
 
-TIMECCoin Core allows controlling multiple remote masternodes from a single wallet. The wallet needs to have a valid collateral output of 10000 coins for each masternode and uses a configuration file named `masternode.conf` which can be found in the following data directory (depending on your operating system):
- * Windows: %APPDATA%\TIMECCoinCore\
- * Mac OS: ~/Library/Application Support/TIMECCoinCore/
+TIMECoin Core allows controlling multiple remote masternodes from a single wallet. The wallet needs to have a valid collateral output of 10000 coins for each masternode and uses a configuration file named `masternode.conf` which can be found in the following data directory (depending on your operating system):
+ * Windows: %APPDATA%\TIMECoinCore\
+ * Mac OS: ~/Library/Application Support/TIMECoinCore/
  * Unix/Linux: ~/.timecore/
 
 `masternode.conf` is a space separated text file. Each line consists of an alias, IP address followed by port, masternode private key, collateral output transaction id and collateral output index.

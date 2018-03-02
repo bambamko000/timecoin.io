@@ -229,14 +229,14 @@ class BIP9SoftForksTest(ComparisonTestFramework):
         '''Modify the nSequence to make it fails once sequence lock rule is activated (high timespan)
         '''
         tx.vin[0].nSequence = 0x00FFFFFF
-        tx.nLockTIMECCoin = 0
+        tx.nLockTIMECoin = 0
 
     def mtp_invalidate(self, tx):
-        '''Modify the nLockTIMECCoin to make it fails once MTP rule is activated
+        '''Modify the nLockTIMECoin to make it fails once MTP rule is activated
         '''
-        # Disable Sequence lock, Activate nLockTIMECCoin
+        # Disable Sequence lock, Activate nLockTIMECoin
         tx.vin[0].nSequence = 0x90FFFFFF
-        tx.nLockTIMECCoin = self.last_block_time
+        tx.nLockTIMECoin = self.last_block_time
 
 if __name__ == '__main__':
     BIP9SoftForksTest().main()

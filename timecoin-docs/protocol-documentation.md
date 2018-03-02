@@ -1,7 +1,7 @@
 Protocol Documentation - 0.12.1
 =====================================
 
-This document describes the protocol extensions for all additional functionality build into the TIMECCoin protocol. This doesn't include any of the Bitcoin protocol, which has been left intact in the TIMECCoin project. For more information about the core protocol, please see https://en.bitcoin.it/w/index.php?title#Protocol_documentation&action#edit
+This document describes the protocol extensions for all additional functionality build into the TIMECoin protocol. This doesn't include any of the Bitcoin protocol, which has been left intact in the TIMECoin project. For more information about the core protocol, please see https://en.bitcoin.it/w/index.php?title#Protocol_documentation&action#edit
 
 ## Common Structures
 
@@ -50,7 +50,7 @@ Bitcoin Output https://bitcoin.org/en/glossary/output
 | 41+ | vin | [CTxIn](#ctxin) | A list of 1 or more transaction inputs
 | 1+ | tx_out count | var_int | Number of Transaction outputs
 | 9+ | vout | [CTxOut](#ctxout) | A list of 1 or more transaction outputs
-| 4 | nLockTIMECCoin | uint32_t | The block number or timestamp at which this transaction is unlocked
+| 4 | nLockTIMECoin | uint32_t | The block number or timestamp at which this transaction is unlocked
 
 ### CPubKey
 
@@ -82,7 +82,7 @@ Whenever a masternode comes online or a client is syncing, they will send this m
 | 33-65 | pubKeyCollateralAddress | [CPubKey](#cpubkey) | CPubKey of the main 10000 TIMEC unspent output
 | 33-65 | pubKeyMasternode | [CPubKey](#cpubkey) | CPubKey of the secondary signing key (For all other messaging other than announce message)
 | 71-73 | sig | char[] | Signature of this message (verifiable via pubKeyCollateralAddress)
-| 8 | sigTIMECCoin | int64_t | TIMECCoin which the signature was created
+| 8 | sigTIMECoin | int64_t | TIMECoin which the signature was created
 | 4 | nProtocolVersion | int | The protocol version of the masternode
 | # | lastPing | CMasternodePing | The last known ping of the masternode
 | 8 | nLastDsq | int64_t | The last time the masternode sent a DSQ message (for mixing) (DEPRECATED)
@@ -97,7 +97,7 @@ Every few minutes, masternodes ping the network with a message that propagates t
 | ---------- | ----------- | --------- | -------- |
 | 41 | vin | [CTxIn](#ctxin) | The unspent output of the masternode which is signing the message
 | 32 | blockHash | uint256 | Current chaintip blockhash minus 12
-| 8 | sigTIMECCoin | int64_t | Signature time for this ping
+| 8 | sigTIMECoin | int64_t | Signature time for this ping
 | 71-73 | vchSig | char[] | Signature of this message by masternode (verifiable via pubKeyMasternode)
 
 ### MASTERNODEPAYMENTVOTE - "mnw"
@@ -124,7 +124,7 @@ Masternodes can broadcast subsidised transactions without fees for the sake of s
 | # | tx | [CTransaction](#ctransaction) | The transaction
 | 41 | vin | [CTxIn](#ctxin) | Masternode unspent output
 | 71-73 | vchSig | char[] | Signature of this message by masternode (verifiable via pubKeyMasternode)
-| 8 | sigTIMECCoin | int64_t | TIMECCoin this message was signed
+| 8 | sigTIMECoin | int64_t | TIMECoin this message was signed
 
 ### DSSTATUSUPDATE - "dssu"
 
@@ -148,7 +148,7 @@ Asks users to sign final mixing tx message.
 | ---------- | ----------- | --------- | -------- |
 | 4 | nDenom | int | Which denomination is allowed in this mixing session
 | 41 | vin | [CTxIn](#ctxin) | unspend output from masternode which is hosting this session
-| 8 | nTIMECCoin | int64_t | the time this DSQ was created
+| 8 | nTIMECoin | int64_t | the time this DSQ was created
 | 1 | fReady | bool | if the mixing pool is ready to be executed
 | 66 | vchSig | char[] | Signature of this message by masternode (verifiable via pubKeyMasternode)
 
@@ -212,7 +212,7 @@ A proposal, contract or setting.
 | ---------- | ----------- | --------- | -------- |
 | 32 | nHashParent | uint256 | Parent object, 0 is root
 | 4 | nRevision | int | Object revision in the system
-| 8 | nTIMECCoin | int64_t | TIMECCoin which this object was created
+| 8 | nTIMECoin | int64_t | TIMECoin which this object was created
 | 32 | nCollateralHash | uint256 | Hash of the collateral fee transaction
 | 0-16384 | strData | string | Data field - can be used for anything
 | 4 | nObjectType | int | ????
@@ -231,7 +231,7 @@ Masternodes use governance voting in response to new proposals, contracts, setti
 | 32 | nParentHash | uint256 | Object which we're voting on (proposal, contract, setting or final budget)
 | 4 | nVoteOutcome | int | ???
 | 4 | nVoteSignal | int | ???
-| 8 | nTIMECCoin | int64_t | TIMECCoin which the vote was created
+| 8 | nTIMECoin | int64_t | TIMECoin which the vote was created
 | 66* | vchSig | char[] | Signature of the masternode (unclear if 66 is the correct size, but this is what it appears to be in most cases)
 
 ### SPORK - "spork"
@@ -244,7 +244,7 @@ Spork
 | ---------- | ----------- | --------- | -------- |
 | 4 | nSporkID | int |
 | 8 | nValue | int64_t |
-| 8 | nTIMECCoinSigned | int64_t |
+| 8 | nTIMECoinSigned | int64_t |
 | 66* | vchSig | char[] | Unclear if 66 is the correct size, but this is what it appears to be in most cases
 
 #### Defined Sporks (per src/sporks.h)

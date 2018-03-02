@@ -159,7 +159,7 @@ BOOST_AUTO_TEST_CASE(GenerateAlerts)
 
 BOOST_AUTO_TEST_CASE(AlertApplies)
 {
-    SetMockTIMECCoin(11);
+    SetMockTIMECoin(11);
     const std::vector<unsigned char>& alertKey = Params(CBaseChainParams::MAIN).AlertKey();
 
     BOOST_FOREACH(const CAlert& alert, alerts)
@@ -194,13 +194,13 @@ BOOST_AUTO_TEST_CASE(AlertApplies)
 
     BOOST_CHECK(!alerts[2].AppliesTo(1, "/Satoshi:0.3.0/"));
 
-    SetMockTIMECCoin(0);
+    SetMockTIMECoin(0);
 }
 
 
 BOOST_AUTO_TEST_CASE(AlertNotify)
 {
-    SetMockTIMECCoin(11);
+    SetMockTIMECoin(11);
     const std::vector<unsigned char>& alertKey = Params(CBaseChainParams::MAIN).AlertKey();
 
     boost::filesystem::path temp = GetTempPath() /
@@ -230,7 +230,7 @@ BOOST_AUTO_TEST_CASE(AlertNotify)
 #endif
     boost::filesystem::remove(temp);
 
-    SetMockTIMECCoin(0);
+    SetMockTIMECoin(0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

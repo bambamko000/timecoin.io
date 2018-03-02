@@ -1,11 +1,11 @@
-TIMECCoin Core 0.12.1
+TIMECoin Core 0.12.1
 =====================
 
-This is the official reference wallet for TIMECCoin digital currency and comprises the backbone of the TIMECCoin peer-to-peer network. You can [download TIMECCoin Core](https://www.time.org/downloads/) or [build it yourself](#building) using the guides below.
+This is the official reference wallet for TIMECoin digital currency and comprises the backbone of the TIMECoin peer-to-peer network. You can [download TIMECoin Core](https://www.time.org/downloads/) or [build it yourself](#building) using the guides below.
 
 Running
 ---------------------
-The following are some helpful notes on how to run TIMECCoin on your native platform.
+The following are some helpful notes on how to run TIMECoin on your native platform.
 
 ### Unix
 
@@ -20,18 +20,18 @@ Unpack the files into a directory, and then run time-qt.exe.
 
 ### OS X
 
-Drag TIMECCoin-Qt to your applications folder, and then run TIMECCoin-Qt.
+Drag TIMECoin-Qt to your applications folder, and then run TIMECoin-Qt.
 
 ### Need Help?
 
-* See the [TIMECCoin documentation](https://timepay.atlassian.net/wiki/display/DOC)
+* See the [TIMECoin documentation](https://timepay.atlassian.net/wiki/display/DOC)
 for help and more information.
 * Ask for help on [#timepay](http://webchat.freenode.net?channels=timepay) on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net?channels=timepay).
-* Ask for help on the [TIMECCoinTalk](https://timetalk.org/) forums.
+* Ask for help on the [TIMECoinTalk](https://timetalk.org/) forums.
 
 Building
 ---------------------
-The following are developer notes on how to build TIMECCoin Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build TIMECoin Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
 - [OS X Build Notes](build-osx.md)
 - [Unix Build Notes](build-unix.md)
@@ -41,7 +41,7 @@ The following are developer notes on how to build TIMECCoin Core on your native 
 
 Development
 ---------------------
-The TIMECCoin Core repo's [root README](/README.md) contains relevant information on the development process and automated testing.
+The TIMECoin Core repo's [root README](/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Multiwallet Qt Development](multiwallet-qt.md)
@@ -57,7 +57,7 @@ The TIMECCoin Core repo's [root README](/README.md) contains relevant informatio
 - [Dnsseed Policy](dnsseed-policy.md)
 
 ### Resources
-* Discuss on the [TIMECCoinTalk](https://timetalk.org/) forums, in the Development & Technical Discussion board.
+* Discuss on the [TIMECoinTalk](https://timetalk.org/) forums, in the Development & Technical Discussion board.
 * Discuss on [#timepay](http://webchat.freenode.net/?channels=timepay) on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net/?channels=timepay).
 
 ### Miscellaneous

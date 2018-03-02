@@ -16,8 +16,8 @@ BEGIN
     BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
-            VALUE "CompanyName",        "TIMECCoin"
-            VALUE "FileDescription",    "time-cli (JSON-RPC client for TIMECCoin Core)"
+            VALUE "CompanyName",        "TIMECoin"
+            VALUE "FileDescription",    "time-cli (JSON-RPC client for TIMECoin Core)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
             VALUE "InternalName",       "time-cli"
             VALUE "LegalCopyright",     COPYRIGHT_STR

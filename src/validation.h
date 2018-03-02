@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -81,7 +81,7 @@ static const int MAX_SCRIPTCHECK_THREADS = 16;
 static const int DEFAULT_SCRIPTCHECK_THREADS = 0;
 /** Number of blocks that can be requested at any given time from a single peer. */
 static const int MAX_BLOCKS_IN_TRANSIT_PER_PEER = 16;
-/** TIMECCoinout in seconds during which a peer must stall block download progress before being disconnected. */
+/** TIMECoinout in seconds during which a peer must stall block download progress before being disconnected. */
 static const unsigned int BLOCK_STALLING_TIMECOUT = 2;
 /** Number of headers sent in one getheaders result. We rely on the assumption that if a peer sends
  *  less than this number, we reached its tip. Changing this value is a protocol upgrade. */
@@ -91,9 +91,9 @@ static const unsigned int MAX_HEADERS_RESULTS = 2000;
  *  degree of disordering of blocks on disk (which make reindexing and in the future perhaps pruning
  *  harder). We'll probably want to make this a per-peer adaptive value at some point. */
 static const unsigned int BLOCK_DOWNLOAD_WINDOW = 1024;
-/** TIMECCoin to wait (in seconds) between writing blocks/block index to disk. */
+/** TIMECoin to wait (in seconds) between writing blocks/block index to disk. */
 static const unsigned int DATABASE_WRITE_INTERVAL = 60 * 60;
-/** TIMECCoin to wait (in seconds) between flushing chainstate to disk. */
+/** TIMECoin to wait (in seconds) between flushing chainstate to disk. */
 static const unsigned int DATABASE_FLUSH_INTERVAL = 24 * 60 * 60;
 /** Maximum length of reject messages. */
 static const unsigned int MAX_REJECT_MESSAGE_LENGTH = 111;
@@ -343,7 +343,7 @@ bool CheckTransaction(const CTransaction& tx, CValidationState& state);
  * Check if transaction is final and can be included in a block with the
  * specified height and time. Consensus critical.
  */
-bool IsFinalTx(const CTransaction &tx, int nBlockHeight, int64_t nBlockTIMECCoin);
+bool IsFinalTx(const CTransaction &tx, int nBlockHeight, int64_t nBlockTIMECoin);
 
 /**
  * Check if transaction will be final in the next block to be created.
@@ -412,7 +412,7 @@ public:
     ScriptError GetScriptError() const { return error; }
 };
 
-bool GetTIMECCoinstampIndex(const unsigned int &high, const unsigned int &low, std::vector<uint256> &hashes);
+bool GetTIMECoinstampIndex(const unsigned int &high, const unsigned int &low, std::vector<uint256> &hashes);
 bool GetSpentIndex(CSpentIndexKey &key, CSpentIndexValue &value);
 bool GetAddressIndex(uint160 addressHash, int type,
                      std::vector<std::pair<CAddressIndexKey, CAmount> > &addressIndex,

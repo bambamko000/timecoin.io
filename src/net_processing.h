@@ -10,7 +10,7 @@
 #include "validationinterface.h"
 
 /** Headers download timeout expressed in microseconds
- *  TIMECCoinout = base + per_header * (expected number of headers) */
+ *  TIMECoinout = base + per_header * (expected number of headers) */
 static constexpr int64_t HEADERS_DOWNLOAD_TIMECOUT_BASE = 15 * 60 * 1000000; // 15 minutes
 static constexpr int64_t HEADERS_DOWNLOAD_TIMECOUT_PER_HEADER = 1000; // 1ms/header
 

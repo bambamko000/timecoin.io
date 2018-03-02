@@ -17,7 +17,7 @@
 #include <string>
 #include <vector>
 
-extern int nConnectTIMECCoinout;
+extern int nConnectTIMECoinout;
 extern bool fNameLookup;
 
 //! -timeout default
@@ -51,8 +51,8 @@ bool Lookup(const char *pszName, CService& addr, int portDefault, bool fAllowLoo
 bool Lookup(const char *pszName, std::vector<CService>& vAddr, int portDefault, bool fAllowLookup, unsigned int nMaxSolutions);
 CService LookupNumeric(const char *pszName, int portDefault = 0);
 bool LookupSubNet(const char *pszName, CSubNet& subnet);
-bool ConnectSocket(const CService &addr, SOCKET& hSocketRet, int nTIMECCoinout, bool *outProxyConnectionFailed = 0);
-bool ConnectSocketByName(CService &addr, SOCKET& hSocketRet, const char *pszDest, int portDefault, int nTIMECCoinout, bool *outProxyConnectionFailed = 0);
+bool ConnectSocket(const CService &addr, SOCKET& hSocketRet, int nTIMECoinout, bool *outProxyConnectionFailed = 0);
+bool ConnectSocketByName(CService &addr, SOCKET& hSocketRet, const char *pszDest, int portDefault, int nTIMECoinout, bool *outProxyConnectionFailed = 0);
 /** Return readable error string for a network error code */
 std::string NetworkErrorString(int err);
 /** Close socket and set hSocket to INVALID_SOCKET */
@@ -62,7 +62,7 @@ bool SetSocketNonBlocking(SOCKET& hSocket, bool fNonBlocking);
 /**
  * Convert milliseconds to a struct timeval for e.g. select.
  */
-struct timeval MillisToTIMECCoinval(int64_t nTIMECCoinout);
+struct timeval MillisToTIMECoinval(int64_t nTIMECoinout);
 void InterruptSocks5(bool interrupt);
 
 #endif // BITCOIN_NETBASE_H

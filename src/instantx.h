@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #ifndef INSTANTX_H
@@ -70,7 +70,7 @@ private:
     void ProcessOrphanTxLockVotes(CConnman& connman);
     bool IsEnoughOrphanVotesForTx(const CTxLockRequest& txLockRequest);
     bool IsEnoughOrphanVotesForTxAndOutPoint(const uint256& txHash, const COutPoint& outpoint);
-    int64_t GetAverageMasternodeOrphanVoteTIMECCoin();
+    int64_t GetAverageMasternodeOrphanVoteTIMECoin();
 
     void TryToFinalizeLockCandidate(const CTxLockCandidate& txLockCandidate);
     void LockTransactionInputs(const CTxLockCandidate& txLockCandidate);
@@ -109,7 +109,7 @@ public:
     // remove expired entries from maps
     void CheckAndRemove();
     // verify if transaction lock timed out
-    bool IsTxLockCandidateTIMECCoindOut(const uint256& txHash);
+    bool IsTxLockCandidateTIMECoindOut(const uint256& txHash);
 
     void Relay(const uint256& txHash, CConnman& connman);
 
@@ -149,7 +149,7 @@ private:
     std::vector<unsigned char> vchMasternodeSignature;
     // local memory only
     int nConfirmedHeight; // when corresponding tx is 0-confirmed or conflicted, nConfirmedHeight is -1
-    int64_t nTIMECCoinCreated;
+    int64_t nTIMECoinCreated;
 
 public:
     CTxLockVote() :
@@ -158,7 +158,7 @@ public:
         outpointMasternode(),
         vchMasternodeSignature(),
         nConfirmedHeight(-1),
-        nTIMECCoinCreated(GetTIMECCoin())
+        nTIMECoinCreated(GetTIMECoin())
         {}
 
     CTxLockVote(const uint256& txHashIn, const COutPoint& outpointIn, const COutPoint& outpointMasternodeIn) :
@@ -167,7 +167,7 @@ public:
         outpointMasternode(outpointMasternodeIn),
         vchMasternodeSignature(),
         nConfirmedHeight(-1),
-        nTIMECCoinCreated(GetTIMECCoin())
+        nTIMECoinCreated(GetTIMECoin())
         {}
 
     ADD_SERIALIZE_METHODS;
@@ -189,7 +189,7 @@ public:
     bool IsValid(CNode* pnode, CConnman& connman) const;
     void SetConfirmedHeight(int nConfirmedHeightIn) { nConfirmedHeight = nConfirmedHeightIn; }
     bool IsExpired(int nHeight) const;
-    bool IsTIMECCoindOut() const;
+    bool IsTIMECoindOut() const;
     bool IsFailed() const;
 
     bool Sign();
@@ -230,12 +230,12 @@ class CTxLockCandidate
 {
 private:
     int nConfirmedHeight; // when corresponding tx is 0-confirmed or conflicted, nConfirmedHeight is -1
-    int64_t nTIMECCoinCreated;
+    int64_t nTIMECoinCreated;
 
 public:
     CTxLockCandidate(const CTxLockRequest& txLockRequestIn) :
         nConfirmedHeight(-1),
-        nTIMECCoinCreated(GetTIMECCoin()),
+        nTIMECoinCreated(GetTIMECoin()),
         txLockRequest(txLockRequestIn),
         mapOutPointLocks()
         {}
@@ -255,7 +255,7 @@ public:
 
     void SetConfirmedHeight(int nConfirmedHeightIn) { nConfirmedHeight = nConfirmedHeightIn; }
     bool IsExpired(int nHeight) const;
-    bool IsTIMECCoindOut() const;
+    bool IsTIMECoindOut() const;
 
     void Relay(CConnman& connman) const;
 };

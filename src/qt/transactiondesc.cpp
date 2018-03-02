@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -29,10 +29,10 @@ QString TransactionDesc::FormatTxStatus(const CWalletTx& wtx)
     AssertLockHeld(cs_main);
     if (!CheckFinalTx(wtx))
     {
-        if (wtx.nLockTIMECCoin < LOCKTIMEC_THRESHOLD)
-            return tr("Open for %n more block(s)", "", wtx.nLockTIMECCoin - chainActive.Height());
+        if (wtx.nLockTIMECoin < LOCKTIMEC_THRESHOLD)
+            return tr("Open for %n more block(s)", "", wtx.nLockTIMECoin - chainActive.Height());
         else
-            return tr("Open until %1").arg(GUIUtil::dateTIMECCoinStr(wtx.nLockTIMECCoin));
+            return tr("Open until %1").arg(GUIUtil::dateTIMECoinStr(wtx.nLockTIMECoin));
     }
     else
     {
@@ -40,7 +40,7 @@ QString TransactionDesc::FormatTxStatus(const CWalletTx& wtx)
         if (nDepth < 0) return tr("conflicted");
 
         QString strTxStatus;
-        bool fOffline = (GetAdjustedTIMECCoin() - wtx.nTIMECCoinReceived > 2 * 60) && (wtx.GetRequestCount() == 0);
+        bool fOffline = (GetAdjustedTIMECoin() - wtx.nTIMECoinReceived > 2 * 60) && (wtx.GetRequestCount() == 0);
 
         if (fOffline) {
             strTxStatus = tr("%1/offline").arg(nDepth);
@@ -60,7 +60,7 @@ QString TransactionDesc::FormatTxStatus(const CWalletTx& wtx)
         strTxStatus += " (";
         if(instantsend.IsLockedInstantSendTransaction(wtx.GetHash())) {
             strTxStatus += tr("verified via InstantSend");
-        } else if(!instantsend.IsTxLockCandidateTIMECCoindOut(wtx.GetHash())) {
+        } else if(!instantsend.IsTxLockCandidateTIMECoindOut(wtx.GetHash())) {
             strTxStatus += tr("InstantSend verification in progress - %1 of %2 signatures").arg(nSignatures).arg(nSignaturesMax);
         } else {
             strTxStatus += tr("InstantSend verification failed");
@@ -79,7 +79,7 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx, TransactionReco
     strHTML.reserve(4000);
     strHTML += "<html><font face='verdana, arial, helvetica, sans-serif'>";
 
-    int64_t nTIMECCoin = wtx.GetTxTIMECCoin();
+    int64_t nTIMECoin = wtx.GetTxTIMECoin();
     CAmount nCredit = wtx.GetCredit(ISMINE_ALL);
     CAmount nDebit = wtx.GetDebit(ISMINE_ALL);
     CAmount nNet = nCredit - nDebit;
@@ -95,7 +95,7 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx, TransactionReco
     }
     strHTML += "<br>";
 
-    strHTML += "<b>" + tr("Date") + ":</b> " + (nTIMECCoin ? GUIUtil::dateTIMECCoinStr(nTIMECCoin) : "") + "<br>";
+    strHTML += "<b>" + tr("Date") + ":</b> " + (nTIMECoin ? GUIUtil::dateTIMECoinStr(nTIMECoin) : "") + "<br>";
 
     //
     // From

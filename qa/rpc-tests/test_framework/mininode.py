@@ -1,4 +1,4 @@
-# mininode.py - TIMECCoin P2P network half-a-node
+# mininode.py - TIMECoin P2P network half-a-node
 #
 # Distributed under the MIT/X11 software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -394,14 +394,14 @@ class CTransaction(object):
             self.nVersion = 1
             self.vin = []
             self.vout = []
-            self.nLockTIMECCoin = 0
+            self.nLockTIMECoin = 0
             self.sha256 = None
             self.hash = None
         else:
             self.nVersion = tx.nVersion
             self.vin = copy.deepcopy(tx.vin)
             self.vout = copy.deepcopy(tx.vout)
-            self.nLockTIMECCoin = tx.nLockTIMECCoin
+            self.nLockTIMECoin = tx.nLockTIMECoin
             self.sha256 = None
             self.hash = None
 
@@ -409,7 +409,7 @@ class CTransaction(object):
         self.nVersion = struct.unpack("<i", f.read(4))[0]
         self.vin = deser_vector(f, CTxIn)
         self.vout = deser_vector(f, CTxOut)
-        self.nLockTIMECCoin = struct.unpack("<I", f.read(4))[0]
+        self.nLockTIMECoin = struct.unpack("<I", f.read(4))[0]
         self.sha256 = None
         self.hash = None
 
@@ -418,7 +418,7 @@ class CTransaction(object):
         r += struct.pack("<i", self.nVersion)
         r += ser_vector(self.vin)
         r += ser_vector(self.vout)
-        r += struct.pack("<I", self.nLockTIMECCoin)
+        r += struct.pack("<I", self.nLockTIMECoin)
         return r
 
     def rehash(self):
@@ -438,8 +438,8 @@ class CTransaction(object):
         return True
 
     def __repr__(self):
-        return "CTransaction(nVersion=%i vin=%s vout=%s nLockTIMECCoin=%i)" \
-            % (self.nVersion, repr(self.vin), repr(self.vout), self.nLockTIMECCoin)
+        return "CTransaction(nVersion=%i vin=%s vout=%s nLockTIMECoin=%i)" \
+            % (self.nVersion, repr(self.vin), repr(self.vout), self.nLockTIMECoin)
 
 
 class CBlockHeader(object):
@@ -450,7 +450,7 @@ class CBlockHeader(object):
             self.nVersion = header.nVersion
             self.hashPrevBlock = header.hashPrevBlock
             self.hashMerkleRoot = header.hashMerkleRoot
-            self.nTIMECCoin = header.nTIMECCoin
+            self.nTIMECoin = header.nTIMECoin
             self.nBits = header.nBits
             self.nNonce = header.nNonce
             self.sha256 = header.sha256
@@ -461,7 +461,7 @@ class CBlockHeader(object):
         self.nVersion = 1
         self.hashPrevBlock = 0
         self.hashMerkleRoot = 0
-        self.nTIMECCoin = 0
+        self.nTIMECoin = 0
         self.nBits = 0
         self.nNonce = 0
         self.sha256 = None
@@ -471,7 +471,7 @@ class CBlockHeader(object):
         self.nVersion = struct.unpack("<i", f.read(4))[0]
         self.hashPrevBlock = deser_uint256(f)
         self.hashMerkleRoot = deser_uint256(f)
-        self.nTIMECCoin = struct.unpack("<I", f.read(4))[0]
+        self.nTIMECoin = struct.unpack("<I", f.read(4))[0]
         self.nBits = struct.unpack("<I", f.read(4))[0]
         self.nNonce = struct.unpack("<I", f.read(4))[0]
         self.sha256 = None
@@ -482,7 +482,7 @@ class CBlockHeader(object):
         r += struct.pack("<i", self.nVersion)
         r += ser_uint256(self.hashPrevBlock)
         r += ser_uint256(self.hashMerkleRoot)
-        r += struct.pack("<I", self.nTIMECCoin)
+        r += struct.pack("<I", self.nTIMECoin)
         r += struct.pack("<I", self.nBits)
         r += struct.pack("<I", self.nNonce)
         return r
@@ -493,7 +493,7 @@ class CBlockHeader(object):
             r += struct.pack("<i", self.nVersion)
             r += ser_uint256(self.hashPrevBlock)
             r += ser_uint256(self.hashMerkleRoot)
-            r += struct.pack("<I", self.nTIMECCoin)
+            r += struct.pack("<I", self.nTIMECoin)
             r += struct.pack("<I", self.nBits)
             r += struct.pack("<I", self.nNonce)
             self.sha256 = uint256_from_str(timehash(r))
@@ -505,9 +505,9 @@ class CBlockHeader(object):
         return self.sha256
 
     def __repr__(self):
-        return "CBlockHeader(nVersion=%i hashPrevBlock=%064x hashMerkleRoot=%064x nTIMECCoin=%s nBits=%08x nNonce=%08x)" \
+        return "CBlockHeader(nVersion=%i hashPrevBlock=%064x hashMerkleRoot=%064x nTIMECoin=%s nBits=%08x nNonce=%08x)" \
             % (self.nVersion, self.hashPrevBlock, self.hashMerkleRoot,
-               time.ctime(self.nTIMECCoin), self.nBits, self.nNonce)
+               time.ctime(self.nTIMECoin), self.nBits, self.nNonce)
 
 
 class CBlock(CBlockHeader):
@@ -558,9 +558,9 @@ class CBlock(CBlockHeader):
             self.rehash()
 
     def __repr__(self):
-        return "CBlock(nVersion=%i hashPrevBlock=%064x hashMerkleRoot=%064x nTIMECCoin=%s nBits=%08x nNonce=%08x vtx=%s)" \
+        return "CBlock(nVersion=%i hashPrevBlock=%064x hashMerkleRoot=%064x nTIMECoin=%s nBits=%08x nNonce=%08x vtx=%s)" \
             % (self.nVersion, self.hashPrevBlock, self.hashMerkleRoot,
-               time.ctime(self.nTIMECCoin), self.nBits, self.nNonce, repr(self.vtx))
+               time.ctime(self.nTIMECoin), self.nBits, self.nNonce, repr(self.vtx))
 
 
 class CUnsignedAlert(object):
@@ -645,7 +645,7 @@ class msg_version(object):
     def __init__(self):
         self.nVersion = MY_VERSION
         self.nServices = 1
-        self.nTIMECCoin = int(time.time())
+        self.nTIMECoin = int(time.time())
         self.addrTo = CAddress()
         self.addrFrom = CAddress()
         self.nNonce = random.getrandbits(64)
@@ -657,7 +657,7 @@ class msg_version(object):
         if self.nVersion == 10300:
             self.nVersion = 300
         self.nServices = struct.unpack("<Q", f.read(8))[0]
-        self.nTIMECCoin = struct.unpack("<q", f.read(8))[0]
+        self.nTIMECoin = struct.unpack("<q", f.read(8))[0]
         self.addrTo = CAddress()
         self.addrTo.deserialize(f)
         if self.nVersion >= 106:
@@ -679,7 +679,7 @@ class msg_version(object):
         r = b""
         r += struct.pack("<i", self.nVersion)
         r += struct.pack("<Q", self.nServices)
-        r += struct.pack("<q", self.nTIMECCoin)
+        r += struct.pack("<q", self.nTIMECoin)
         r += self.addrTo.serialize()
         r += self.addrFrom.serialize()
         r += struct.pack("<Q", self.nNonce)
@@ -688,8 +688,8 @@ class msg_version(object):
         return r
 
     def __repr__(self):
-        return 'msg_version(nVersion=%i nServices=%i nTIMECCoin=%s addrTo=%s addrFrom=%s nNonce=0x%016X strSubVer=%s nStartingHeight=%i)' \
-            % (self.nVersion, self.nServices, time.ctime(self.nTIMECCoin),
+        return 'msg_version(nVersion=%i nServices=%i nTIMECoin=%s addrTo=%s addrFrom=%s nNonce=0x%016X strSubVer=%s nStartingHeight=%i)' \
+            % (self.nVersion, self.nServices, time.ctime(self.nTIMECoin),
                repr(self.addrTo), repr(self.addrFrom), self.nNonce,
                self.strSubVer, self.nStartingHeight)
 
@@ -1185,7 +1185,7 @@ class NodeConn(asyncore.dispatcher):
         vt.addrFrom.ip = "0.0.0.0"
         vt.addrFrom.port = 0
         self.send_message(vt, True)
-        print 'MiniNode: Connecting to TIMECCoin Node IP # ' + dstaddr + ':' \
+        print 'MiniNode: Connecting to TIMECoin Node IP # ' + dstaddr + ':' \
             + str(dstport)
 
         try:

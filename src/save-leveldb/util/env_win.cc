@@ -551,7 +551,7 @@ void Win32Logger::Logv( const char* format, va_list ap )
         char* limit = base + bufsize;
 
         SYSTEMTIMEC st;
-        GetLocalTIMECCoin(&st);
+        GetLocalTIMECoin(&st);
         p += snprintf(p, limit - p,
             "%04d/%02d/%02d-%02d:%02d:%02d.%06d %llx ",
             int(st.wYear),

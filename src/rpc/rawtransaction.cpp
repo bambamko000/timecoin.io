@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -67,7 +67,7 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
     entry.push_back(Pair("txid", txid.GetHex()));
     entry.push_back(Pair("size", (int)::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION)));
     entry.push_back(Pair("version", tx.nVersion));
-    entry.push_back(Pair("locktime", (int64_t)tx.nLockTIMECCoin));
+    entry.push_back(Pair("locktime", (int64_t)tx.nLockTIMECoin));
     UniValue vin(UniValue::VARR);
     BOOST_FOREACH(const CTxIn& txin, tx.vin) {
         UniValue in(UniValue::VOBJ);
@@ -131,8 +131,8 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
             if (chainActive.Contains(pindex)) {
                 entry.push_back(Pair("height", pindex->nHeight));
                 entry.push_back(Pair("confirmations", 1 + chainActive.Height() - pindex->nHeight));
-                entry.push_back(Pair("time", pindex->GetBlockTIMECCoin()));
-                entry.push_back(Pair("blocktime", pindex->GetBlockTIMECCoin()));
+                entry.push_back(Pair("time", pindex->GetBlockTIMECoin()));
+                entry.push_back(Pair("blocktime", pindex->GetBlockTIMECoin()));
             } else {
                 entry.push_back(Pair("height", -1));
                 entry.push_back(Pair("confirmations", 0));
@@ -404,10 +404,10 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
     CMutableTransaction rawTx;
 
     if (params.size() > 2 && !params[2].isNull()) {
-        int64_t nLockTIMECCoin = params[2].get_int64();
-        if (nLockTIMECCoin < 0 || nLockTIMECCoin > std::numeric_limits<uint32_t>::max())
+        int64_t nLockTIMECoin = params[2].get_int64();
+        if (nLockTIMECoin < 0 || nLockTIMECoin > std::numeric_limits<uint32_t>::max())
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, locktime out of range");
-        rawTx.nLockTIMECCoin = nLockTIMECCoin;
+        rawTx.nLockTIMECoin = nLockTIMECoin;
     }
 
     for (unsigned int idx = 0; idx < inputs.size(); idx++) {
@@ -423,7 +423,7 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
         if (nOutput < 0)
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, vout must be positive");
 
-        uint32_t nSequence = (rawTx.nLockTIMECCoin ? std::numeric_limits<uint32_t>::max() - 1 : std::numeric_limits<uint32_t>::max());
+        uint32_t nSequence = (rawTx.nLockTIMECoin ? std::numeric_limits<uint32_t>::max() - 1 : std::numeric_limits<uint32_t>::max());
         CTxIn in(COutPoint(txid, nOutput), CScript(), nSequence);
 
         rawTx.vin.push_back(in);
@@ -441,7 +441,7 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
         } else {
             CBitcoinAddress address(name_);
             if (!address.IsValid())
-                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid TIMECCoin address: ")+name_);
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid TIMECoin address: ")+name_);
 
             if (setAddress.count(address))
                 throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, duplicated address: ")+name_);
@@ -496,7 +496,7 @@ UniValue decoderawtransaction(const UniValue& params, bool fHelp)
             "         \"reqSigs\" : n,            (numeric) The required sigs\n"
             "         \"type\" : \"pubkeyhash\",  (string) The type, eg 'pubkeyhash'\n"
             "         \"addresses\" : [           (json array of string)\n"
-            "           \"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\"   (string) TIMECCoin address\n"
+            "           \"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\"   (string) TIMECoin address\n"
             "           ,...\n"
             "         ]\n"
             "       }\n"

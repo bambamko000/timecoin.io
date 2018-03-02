@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #include "privatesend-client.h"
@@ -21,7 +21,7 @@ CPrivateSendClient privateSendClient;
 void CPrivateSendClient::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv, CConnman& connman)
 {
     if(fMasterNode) return;
-    if(fLiteMode) return; // ignore all TIMECCoin related functionality
+    if(fLiteMode) return; // ignore all TIMECoin related functionality
     if(!masternodeSync.IsBlockchainSynced()) return;
 
     if(strCommand == NetMsgType::DSQUEUE) {
@@ -302,7 +302,7 @@ bool CPrivateSendClient::IsMixingMasternode(const CNode* pnode)
 void CPrivateSendClient::CheckPool()
 {
     // reset if we're here for 10 seconds
-    if((nState == POOL_STATE_ERROR || nState == POOL_STATE_SUCCESS) && GetTIMECCoinMillis() - nTIMECCoinLastSuccessfulStep >= 10000) {
+    if((nState == POOL_STATE_ERROR || nState == POOL_STATE_SUCCESS) && GetTIMECoinMillis() - nTIMECoinLastSuccessfulStep >= 10000) {
         LogPrint("privatesend", "CPrivateSendClient::CheckPool -- timeout, RESETTING\n");
         UnlockCoins();
         if (nState == POOL_STATE_ERROR) {
@@ -317,7 +317,7 @@ void CPrivateSendClient::CheckPool()
 //
 // Check for various timeouts (queue objects, mixing, etc)
 //
-void CPrivateSendClient::CheckTIMECCoinout()
+void CPrivateSendClient::CheckTIMECoinout()
 {
     CheckQueue();
 
@@ -327,11 +327,11 @@ void CPrivateSendClient::CheckTIMECCoinout()
     if(!fMasterNode) {
         switch(nState) {
             case POOL_STATE_ERROR:
-                LogPrint("privatesend", "CPrivateSendClient::CheckTIMECCoinout -- Pool error -- Running CheckPool\n");
+                LogPrint("privatesend", "CPrivateSendClient::CheckTIMECoinout -- Pool error -- Running CheckPool\n");
                 CheckPool();
                 break;
             case POOL_STATE_SUCCESS:
-                LogPrint("privatesend", "CPrivateSendClient::CheckTIMECCoinout -- Pool success -- Running CheckPool\n");
+                LogPrint("privatesend", "CPrivateSendClient::CheckTIMECoinout -- Pool success -- Running CheckPool\n");
                 CheckPool();
                 break;
             default:
@@ -339,13 +339,13 @@ void CPrivateSendClient::CheckTIMECCoinout()
         }
     }
 
-    int nLagTIMECCoin = fMasterNode ? 0 : 10000; // if we're the client, give the server a few extra seconds before resetting.
-    int nTIMECCoinout = (nState == POOL_STATE_SIGNING) ? PRIVATESEND_SIGNING_TIMECOUT : PRIVATESEND_QUEUE_TIMECOUT;
-    bool fTIMECCoinout = GetTIMECCoinMillis() - nTIMECCoinLastSuccessfulStep >= nTIMECCoinout*1000 + nLagTIMECCoin;
+    int nLagTIMECoin = fMasterNode ? 0 : 10000; // if we're the client, give the server a few extra seconds before resetting.
+    int nTIMECoinout = (nState == POOL_STATE_SIGNING) ? PRIVATESEND_SIGNING_TIMECOUT : PRIVATESEND_QUEUE_TIMECOUT;
+    bool fTIMECoinout = GetTIMECoinMillis() - nTIMECoinLastSuccessfulStep >= nTIMECoinout*1000 + nLagTIMECoin;
 
-    if(nState != POOL_STATE_IDLE && fTIMECCoinout) {
-        LogPrint("privatesend", "CPrivateSendClient::CheckTIMECCoinout -- %s timed out (%ds) -- restting\n",
-                (nState == POOL_STATE_SIGNING) ? "Signing" : "Session", nTIMECCoinout);
+    if(nState != POOL_STATE_IDLE && fTIMECoinout) {
+        LogPrint("privatesend", "CPrivateSendClient::CheckTIMECoinout -- %s timed out (%ds) -- restting\n",
+                (nState == POOL_STATE_SIGNING) ? "Signing" : "Session", nTIMECoinout);
         UnlockCoins();
         keyHolderStorage.ReturnAll();
         SetNull();
@@ -432,7 +432,7 @@ bool CPrivateSendClient::SendDenominate(const std::vector<CTxDSIn>& vecTxDSIn, c
     CDarkSendEntry entry(vecTxDSIn, vecTxOut, txMyCollateral);
     vecEntries.push_back(entry);
     RelayIn(entry, connman);
-    nTIMECCoinLastSuccessfulStep = GetTIMECCoinMillis();
+    nTIMECoinLastSuccessfulStep = GetTIMECoinMillis();
 
     return true;
 }
@@ -462,13 +462,13 @@ bool CPrivateSendClient::CheckPoolStateUpdate(PoolState nStateNew, int nEntriesC
         if(nStateNew == POOL_STATE_QUEUE && nSessionID == 0 && nSessionIDNew != 0) {
             // new session id should be set only in POOL_STATE_QUEUE state
             nSessionID = nSessionIDNew;
-            nTIMECCoinLastSuccessfulStep = GetTIMECCoinMillis();
+            nTIMECoinLastSuccessfulStep = GetTIMECoinMillis();
             LogPrintf("CPrivateSendClient::CheckPoolStateUpdate -- set nSessionID to %d\n", nSessionID);
             return true;
         }
         else if(nStateNew == POOL_STATE_ACCEPTING_ENTRIES && nEntriesCount != nEntriesCountNew) {
             nEntriesCount = nEntriesCountNew;
-            nTIMECCoinLastSuccessfulStep = GetTIMECCoinMillis();
+            nTIMECoinLastSuccessfulStep = GetTIMECoinMillis();
             fLastEntryAccepted = true;
             LogPrintf("CPrivateSendClient::CheckPoolStateUpdate -- new entry accepted!\n");
             return true;
@@ -577,7 +577,7 @@ bool CPrivateSendClient::SignFinalTransaction(const CTransaction& finalTransacti
     LogPrintf("CPrivateSendClient::SignFinalTransaction -- pushing sigs to the masternode, finalMutableTransaction=%s", finalMutableTransaction.ToString());
     connman.PushMessage(pnode, NetMsgType::DSSIGNFINALTX, sigs);
     SetState(POOL_STATE_SIGNING);
-    nTIMECCoinLastSuccessfulStep = GetTIMECCoinMillis();
+    nTIMECoinLastSuccessfulStep = GetTIMECoinMillis();
 
     return true;
 }
@@ -895,7 +895,7 @@ bool CPrivateSendClient::JoinExistingQueue(CAmount nBalanceNeedsAnonymized, CCon
                     nSessionDenom, CPrivateSend::GetDenominationsToString(nSessionDenom), pnode->addr.ToString());
             strAutoDenomResult = _("Mixing in progress...");
             SetState(POOL_STATE_QUEUE);
-            nTIMECCoinLastSuccessfulStep = GetTIMECCoinMillis();
+            nTIMECoinLastSuccessfulStep = GetTIMECoinMillis();
             return true;
         } else {
             LogPrintf("CPrivateSendClient::JoinExistingQueue -- can't connect, addr=%s\n", infoMn.addr.ToString());
@@ -969,7 +969,7 @@ bool CPrivateSendClient::StartNewQueue(CAmount nValueMin, CAmount nBalanceNeedsA
                     nSessionDenom, CPrivateSend::GetDenominationsToString(nSessionDenom));
             strAutoDenomResult = _("Mixing in progress...");
             SetState(POOL_STATE_QUEUE);
-            nTIMECCoinLastSuccessfulStep = GetTIMECCoinMillis();
+            nTIMECoinLastSuccessfulStep = GetTIMECoinMillis();
             return true;
         } else {
             LogPrintf("CPrivateSendClient::StartNewQueue -- can't connect, addr=%s\n", infoMn.addr.ToString());
@@ -1392,7 +1392,7 @@ void CPrivateSendClient::UpdatedBlockTip(const CBlockIndex *pindex)
 //TODO: Rename/move to core
 void ThreadCheckPrivateSendClient(CConnman& connman)
 {
-    if(fLiteMode) return; // disable all TIMECCoin specific functionality
+    if(fLiteMode) return; // disable all TIMECoin specific functionality
     if(fMasterNode) return; // no client-side mixing on masternodes
 
     static bool fOneThread;
@@ -1411,7 +1411,7 @@ void ThreadCheckPrivateSendClient(CConnman& connman)
 
         if(masternodeSync.IsBlockchainSynced() && !ShutdownRequested()) {
             nTick++;
-            privateSendClient.CheckTIMECCoinout();
+            privateSendClient.CheckTIMECoinout();
             if(nDoAutoNextRun == nTick) {
                 privateSendClient.DoAutomaticDenominating(connman);
                 nDoAutoNextRun = nTick + PRIVATESEND_AUTO_TIMECOUT_MIN + GetRandInt(PRIVATESEND_AUTO_TIMECOUT_MAX - PRIVATESEND_AUTO_TIMECOUT_MIN);

@@ -34,10 +34,10 @@ bool CAddrInfo::IsTerrible(int64_t nNow) const
     if (nLastTry && nLastTry >= nNow - 60) // never remove things tried in the last minute
         return false;
 
-    if (nTIMECCoin > nNow + 10 * 60) // came in a flying DeLorean
+    if (nTIMECoin > nNow + 10 * 60) // came in a flying DeLorean
         return true;
 
-    if (nTIMECCoin == 0 || nNow - nTIMECCoin > ADDRMAN_HORIZON_DAYS * 24 * 60 * 60) // not seen in recent history
+    if (nTIMECoin == 0 || nNow - nTIMECoin > ADDRMAN_HORIZON_DAYS * 24 * 60 * 60) // not seen in recent history
         return true;
 
     if (nLastSuccess == 0 && nAttempts >= ADDRMAN_RETRIES) // tried N times and never a success
@@ -53,7 +53,7 @@ double CAddrInfo::GetChance(int64_t nNow) const
 {
     double fChance = 1.0;
 
-    int64_t nSinceLastSeen = nNow - nTIMECCoin;
+    int64_t nSinceLastSeen = nNow - nTIMECoin;
     int64_t nSinceLastTry = nNow - nLastTry;
 
     if (nSinceLastSeen < 0)
@@ -193,7 +193,7 @@ void CAddrMan::MakeTried(CAddrInfo& info, int nId)
     info.fInTried = true;
 }
 
-void CAddrMan::Good_(const CService& addr, int64_t nTIMECCoin)
+void CAddrMan::Good_(const CService& addr, int64_t nTIMECoin)
 {
     int nId;
     CAddrInfo* pinfo = Find(addr, &nId);
@@ -209,10 +209,10 @@ void CAddrMan::Good_(const CService& addr, int64_t nTIMECCoin)
         return;
 
     // update info
-    info.nLastSuccess = nTIMECCoin;
-    info.nLastTry = nTIMECCoin;
+    info.nLastSuccess = nTIMECoin;
+    info.nLastTry = nTIMECoin;
     info.nAttempts = 0;
-    // nTIMECCoin is not updated here, to avoid leaking information about
+    // nTIMECoin is not updated here, to avoid leaking information about
     // currently-connected peers.
 
     // if it is already in the tried set, don't do anything else
@@ -242,7 +242,7 @@ void CAddrMan::Good_(const CService& addr, int64_t nTIMECCoin)
     MakeTried(info, nId);
 }
 
-bool CAddrMan::Add_(const CAddress& addr, const CNetAddr& source, int64_t nTIMECCoinPenalty)
+bool CAddrMan::Add_(const CAddress& addr, const CNetAddr& source, int64_t nTIMECoinPenalty)
 {
     if (!addr.IsRoutable())
         return false;
@@ -252,17 +252,17 @@ bool CAddrMan::Add_(const CAddress& addr, const CNetAddr& source, int64_t nTIMEC
     CAddrInfo* pinfo = Find(addr, &nId);
 
     if (pinfo) {
-        // periodically update nTIMECCoin
-        bool fCurrentlyOnline = (GetAdjustedTIMECCoin() - addr.nTIMECCoin < 24 * 60 * 60);
+        // periodically update nTIMECoin
+        bool fCurrentlyOnline = (GetAdjustedTIMECoin() - addr.nTIMECoin < 24 * 60 * 60);
         int64_t nUpdateInterval = (fCurrentlyOnline ? 60 * 60 : 24 * 60 * 60);
-        if (addr.nTIMECCoin && (!pinfo->nTIMECCoin || pinfo->nTIMECCoin < addr.nTIMECCoin - nUpdateInterval - nTIMECCoinPenalty))
-            pinfo->nTIMECCoin = std::max((int64_t)0, addr.nTIMECCoin - nTIMECCoinPenalty);
+        if (addr.nTIMECoin && (!pinfo->nTIMECoin || pinfo->nTIMECoin < addr.nTIMECoin - nUpdateInterval - nTIMECoinPenalty))
+            pinfo->nTIMECoin = std::max((int64_t)0, addr.nTIMECoin - nTIMECoinPenalty);
 
         // add services
         pinfo->nServices = ServiceFlags(pinfo->nServices | addr.nServices);
 
         // do not update if no new information is present
-        if (!addr.nTIMECCoin || (pinfo->nTIMECCoin && addr.nTIMECCoin <= pinfo->nTIMECCoin))
+        if (!addr.nTIMECoin || (pinfo->nTIMECoin && addr.nTIMECoin <= pinfo->nTIMECoin))
             return false;
 
         // do not update if the entry was already in the "tried" table
@@ -281,7 +281,7 @@ bool CAddrMan::Add_(const CAddress& addr, const CNetAddr& source, int64_t nTIMEC
             return false;
     } else {
         pinfo = Create(addr, source, &nId);
-        pinfo->nTIMECCoin = std::max((int64_t)0, (int64_t)pinfo->nTIMECCoin - nTIMECCoinPenalty);
+        pinfo->nTIMECoin = std::max((int64_t)0, (int64_t)pinfo->nTIMECoin - nTIMECoinPenalty);
         nNew++;
         fNew = true;
     }
@@ -310,7 +310,7 @@ bool CAddrMan::Add_(const CAddress& addr, const CNetAddr& source, int64_t nTIMEC
     return fNew;
 }
 
-void CAddrMan::Attempt_(const CService& addr, int64_t nTIMECCoin)
+void CAddrMan::Attempt_(const CService& addr, int64_t nTIMECoin)
 {
     CAddrInfo* pinfo = Find(addr);
 
@@ -325,7 +325,7 @@ void CAddrMan::Attempt_(const CService& addr, int64_t nTIMECCoin)
         return;
 
     // update info
-    info.nLastTry = nTIMECCoin;
+    info.nLastTry = nTIMECoin;
     info.nAttempts++;
 }
 
@@ -475,7 +475,7 @@ void CAddrMan::GetAddr_(std::vector<CAddress>& vAddr)
     }
 }
 
-void CAddrMan::Connected_(const CService& addr, int64_t nTIMECCoin)
+void CAddrMan::Connected_(const CService& addr, int64_t nTIMECoin)
 {
     CAddrInfo* pinfo = Find(addr);
 
@@ -491,8 +491,8 @@ void CAddrMan::Connected_(const CService& addr, int64_t nTIMECCoin)
 
     // update info
     int64_t nUpdateInterval = 20 * 60;
-    if (nTIMECCoin - info.nTIMECCoin > nUpdateInterval)
-        info.nTIMECCoin = nTIMECCoin;
+    if (nTIMECoin - info.nTIMECoin > nUpdateInterval)
+        info.nTIMECoin = nTIMECoin;
 }
 
 void CAddrMan::SetServices_(const CService& addr, ServiceFlags nServices)

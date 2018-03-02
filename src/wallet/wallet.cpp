@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -108,8 +108,8 @@ CPubKey CWallet::GenerateNewKey(uint32_t nAccountIndex, bool fInternal)
     CKey secret;
 
     // Create new metadata
-    int64_t nCreationTIMECCoin = GetTIMECCoin();
-    CKeyMetadata metadata(nCreationTIMECCoin);
+    int64_t nCreationTIMECoin = GetTIMECoin();
+    CKeyMetadata metadata(nCreationTIMECoin);
 
     CPubKey pubkey;
     // use HD key derivation if HD was enabled during wallet creation
@@ -128,8 +128,8 @@ CPubKey CWallet::GenerateNewKey(uint32_t nAccountIndex, bool fInternal)
 
         // Create new metadata
         mapKeyMetadata[pubkey.GetID()] = metadata;
-        if (!nTIMECCoinFirstKey || nCreationTIMECCoin < nTIMECCoinFirstKey)
-            nTIMECCoinFirstKey = nCreationTIMECCoin;
+        if (!nTIMECoinFirstKey || nCreationTIMECoin < nTIMECoinFirstKey)
+            nTIMECoinFirstKey = nCreationTIMECoin;
 
         if (!AddKeyPubKey(secret, pubkey))
             throw std::runtime_error(std::string(__func__) + ": AddKey failed");
@@ -169,8 +169,8 @@ void CWallet::DeriveNewChildKey(const CKeyMetadata& metadata, CKey& secretRet, u
 
     // store metadata
     mapKeyMetadata[pubkey.GetID()] = metadata;
-    if (!nTIMECCoinFirstKey || metadata.nCreateTIMECCoin < nTIMECCoinFirstKey)
-        nTIMECCoinFirstKey = metadata.nCreateTIMECCoin;
+    if (!nTIMECoinFirstKey || metadata.nCreateTIMECoin < nTIMECoinFirstKey)
+        nTIMECoinFirstKey = metadata.nCreateTIMECoin;
 
     // update the chain model in the database
     CHDChain hdChainCurrent;
@@ -334,8 +334,8 @@ bool CWallet::AddCryptedKey(const CPubKey &vchPubKey,
 bool CWallet::LoadKeyMetadata(const CPubKey &pubkey, const CKeyMetadata &meta)
 {
     AssertLockHeld(cs_wallet); // mapKeyMetadata
-    if (meta.nCreateTIMECCoin && (!nTIMECCoinFirstKey || meta.nCreateTIMECCoin < nTIMECCoinFirstKey))
-        nTIMECCoinFirstKey = meta.nCreateTIMECCoin;
+    if (meta.nCreateTIMECoin && (!nTIMECoinFirstKey || meta.nCreateTIMECoin < nTIMECoinFirstKey))
+        nTIMECoinFirstKey = meta.nCreateTIMECoin;
 
     mapKeyMetadata[pubkey.GetID()] = meta;
     return true;
@@ -375,7 +375,7 @@ bool CWallet::AddWatchOnly(const CScript &dest)
 {
     if (!CCryptoKeyStore::AddWatchOnly(dest))
         return false;
-    nTIMECCoinFirstKey = 1; // No birthday information for watch-only keys.
+    nTIMECoinFirstKey = 1; // No birthday information for watch-only keys.
     NotifyWatchonlyChanged(true);
     if (!fFileBacked)
         return true;
@@ -478,13 +478,13 @@ bool CWallet::ChangeWalletPassphrase(const SecureString& strOldWalletPassphrase,
                 return false;
             if (CCryptoKeyStore::Unlock(vMasterKey))
             {
-                int64_t nStartTIMECCoin = GetTIMECCoinMillis();
+                int64_t nStartTIMECoin = GetTIMECoinMillis();
                 crypter.SetKeyFromPassphrase(strNewWalletPassphrase, pMasterKey.second.vchSalt, pMasterKey.second.nDeriveIterations, pMasterKey.second.nDerivationMethod);
-                pMasterKey.second.nDeriveIterations = pMasterKey.second.nDeriveIterations * (100 / ((double)(GetTIMECCoinMillis() - nStartTIMECCoin)));
+                pMasterKey.second.nDeriveIterations = pMasterKey.second.nDeriveIterations * (100 / ((double)(GetTIMECoinMillis() - nStartTIMECoin)));
 
-                nStartTIMECCoin = GetTIMECCoinMillis();
+                nStartTIMECoin = GetTIMECoinMillis();
                 crypter.SetKeyFromPassphrase(strNewWalletPassphrase, pMasterKey.second.vchSalt, pMasterKey.second.nDeriveIterations, pMasterKey.second.nDerivationMethod);
-                pMasterKey.second.nDeriveIterations = (pMasterKey.second.nDeriveIterations + pMasterKey.second.nDeriveIterations * 100 / ((double)(GetTIMECCoinMillis() - nStartTIMECCoin))) / 2;
+                pMasterKey.second.nDeriveIterations = (pMasterKey.second.nDeriveIterations + pMasterKey.second.nDeriveIterations * 100 / ((double)(GetTIMECoinMillis() - nStartTIMECoin))) / 2;
 
                 if (pMasterKey.second.nDeriveIterations < 25000)
                     pMasterKey.second.nDeriveIterations = 25000;
@@ -597,7 +597,7 @@ bool CWallet::Verify(const string& walletFile, string& warningString, string& er
     {
         // try moving the database env out of the way
         boost::filesystem::path pathDatabase = GetDataDir() / "database";
-        boost::filesystem::path pathDatabaseBak = GetDataDir() / strprintf("database.%d.bak", GetTIMECCoin());
+        boost::filesystem::path pathDatabaseBak = GetDataDir() / strprintf("database.%d.bak", GetTIMECoin());
         try {
             boost::filesystem::rename(pathDatabase, pathDatabaseBak);
             LogPrintf("Moved old %s to %s. Retrying.\n", pathDatabase.string(), pathDatabaseBak.string());
@@ -665,9 +665,9 @@ void CWallet::SyncMetaData(pair<TxSpends::iterator, TxSpends::iterator> range)
         if (!copyFrom->IsEquivalentTo(*copyTo)) continue;
         copyTo->mapValue = copyFrom->mapValue;
         copyTo->vOrderForm = copyFrom->vOrderForm;
-        // fTIMECCoinReceivedIsTxTIMECCoin not copied on purpose
-        // nTIMECCoinReceived not copied on purpose
-        copyTo->nTIMECCoinSmart = copyFrom->nTIMECCoinSmart;
+        // fTIMECoinReceivedIsTxTIMECoin not copied on purpose
+        // nTIMECoinReceived not copied on purpose
+        copyTo->nTIMECoinSmart = copyFrom->nTIMECoinSmart;
         copyTo->fFromMe = copyFrom->fFromMe;
         copyTo->strFromAccount = copyFrom->strFromAccount;
         // nOrderPos not copied on purpose
@@ -738,13 +738,13 @@ bool CWallet::EncryptWallet(const SecureString& strWalletPassphrase)
     GetRandBytes(&kMasterKey.vchSalt[0], WALLET_CRYPTO_SALT_SIZE);
 
     CCrypter crypter;
-    int64_t nStartTIMECCoin = GetTIMECCoinMillis();
+    int64_t nStartTIMECoin = GetTIMECoinMillis();
     crypter.SetKeyFromPassphrase(strWalletPassphrase, kMasterKey.vchSalt, 25000, kMasterKey.nDerivationMethod);
-    kMasterKey.nDeriveIterations = 2500000 / ((double)(GetTIMECCoinMillis() - nStartTIMECCoin));
+    kMasterKey.nDeriveIterations = 2500000 / ((double)(GetTIMECoinMillis() - nStartTIMECoin));
 
-    nStartTIMECCoin = GetTIMECCoinMillis();
+    nStartTIMECoin = GetTIMECoinMillis();
     crypter.SetKeyFromPassphrase(strWalletPassphrase, kMasterKey.vchSalt, kMasterKey.nDeriveIterations, kMasterKey.nDerivationMethod);
-    kMasterKey.nDeriveIterations = (kMasterKey.nDeriveIterations + kMasterKey.nDeriveIterations * 100 / ((double)(GetTIMECCoinMillis() - nStartTIMECCoin))) / 2;
+    kMasterKey.nDeriveIterations = (kMasterKey.nDeriveIterations + kMasterKey.nDeriveIterations * 100 / ((double)(GetTIMECoinMillis() - nStartTIMECoin))) / 2;
 
     if (kMasterKey.nDeriveIterations < 25000)
         kMasterKey.nDeriveIterations = 25000;
@@ -907,16 +907,16 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet, CWalletD
         bool fInsertedNew = ret.second;
         if (fInsertedNew)
         {
-            wtx.nTIMECCoinReceived = GetAdjustedTIMECCoin();
+            wtx.nTIMECoinReceived = GetAdjustedTIMECoin();
             wtx.nOrderPos = IncOrderPosNext(pwalletdb);
             wtxOrdered.insert(make_pair(wtx.nOrderPos, TxPair(&wtx, (CAccountingEntry*)0)));
 
-            wtx.nTIMECCoinSmart = wtx.nTIMECCoinReceived;
+            wtx.nTIMECoinSmart = wtx.nTIMECoinReceived;
             if (!wtxIn.hashUnset())
             {
                 if (mapBlockIndex.count(wtxIn.hashBlock))
                 {
-                    int64_t latestNow = wtx.nTIMECCoinReceived;
+                    int64_t latestNow = wtx.nTIMECoinReceived;
                     int64_t latestEntry = 0;
                     {
                         // Tolerate times up to the last timestamp in the wallet not more than 5 minutes into the future
@@ -928,27 +928,27 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFromLoadWallet, CWalletD
                             if (pwtx == &wtx)
                                 continue;
                             CAccountingEntry *const pacentry = (*it).second.second;
-                            int64_t nSmartTIMECCoin;
+                            int64_t nSmartTIMECoin;
                             if (pwtx)
                             {
-                                nSmartTIMECCoin = pwtx->nTIMECCoinSmart;
-                                if (!nSmartTIMECCoin)
-                                    nSmartTIMECCoin = pwtx->nTIMECCoinReceived;
+                                nSmartTIMECoin = pwtx->nTIMECoinSmart;
+                                if (!nSmartTIMECoin)
+                                    nSmartTIMECoin = pwtx->nTIMECoinReceived;
                             }
                             else
-                                nSmartTIMECCoin = pacentry->nTIMECCoin;
-                            if (nSmartTIMECCoin <= latestTolerated)
+                                nSmartTIMECoin = pacentry->nTIMECoin;
+                            if (nSmartTIMECoin <= latestTolerated)
                             {
-                                latestEntry = nSmartTIMECCoin;
-                                if (nSmartTIMECCoin > latestNow)
-                                    latestNow = nSmartTIMECCoin;
+                                latestEntry = nSmartTIMECoin;
+                                if (nSmartTIMECoin > latestNow)
+                                    latestNow = nSmartTIMECoin;
                                 break;
                             }
                         }
                     }
 
-                    int64_t blocktime = mapBlockIndex[wtxIn.hashBlock]->GetBlockTIMECCoin();
-                    wtx.nTIMECCoinSmart = std::max(latestEntry, std::min(blocktime, latestNow));
+                    int64_t blocktime = mapBlockIndex[wtxIn.hashBlock]->GetBlockTIMECoin();
+                    wtx.nTIMECoinSmart = std::max(latestEntry, std::min(blocktime, latestNow));
                 }
                 else
                     LogPrintf("AddToWallet(): found %s in block %s not in index\n",
@@ -1529,10 +1529,10 @@ CAmount CWallet::GetChange(const CTransaction& tx) const
     return nChange;
 }
 
-int64_t CWalletTx::GetTxTIMECCoin() const
+int64_t CWalletTx::GetTxTIMECoin() const
 {
-    int64_t n = nTIMECCoinSmart;
-    return n ? n : nTIMECCoinReceived;
+    int64_t n = nTIMECoinSmart;
+    return n ? n : nTIMECoinReceived;
 }
 
 int CWalletTx::GetRequestCount() const
@@ -1679,7 +1679,7 @@ bool CWalletTx::WriteToDisk(CWalletDB *pwalletdb)
 int CWallet::ScanForWalletTransactions(CBlockIndex* pindexStart, bool fUpdate)
 {
     int ret = 0;
-    int64_t nNow = GetTIMECCoin();
+    int64_t nNow = GetTIMECoin();
     const CChainParams& chainParams = Params();
 
     CBlockIndex* pindex = pindexStart;
@@ -1688,7 +1688,7 @@ int CWallet::ScanForWalletTransactions(CBlockIndex* pindexStart, bool fUpdate)
 
         // no need to read and scan block, if block was created before
         // our wallet birthday (as adjusted for block time variability)
-        while (pindex && nTIMECCoinFirstKey && (pindex->GetBlockTIMECCoin() < (nTIMECCoinFirstKey - 7200)))
+        while (pindex && nTIMECoinFirstKey && (pindex->GetBlockTIMECoin() < (nTIMECoinFirstKey - 7200)))
             pindex = chainActive.Next(pindex);
 
         ShowProgress(_("Rescanning..."), 0); // show rescan progress in GUI as dialog or on splashscreen, if -rescan on startup
@@ -1707,8 +1707,8 @@ int CWallet::ScanForWalletTransactions(CBlockIndex* pindexStart, bool fUpdate)
                     ret++;
             }
             pindex = chainActive.Next(pindex);
-            if (GetTIMECCoin() >= nNow + 60) {
-                nNow = GetTIMECCoin();
+            if (GetTIMECoin() >= nNow + 60) {
+                nNow = GetTIMECoin();
                 LogPrintf("Still rescanning. At block %d. Progress=%f\n", pindex->nHeight, Checkpoints::GuessVerificationProgress(chainParams.Checkpoints(), pindex));
             }
         }
@@ -2070,7 +2070,7 @@ bool CWalletTx::IsEquivalentTo(const CWalletTx& tx) const
         return CTransaction(tx1) == CTransaction(tx2);
 }
 
-std::vector<uint256> CWallet::ResendWalletTransactionsBefore(int64_t nTIMECCoin, CConnman* connman)
+std::vector<uint256> CWallet::ResendWalletTransactionsBefore(int64_t nTIMECoin, CConnman* connman)
 {
     std::vector<uint256> result;
 
@@ -2080,10 +2080,10 @@ std::vector<uint256> CWallet::ResendWalletTransactionsBefore(int64_t nTIMECCoin,
     BOOST_FOREACH(PAIRTYPE(const uint256, CWalletTx)& item, mapWallet)
     {
         CWalletTx& wtx = item.second;
-        // Don't rebroadcast if newer than nTIMECCoin:
-        if (wtx.nTIMECCoinReceived > nTIMECCoin)
+        // Don't rebroadcast if newer than nTIMECoin:
+        if (wtx.nTIMECoinReceived > nTIMECoin)
             continue;
-        mapSorted.insert(make_pair(wtx.nTIMECCoinReceived, &wtx));
+        mapSorted.insert(make_pair(wtx.nTIMECoinReceived, &wtx));
     }
     BOOST_FOREACH(PAIRTYPE(const unsigned int, CWalletTx*)& item, mapSorted)
     {
@@ -2094,25 +2094,25 @@ std::vector<uint256> CWallet::ResendWalletTransactionsBefore(int64_t nTIMECCoin,
     return result;
 }
 
-void CWallet::ResendWalletTransactions(int64_t nBestBlockTIMECCoin, CConnman* connman)
+void CWallet::ResendWalletTransactions(int64_t nBestBlockTIMECoin, CConnman* connman)
 {
     // Do this infrequently and randomly to avoid giving away
     // that these are our transactions.
-    if (GetTIMECCoin() < nNextResend || !fBroadcastTransactions)
+    if (GetTIMECoin() < nNextResend || !fBroadcastTransactions)
         return;
     bool fFirst = (nNextResend == 0);
-    nNextResend = GetTIMECCoin() + GetRand(30 * 60);
+    nNextResend = GetTIMECoin() + GetRand(30 * 60);
     if (fFirst)
         return;
 
     // Only do it if there's been a new block since last time
-    if (nBestBlockTIMECCoin < nLastResend)
+    if (nBestBlockTIMECoin < nLastResend)
         return;
-    nLastResend = GetTIMECCoin();
+    nLastResend = GetTIMECoin();
 
     // Rebroadcast unconfirmed txes older than 5 minutes before the last
     // block was found:
-    std::vector<uint256> relayed = ResendWalletTransactionsBefore(nBestBlockTIMECCoin-5*60, connman);
+    std::vector<uint256> relayed = ResendWalletTransactionsBefore(nBestBlockTIMECoin-5*60, connman);
     if (!relayed.empty())
         LogPrintf("%s: rebroadcast %u unconfirmed transactions\n", __func__, relayed.size());
 }
@@ -3173,7 +3173,7 @@ bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend, CWalletTx& wt
         return false;
     }
 
-    wtxNew.fTIMECCoinReceivedIsTxTIMECCoin = true;
+    wtxNew.fTIMECoinReceivedIsTxTIMECoin = true;
     wtxNew.BindWallet(this);
     CMutableTransaction txNew;
 
@@ -3181,13 +3181,13 @@ bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend, CWalletTx& wt
     //
     // For a large miner the value of the transactions in the best block and
     // the mempool can exceed the cost of deliberately attempting to mine two
-    // blocks to orphan the current best block. By setting nLockTIMECCoin such that
+    // blocks to orphan the current best block. By setting nLockTIMECoin such that
     // only the next block can include the transaction, we discourage this
     // practice as the height restricted and limited blocksize gives miners
     // considering fee sniping fewer options for pulling off this attack.
     //
     // A simple way to think about this is from the wallet's point of view we
-    // always want the blockchain to move forward. By setting nLockTIMECCoin this
+    // always want the blockchain to move forward. By setting nLockTIMECoin this
     // way we're basically making the statement that we only want this
     // transaction to appear in the next block; we don't want to potentially
     // encourage reorgs by allowing transactions to appear at lower heights
@@ -3196,19 +3196,19 @@ bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend, CWalletTx& wt
     // Of course, the subsidy is high enough, and transaction volume low
     // enough, that fee sniping isn't a problem yet, but by implementing a fix
     // now we ensure code won't be written that makes assumptions about
-    // nLockTIMECCoin that preclude a fix later.
+    // nLockTIMECoin that preclude a fix later.
 
-    txNew.nLockTIMECCoin = chainActive.Height();
+    txNew.nLockTIMECoin = chainActive.Height();
 
-    // Secondly occasionally randomly pick a nLockTIMECCoin even further back, so
+    // Secondly occasionally randomly pick a nLockTIMECoin even further back, so
     // that transactions that are delayed after signing for whatever reason,
     // e.g. high-latency mix networks and some CoinJoin implementations, have
     // better privacy.
     if (GetRandInt(10) == 0)
-        txNew.nLockTIMECCoin = std::max(0, (int)txNew.nLockTIMECCoin - GetRandInt(100));
+        txNew.nLockTIMECoin = std::max(0, (int)txNew.nLockTIMECoin - GetRandInt(100));
 
-    assert(txNew.nLockTIMECCoin <= (unsigned int)chainActive.Height());
-    assert(txNew.nLockTIMECCoin < LOCKTIMEC_THRESHOLD);
+    assert(txNew.nLockTIMECoin <= (unsigned int)chainActive.Height());
+    assert(txNew.nLockTIMECoin < LOCKTIMEC_THRESHOLD);
 
     {
         LOCK2(cs_main, cs_wallet);
@@ -3389,7 +3389,7 @@ bool CWallet::CreateTransaction(const vector<CRecipient>& vecSend, CWalletTx& wt
                 // Fill vin
                 //
                 // Note how the sequence number is set to max()-1 so that the
-                // nLockTIMECCoin set above actually works.
+                // nLockTIMECoin set above actually works.
                 std::vector<CTxDSIn> vecTxDSInTmp;
                 BOOST_FOREACH(const PAIRTYPE(const CWalletTx*,unsigned int)& coin, setCoins){
                     CTxIn txin = CTxIn(coin.first->GetHash(),coin.second,CScript(),
@@ -3906,16 +3906,16 @@ static int64_t GetOldestKeyInPool(const std::set<int64_t>& setKeyPool, CWalletDB
         throw std::runtime_error(std::string(__func__) + ": read oldest key in keypool failed");
     }
     assert(keypool.vchPubKey.IsValid());
-    return keypool.nTIMECCoin;
+    return keypool.nTIMECoin;
 }
 
-int64_t CWallet::GetOldestKeyPoolTIMECCoin()
+int64_t CWallet::GetOldestKeyPoolTIMECoin()
 {
     LOCK(cs_wallet);
 
     // if the keypool is empty, return <NOW>
     if (setExternalKeyPool.empty() && setInternalKeyPool.empty())
-        return GetTIMECCoin();
+        return GetTIMECoin();
 
     CWalletDB walletdb(strWalletFile);
     int64_t oldestKey = -1;
@@ -4249,14 +4249,14 @@ public:
     void operator()(const CNoDestination &none) {}
 };
 
-void CWallet::GetKeyBirthTIMECCoins(std::map<CKeyID, int64_t> &mapKeyBirth) const {
+void CWallet::GetKeyBirthTIMECoins(std::map<CKeyID, int64_t> &mapKeyBirth) const {
     AssertLockHeld(cs_wallet); // mapKeyMetadata
     mapKeyBirth.clear();
 
     // get birth times for keys with metadata
     for (std::map<CKeyID, CKeyMetadata>::const_iterator it = mapKeyMetadata.begin(); it != mapKeyMetadata.end(); it++)
-        if (it->second.nCreateTIMECCoin)
-            mapKeyBirth[it->first] = it->second.nCreateTIMECCoin;
+        if (it->second.nCreateTIMECoin)
+            mapKeyBirth[it->first] = it->second.nCreateTIMECoin;
 
     // map in which we'll infer heights of other keys
     CBlockIndex *pindexMax = chainActive[std::max(0, chainActive.Height() - 144)]; // the tip can be reorganised; use a 144-block safety margin
@@ -4298,7 +4298,7 @@ void CWallet::GetKeyBirthTIMECCoins(std::map<CKeyID, int64_t> &mapKeyBirth) cons
 
     // Extract block timestamps for those keys
     for (std::map<CKeyID, CBlockIndex*>::const_iterator it = mapKeyFirstBlock.begin(); it != mapKeyFirstBlock.end(); it++)
-        mapKeyBirth[it->first] = it->second->GetBlockTIMECCoin() - 7200; // block times can be 2h off
+        mapKeyBirth[it->first] = it->second->GetBlockTIMECoin() - 7200; // block times can be 2h off
 }
 
 bool CWallet::AddDestData(const CTxDestination &dest, const std::string &key, const std::string &value)
@@ -4345,21 +4345,21 @@ bool CWallet::GetDestData(const CTxDestination &dest, const std::string &key, st
 
 CKeyPool::CKeyPool()
 {
-    nTIMECCoin = GetTIMECCoin();
+    nTIMECoin = GetTIMECoin();
     fInternal = false;
 }
 
 CKeyPool::CKeyPool(const CPubKey& vchPubKeyIn, bool fInternalIn)
 {
-    nTIMECCoin = GetTIMECCoin();
+    nTIMECoin = GetTIMECoin();
     vchPubKey = vchPubKeyIn;
     fInternal = fInternalIn;
 }
 
 CWalletKey::CWalletKey(int64_t nExpires)
 {
-    nTIMECCoinCreated = (nExpires ? GetTIMECCoin() : 0);
-    nTIMECCoinExpires = nExpires;
+    nTIMECoinCreated = (nExpires ? GetTIMECoin() : 0);
+    nTIMECoinExpires = nExpires;
 }
 
 int CMerkleTx::SetMerkleBranch(const CBlock& block)

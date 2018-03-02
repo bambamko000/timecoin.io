@@ -22,8 +22,8 @@ public:
     unsigned int nUndoSize;    //!< number of used bytes in the undo file
     unsigned int nHeightFirst; //!< lowest height of block in file
     unsigned int nHeightLast;  //!< highest height of block in file
-    uint64_t nTIMECCoinFirst;       //!< earliest time of block in file
-    uint64_t nTIMECCoinLast;        //!< latest time of block in file
+    uint64_t nTIMECoinFirst;       //!< earliest time of block in file
+    uint64_t nTIMECoinLast;        //!< latest time of block in file
 
     ADD_SERIALIZE_METHODS;
 
@@ -34,8 +34,8 @@ public:
         READWRITE(VARINT(nUndoSize));
         READWRITE(VARINT(nHeightFirst));
         READWRITE(VARINT(nHeightLast));
-        READWRITE(VARINT(nTIMECCoinFirst));
-        READWRITE(VARINT(nTIMECCoinLast));
+        READWRITE(VARINT(nTIMECoinFirst));
+        READWRITE(VARINT(nTIMECoinLast));
     }
 
      void SetNull() {
@@ -44,8 +44,8 @@ public:
          nUndoSize = 0;
          nHeightFirst = 0;
          nHeightLast = 0;
-         nTIMECCoinFirst = 0;
-         nTIMECCoinLast = 0;
+         nTIMECoinFirst = 0;
+         nTIMECoinLast = 0;
      }
 
      CBlockFileInfo() {
@@ -55,16 +55,16 @@ public:
      std::string ToString() const;
 
      /** update statistics (does not update nSize) */
-     void AddBlock(unsigned int nHeightIn, uint64_t nTIMECCoinIn) {
+     void AddBlock(unsigned int nHeightIn, uint64_t nTIMECoinIn) {
          if (nBlocks==0 || nHeightFirst > nHeightIn)
              nHeightFirst = nHeightIn;
-         if (nBlocks==0 || nTIMECCoinFirst > nTIMECCoinIn)
-             nTIMECCoinFirst = nTIMECCoinIn;
+         if (nBlocks==0 || nTIMECoinFirst > nTIMECoinIn)
+             nTIMECoinFirst = nTIMECoinIn;
          nBlocks++;
          if (nHeightIn > nHeightLast)
              nHeightLast = nHeightIn;
-         if (nTIMECCoinIn > nTIMECCoinLast)
-             nTIMECCoinLast = nTIMECCoinIn;
+         if (nTIMECoinIn > nTIMECoinLast)
+             nTIMECoinLast = nTIMECoinIn;
      }
 };
 
@@ -193,7 +193,7 @@ public:
     //! block header
     int nVersion;
     uint256 hashMerkleRoot;
-    unsigned int nTIMECCoin;
+    unsigned int nTIMECoin;
     unsigned int nBits;
     unsigned int nNonce;
 
@@ -217,7 +217,7 @@ public:
 
         nVersion       = 0;
         hashMerkleRoot = uint256();
-        nTIMECCoin          = 0;
+        nTIMECoin          = 0;
         nBits          = 0;
         nNonce         = 0;
     }
@@ -233,7 +233,7 @@ public:
 
         nVersion       = block.nVersion;
         hashMerkleRoot = block.hashMerkleRoot;
-        nTIMECCoin          = block.nTIMECCoin;
+        nTIMECoin          = block.nTIMECoin;
         nBits          = block.nBits;
         nNonce         = block.nNonce;
     }
@@ -263,7 +263,7 @@ public:
         if (pprev)
             block.hashPrevBlock = pprev->GetBlockHash();
         block.hashMerkleRoot = hashMerkleRoot;
-        block.nTIMECCoin          = nTIMECCoin;
+        block.nTIMECoin          = nTIMECoin;
         block.nBits          = nBits;
         block.nNonce         = nNonce;
         return block;
@@ -274,22 +274,22 @@ public:
         return *phashBlock;
     }
 
-    int64_t GetBlockTIMECCoin() const
+    int64_t GetBlockTIMECoin() const
     {
-        return (int64_t)nTIMECCoin;
+        return (int64_t)nTIMECoin;
     }
 
-    enum { nMedianTIMECCoinSpan=11 };
+    enum { nMedianTIMECoinSpan=11 };
 
-    int64_t GetMedianTIMECCoinPast() const
+    int64_t GetMedianTIMECoinPast() const
     {
-        int64_t pmedian[nMedianTIMECCoinSpan];
-        int64_t* pbegin = &pmedian[nMedianTIMECCoinSpan];
-        int64_t* pend = &pmedian[nMedianTIMECCoinSpan];
+        int64_t pmedian[nMedianTIMECoinSpan];
+        int64_t* pbegin = &pmedian[nMedianTIMECoinSpan];
+        int64_t* pend = &pmedian[nMedianTIMECoinSpan];
 
         const CBlockIndex* pindex = this;
-        for (int i = 0; i < nMedianTIMECCoinSpan && pindex; i++, pindex = pindex->pprev)
-            *(--pbegin) = pindex->GetBlockTIMECCoin();
+        for (int i = 0; i < nMedianTIMECoinSpan && pindex; i++, pindex = pindex->pprev)
+            *(--pbegin) = pindex->GetBlockTIMECoin();
 
         std::sort(pbegin, pend);
         return pbegin[(pend - pbegin)/2];
@@ -374,7 +374,7 @@ public:
         READWRITE(this->nVersion);
         READWRITE(hashPrev);
         READWRITE(hashMerkleRoot);
-        READWRITE(nTIMECCoin);
+        READWRITE(nTIMECoin);
         READWRITE(nBits);
         READWRITE(nNonce);
     }
@@ -387,7 +387,7 @@ public:
         block.nVersion        = nVersion;
         block.hashPrevBlock   = hashPrev;
         block.hashMerkleRoot  = hashMerkleRoot;
-        block.nTIMECCoin           = nTIMECCoin;
+        block.nTIMECoin           = nTIMECoin;
         block.nBits           = nBits;
         block.nNonce          = nNonce;
         return block.GetHash();

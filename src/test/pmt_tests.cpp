@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(pmt_test1)
         CBlock block;
         for (unsigned int j=0; j<nTx; j++) {
             CMutableTransaction tx;
-            tx.nLockTIMECCoin = j; // actual transaction data doesn't matter; just make the nLockTIMECCoin's unique
+            tx.nLockTIMECoin = j; // actual transaction data doesn't matter; just make the nLockTIMECoin's unique
             block.vtx.push_back(CTransaction(tx));
         }
 

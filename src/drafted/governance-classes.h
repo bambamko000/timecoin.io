@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 
 /*
  * FIELDS AND CLASSIFICATION
@@ -45,7 +45,7 @@
  * =========================
  *
  *   // network
- *   CTIMECCoinNetwork lvl, network-type, network-status, network-error, milestone-status*
+ *   CTIMECoinNetwork lvl, network-type, network-status, network-error, milestone-status*
  *   CCategory lvl, category-type, status, status-error
  *   CNetworkGlobalVariable lvl, global-type, status, status-error
  *   // base: actor
@@ -122,7 +122,7 @@ private:
     std::string strStatusMessage;
 
     // minimal caching
-    uint64_t nTIMECCoinValueOverrideCached;
+    uint64_t nTIMECoinValueOverrideCached;
 
 public:
 
@@ -130,7 +130,7 @@ public:
 };
 
 // // root node
-class CTIMECCoinNetwork : public CGovernanceObject
+class CTIMECoinNetwork : public CGovernanceObject
 {
 private:
     std::string strName;
@@ -138,7 +138,7 @@ private:
 
 
 public:
-    CTIMECCoinNetwork(UniValue objIn)
+    CTIMECoinNetwork(UniValue objIn)
     {
         strName = objIn["name"].get_str();
         strURL = objIn["name"].get_str();
@@ -150,7 +150,7 @@ public:
         CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
         ss << strName;
         ss << strURL;
-        ss << nTIMECCoin;
+        ss << nTIMECoin;
         ss << vecSig;
         ss << nGovernanceType;
         uint256 h1 = ss.GetHash();
@@ -167,16 +167,16 @@ public:
 
         READWRITE(LIMITED_STRING(strName, 20));
         READWRITE(LIMITED_STRING(strURL, 64));
-        READWRITE(nTIMECCoin);
+        READWRITE(nTIMECoin);
         READWRITE(vecSig);
         READWRITE(nCollateralHash);
     }
 
 };
 
-// // can be under: TIMECCoinNetwork
+// // can be under: TIMECoinNetwork
 // //   -- signature requirements : Key1(User)
-// class CTIMECCoinNetworkVariable : public CGovernanceObject
+// class CTIMECoinNetworkVariable : public CGovernanceObject
 // {
 // private:
 
@@ -205,7 +205,7 @@ public:
 
 //         READWRITE(LIMITED_STRING(strName, 20));
 //         READWRITE(LIMITED_STRING(strURL, 64));
-//         READWRITE(nTIMECCoin);
+//         READWRITE(nTIMECoin);
 //         READWRITE(vecSig);
 //         READWRITE(nCollateralHash);
 //     }
@@ -258,7 +258,7 @@ public:
 
 //         READWRITE(LIMITED_STRING(strName, 20));
 //         READWRITE(LIMITED_STRING(strURL, 64));
-//         READWRITE(nTIMECCoin);
+//         READWRITE(nTIMECoin);
 //         READWRITE(vecSig);
 //         READWRITE(nCollateralHash);
 //     }
@@ -279,7 +279,7 @@ public:
 //     // isRootCategory()
 //     // {
 //     //     // root categories won't have categories as parents
-//     //     return (IsType() == TIMECCoinNetwork);
+//     //     return (IsType() == TIMECoinNetwork);
 //     // }
 
 //     // isSubcategoryOf(std::string strParentName)
@@ -327,7 +327,7 @@ public:
 
 //         READWRITE(LIMITED_STRING(strName, 20));
 //         READWRITE(LIMITED_STRING(strURL, 64));
-//         READWRITE(nTIMECCoin);
+//         READWRITE(nTIMECoin);
 //         READWRITE(vecSig);
 //         READWRITE(nCollateralHash);
 //     }
@@ -392,7 +392,7 @@ public:
 
 //         READWRITE(LIMITED_STRING(strName, 20));
 //         READWRITE(LIMITED_STRING(strURL, 64));
-//         READWRITE(nTIMECCoin);
+//         READWRITE(nTIMECoin);
 //         READWRITE(vecSig);
 //         READWRITE(nCollateralHash);
 //     }
@@ -427,7 +427,7 @@ public:
 
 //         READWRITE(LIMITED_STRING(strName, 20));
 //         READWRITE(LIMITED_STRING(strURL, 64));
-//         READWRITE(nTIMECCoin);
+//         READWRITE(nTIMECoin);
 //         READWRITE(vecSig);
 //     }
         
@@ -462,7 +462,7 @@ public:
 
 //         READWRITE(LIMITED_STRING(strName, 20));
 //         READWRITE(LIMITED_STRING(strURL, 64));
-//         READWRITE(nTIMECCoin);
+//         READWRITE(nTIMECoin);
 //         READWRITE(vecSig);
 //     }
 
@@ -499,7 +499,7 @@ public:
 
 //         READWRITE(LIMITED_STRING(strName, 20));
 //         READWRITE(LIMITED_STRING(strURL, 64));
-//         READWRITE(nTIMECCoin);
+//         READWRITE(nTIMECoin);
 //         READWRITE(vecSig);
 //     }
 
@@ -534,7 +534,7 @@ public:
 
 //         READWRITE(LIMITED_STRING(strName, 20));
 //         READWRITE(LIMITED_STRING(strURL, 64));
-//         READWRITE(nTIMECCoin);
+//         READWRITE(nTIMECoin);
 //         READWRITE(vecSig);
 //     }
 
@@ -590,7 +590,7 @@ public:
 
 //         READWRITE(LIMITED_STRING(strName, 20));
 //         READWRITE(LIMITED_STRING(strURL, 64));
-//         READWRITE(nTIMECCoin);
+//         READWRITE(nTIMECoin);
 //         READWRITE(vecSig);
 //     }
 // };
@@ -632,7 +632,7 @@ public:
 
 //         READWRITE(LIMITED_STRING(strName, 20));
 //         READWRITE(LIMITED_STRING(strURL, 64));
-//         READWRITE(nTIMECCoin);
+//         READWRITE(nTIMECoin);
 //         READWRITE(vecSig);
 //     }
 

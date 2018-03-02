@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #include "privatesend.h"
@@ -39,7 +39,7 @@ bool CDarksendQueue::Sign()
 {
     if(!fMasterNode) return false;
 
-    std::string strMessage = vin.ToString() + boost::lexical_cast<std::string>(nDenom) + boost::lexical_cast<std::string>(nTIMECCoin) + boost::lexical_cast<std::string>(fReady);
+    std::string strMessage = vin.ToString() + boost::lexical_cast<std::string>(nDenom) + boost::lexical_cast<std::string>(nTIMECoin) + boost::lexical_cast<std::string>(fReady);
 
     if(!CMessageSigner::SignMessage(strMessage, vchSig, activeMasternode.keyMasternode)) {
         LogPrintf("CDarksendQueue::Sign -- SignMessage() failed, %s\n", ToString());
@@ -51,7 +51,7 @@ bool CDarksendQueue::Sign()
 
 bool CDarksendQueue::CheckSignature(const CPubKey& pubKeyMasternode)
 {
-    std::string strMessage = vin.ToString() + boost::lexical_cast<std::string>(nDenom) + boost::lexical_cast<std::string>(nTIMECCoin) + boost::lexical_cast<std::string>(fReady);
+    std::string strMessage = vin.ToString() + boost::lexical_cast<std::string>(nDenom) + boost::lexical_cast<std::string>(nTIMECoin) + boost::lexical_cast<std::string>(fReady);
     std::string strError = "";
 
     if(!CMessageSigner::VerifyMessage(pubKeyMasternode, vchSig, strMessage, strError)) {
@@ -77,7 +77,7 @@ bool CDarksendBroadcastTx::Sign()
 {
     if(!fMasterNode) return false;
 
-    std::string strMessage = tx.GetHash().ToString() + boost::lexical_cast<std::string>(sigTIMECCoin);
+    std::string strMessage = tx.GetHash().ToString() + boost::lexical_cast<std::string>(sigTIMECoin);
 
     if(!CMessageSigner::SignMessage(strMessage, vchSig, activeMasternode.keyMasternode)) {
         LogPrintf("CDarksendBroadcastTx::Sign -- SignMessage() failed\n");
@@ -89,7 +89,7 @@ bool CDarksendBroadcastTx::Sign()
 
 bool CDarksendBroadcastTx::CheckSignature(const CPubKey& pubKeyMasternode)
 {
-    std::string strMessage = tx.GetHash().ToString() + boost::lexical_cast<std::string>(sigTIMECCoin);
+    std::string strMessage = tx.GetHash().ToString() + boost::lexical_cast<std::string>(sigTIMECoin);
     std::string strError = "";
 
     if(!CMessageSigner::VerifyMessage(pubKeyMasternode, vchSig, strMessage, strError)) {
@@ -115,7 +115,7 @@ void CPrivateSendBase::SetNull()
     vecEntries.clear();
     finalMutableTransaction.vin.clear();
     finalMutableTransaction.vout.clear();
-    nTIMECCoinLastSuccessfulStep = GetTIMECCoinMillis();
+    nTIMECoinLastSuccessfulStep = GetTIMECoinMillis();
 }
 
 void CPrivateSendBase::CheckQueue()
@@ -179,7 +179,7 @@ void CPrivateSend::InitStandardDenominations()
 bool CPrivateSend::IsCollateralValid(const CTransaction& txCollateral)
 {
     if(txCollateral.vout.empty()) return false;
-    if(txCollateral.nLockTIMECCoin != 0) return false;
+    if(txCollateral.nLockTIMECoin != 0) return false;
 
     CAmount nValueIn = 0;
     CAmount nValueOut = 0;
@@ -438,7 +438,7 @@ void CPrivateSend::SyncTransaction(const CTransaction& tx, const CBlock* pblock)
 //TODO: Rename/move to core
 void ThreadCheckPrivateSend(CConnman& connman)
 {
-    if(fLiteMode) return; // disable all TIMECCoin specific functionality
+    if(fLiteMode) return; // disable all TIMECoin specific functionality
 
     static bool fOneThread;
     if(fOneThread) return;

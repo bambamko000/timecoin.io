@@ -46,16 +46,16 @@ class CKeyMetadata
 public:
     static const int CURRENT_VERSION=1;
     int nVersion;
-    int64_t nCreateTIMECCoin; // 0 means unknown
+    int64_t nCreateTIMECoin; // 0 means unknown
 
     CKeyMetadata()
     {
         SetNull();
     }
-    CKeyMetadata(int64_t nCreateTIMECCoin_)
+    CKeyMetadata(int64_t nCreateTIMECoin_)
     {
         SetNull();
-        nCreateTIMECCoin = nCreateTIMECCoin_;
+        nCreateTIMECoin = nCreateTIMECoin_;
     }
 
     ADD_SERIALIZE_METHODS;
@@ -64,13 +64,13 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(this->nVersion);
         nVersion = this->nVersion;
-        READWRITE(nCreateTIMECCoin);
+        READWRITE(nCreateTIMECoin);
     }
 
     void SetNull()
     {
         nVersion = CKeyMetadata::CURRENT_VERSION;
-        nCreateTIMECCoin = 0;
+        nCreateTIMECoin = 0;
     }
 };
 

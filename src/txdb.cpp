@@ -308,21 +308,21 @@ bool CBlockTreeDB::ReadAddressIndex(uint160 addressHash, int type,
     return true;
 }
 
-bool CBlockTreeDB::WriteTIMECCoinstampIndex(const CTIMECCoinstampIndexKey &timestampIndex) {
+bool CBlockTreeDB::WriteTIMECoinstampIndex(const CTIMECoinstampIndexKey &timestampIndex) {
     CDBBatch batch(*this);
     batch.Write(make_pair(DB_TIMECSTAMPINDEX, timestampIndex), 0);
     return WriteBatch(batch);
 }
 
-bool CBlockTreeDB::ReadTIMECCoinstampIndex(const unsigned int &high, const unsigned int &low, std::vector<uint256> &hashes) {
+bool CBlockTreeDB::ReadTIMECoinstampIndex(const unsigned int &high, const unsigned int &low, std::vector<uint256> &hashes) {
 
     boost::scoped_ptr<CDBIterator> pcursor(NewIterator());
 
-    pcursor->Seek(make_pair(DB_TIMECSTAMPINDEX, CTIMECCoinstampIndexIteratorKey(low)));
+    pcursor->Seek(make_pair(DB_TIMECSTAMPINDEX, CTIMECoinstampIndexIteratorKey(low)));
 
     while (pcursor->Valid()) {
         boost::this_thread::interruption_point();
-        std::pair<char, CTIMECCoinstampIndexKey> key;
+        std::pair<char, CTIMECoinstampIndexKey> key;
         if (pcursor->GetKey(key) && key.first == DB_TIMECSTAMPINDEX && key.second.timestamp <= high) {
             hashes.push_back(key.second.blockHash);
             pcursor->Next();
@@ -368,7 +368,7 @@ bool CBlockTreeDB::LoadBlockIndexGuts(boost::function<CBlockIndex*(const uint256
                 pindexNew->nUndoPos       = diskindex.nUndoPos;
                 pindexNew->nVersion       = diskindex.nVersion;
                 pindexNew->hashMerkleRoot = diskindex.hashMerkleRoot;
-                pindexNew->nTIMECCoin          = diskindex.nTIMECCoin;
+                pindexNew->nTIMECoin          = diskindex.nTIMECoin;
                 pindexNew->nBits          = diskindex.nBits;
                 pindexNew->nNonce         = diskindex.nNonce;
                 pindexNew->nStatus        = diskindex.nStatus;

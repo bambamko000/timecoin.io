@@ -30,13 +30,13 @@ class QUrl;
 class QWidget;
 QT_END_NAMESPACE
 
-/** Utility functions used by the TIMECCoin Qt UI.
+/** Utility functions used by the TIMECoin Qt UI.
  */
 namespace GUIUtil
 {
     // Create human-readable string from date
-    QString dateTIMECCoinStr(const QDateTime &datetime);
-    QString dateTIMECCoinStr(qint64 nTIMECCoin);
+    QString dateTIMECoinStr(const QDateTime &datetime);
+    QString dateTIMECoinStr(qint64 nTIMECoin);
 
     // Return a monospace font
     QFont fixedPitchFont();
@@ -212,13 +212,13 @@ namespace GUIUtil
     /* Format CNodeStats.nServices bitmask into a user-readable string */
     QString formatServicesStr(quint64 mask);
 
-    /* Format a CNodeCombinedStats.dPingTIMECCoin into a user-readable string or display N/A, if 0*/
-    QString formatPingTIMECCoin(double dPingTIMECCoin);
+    /* Format a CNodeCombinedStats.dPingTIMECoin into a user-readable string or display N/A, if 0*/
+    QString formatPingTIMECoin(double dPingTIMECoin);
 
-    /* Format a CNodeCombinedStats.nTIMECCoinOffset into a user-readable string. */
-    QString formatTIMECCoinOffset(int64_t nTIMECCoinOffset);
+    /* Format a CNodeCombinedStats.nTIMECoinOffset into a user-readable string. */
+    QString formatTIMECoinOffset(int64_t nTIMECoinOffset);
 
-    QString formatNiceTIMECCoinOffset(qint64 secs);
+    QString formatNiceTIMECoinOffset(qint64 secs);
 
     class ClickableLabel : public QLabel
     {

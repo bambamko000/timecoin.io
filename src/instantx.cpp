@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -48,7 +48,7 @@ CInstantSend instantsend;
 
 void CInstantSend::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv, CConnman& connman)
 {
-    if(fLiteMode) return; // disable all TIMECCoin specific functionality
+    if(fLiteMode) return; // disable all TIMECoin specific functionality
     if(!sporkManager.IsSporkActive(SPORK_2_INSTANTSEND_ENABLED)) return;
 
     // NOTE: NetMsgType::TXLOCKREQUEST is handled via ProcessMessage() in main.cpp
@@ -152,7 +152,7 @@ bool CInstantSend::CreateTxLockCandidate(const CTxLockRequest& txLockRequest)
     } else if (!itLockCandidate->second.txLockRequest) {
         // i.e. empty Transaction Lock Candidate was created earlier, let's update it with actual data
         itLockCandidate->second.txLockRequest = txLockRequest;
-        if (itLockCandidate->second.IsTIMECCoindOut()) {
+        if (itLockCandidate->second.IsTIMECoindOut()) {
             LogPrintf("CInstantSend::CreateTxLockCandidate -- timed out, txid=%s\n", txHash.ToString());
             return false;
         }
@@ -348,19 +348,19 @@ bool CInstantSend::ProcessTxLockVote(CNode* pfrom, CTxLockVote& vote, CConnman& 
         // This tracks those messages and allows only the same rate as of the rest of the network
         // TODO: make sure this works good enough for multi-quorum
 
-        int nMasternodeOrphanExpireTIMECCoin = GetTIMECCoin() + 60*10; // keep time data for 10 minutes
+        int nMasternodeOrphanExpireTIMECoin = GetTIMECoin() + 60*10; // keep time data for 10 minutes
         if(!mapMasternodeOrphanVotes.count(vote.GetMasternodeOutpoint())) {
-            mapMasternodeOrphanVotes[vote.GetMasternodeOutpoint()] = nMasternodeOrphanExpireTIMECCoin;
+            mapMasternodeOrphanVotes[vote.GetMasternodeOutpoint()] = nMasternodeOrphanExpireTIMECoin;
         } else {
             int64_t nPrevOrphanVote = mapMasternodeOrphanVotes[vote.GetMasternodeOutpoint()];
-            if(nPrevOrphanVote > GetTIMECCoin() && nPrevOrphanVote > GetAverageMasternodeOrphanVoteTIMECCoin()) {
+            if(nPrevOrphanVote > GetTIMECoin() && nPrevOrphanVote > GetAverageMasternodeOrphanVoteTIMECoin()) {
                 LogPrint("instantsend", "CInstantSend::ProcessTxLockVote -- masternode is spamming orphan Transaction Lock Votes: txid=%s  masternode=%s\n",
                         txHash.ToString(), vote.GetMasternodeOutpoint().ToStringShort());
                 // Misbehaving(pfrom->id, 1);
                 return false;
             }
             // not spamming, refresh
-            mapMasternodeOrphanVotes[vote.GetMasternodeOutpoint()] = nMasternodeOrphanExpireTIMECCoin;
+            mapMasternodeOrphanVotes[vote.GetMasternodeOutpoint()] = nMasternodeOrphanExpireTIMECoin;
         }
 
         return true;
@@ -368,7 +368,7 @@ bool CInstantSend::ProcessTxLockVote(CNode* pfrom, CTxLockVote& vote, CConnman& 
 
     CTxLockCandidate& txLockCandidate = it->second;
 
-    if (txLockCandidate.IsTIMECCoindOut()) {
+    if (txLockCandidate.IsTIMECoindOut()) {
         LogPrint("instantsend", "CInstantSend::ProcessTxLockVote -- too late, Transaction Lock timed out, txid=%s\n", txHash.ToString());
         return false;
     }
@@ -628,7 +628,7 @@ bool CInstantSend::ResolveConflicts(const CTxLockCandidate& txLockCandidate)
     return true;
 }
 
-int64_t CInstantSend::GetAverageMasternodeOrphanVoteTIMECCoin()
+int64_t CInstantSend::GetAverageMasternodeOrphanVoteTIMECoin()
 {
     LOCK(cs_instantsend);
     // NOTE: should never actually call this function when mapMasternodeOrphanVotes is empty
@@ -688,7 +688,7 @@ void CInstantSend::CheckAndRemove()
     // remove timed out orphan votes
     std::map<uint256, CTxLockVote>::iterator itOrphanVote = mapTxLockVotesOrphan.begin();
     while(itOrphanVote != mapTxLockVotesOrphan.end()) {
-        if(itOrphanVote->second.IsTIMECCoindOut()) {
+        if(itOrphanVote->second.IsTIMECoindOut()) {
             LogPrint("instantsend", "CInstantSend::CheckAndRemove -- Removing timed out orphan vote: txid=%s  masternode=%s\n",
                     itOrphanVote->second.GetTxHash().ToString(), itOrphanVote->second.GetMasternodeOutpoint().ToStringShort());
             mapTxLockVotes.erase(itOrphanVote->first);
@@ -713,7 +713,7 @@ void CInstantSend::CheckAndRemove()
     // remove timed out masternode orphan votes (DOS protection)
     std::map<COutPoint, int64_t>::iterator itMasternodeOrphan = mapMasternodeOrphanVotes.begin();
     while(itMasternodeOrphan != mapMasternodeOrphanVotes.end()) {
-        if(itMasternodeOrphan->second < GetTIMECCoin()) {
+        if(itMasternodeOrphan->second < GetTIMECoin()) {
             LogPrint("instantsend", "CInstantSend::CheckAndRemove -- Removing timed out orphan masternode vote: masternode=%s\n",
                     itMasternodeOrphan->first.ToStringShort());
             mapMasternodeOrphanVotes.erase(itMasternodeOrphan++);
@@ -830,7 +830,7 @@ int CInstantSend::GetConfirmations(const uint256 &nTXHash)
     return IsLockedInstantSendTransaction(nTXHash) ? nInstantSendDepth : 0;
 }
 
-bool CInstantSend::IsTxLockCandidateTIMECCoindOut(const uint256& txHash)
+bool CInstantSend::IsTxLockCandidateTIMECoindOut(const uint256& txHash)
 {
     if(!fEnableInstantSend) return false;
 
@@ -839,7 +839,7 @@ bool CInstantSend::IsTxLockCandidateTIMECCoindOut(const uint256& txHash)
     std::map<uint256, CTxLockCandidate>::iterator itLockCandidate = mapTxLockCandidates.find(txHash);
     if (itLockCandidate != mapTxLockCandidates.end()) {
         return !itLockCandidate->second.IsAllOutPointsReady() &&
-                itLockCandidate->second.IsTIMECCoindOut();
+                itLockCandidate->second.IsTIMECoindOut();
     }
 
     return false;
@@ -1102,14 +1102,14 @@ bool CTxLockVote::IsExpired(int nHeight) const
     return (nConfirmedHeight != -1) && (nHeight - nConfirmedHeight > Params().GetConsensus().nInstantSendKeepLock);
 }
 
-bool CTxLockVote::IsTIMECCoindOut() const
+bool CTxLockVote::IsTIMECoindOut() const
 {
-    return GetTIMECCoin() - nTIMECCoinCreated > INSTANTSEND_LOCK_TIMECOUT_SECONDS;
+    return GetTIMECoin() - nTIMECoinCreated > INSTANTSEND_LOCK_TIMECOUT_SECONDS;
 }
 
 bool CTxLockVote::IsFailed() const
 {
-    return (GetTIMECCoin() - nTIMECCoinCreated > INSTANTSEND_FAILED_TIMECOUT_SECONDS) && !instantsend.IsLockedInstantSendTransaction(GetTxHash());
+    return (GetTIMECoin() - nTIMECoinCreated > INSTANTSEND_FAILED_TIMECOUT_SECONDS) && !instantsend.IsLockedInstantSendTransaction(GetTxHash());
 }
 
 //
@@ -1208,9 +1208,9 @@ bool CTxLockCandidate::IsExpired(int nHeight) const
     return (nConfirmedHeight != -1) && (nHeight - nConfirmedHeight > Params().GetConsensus().nInstantSendKeepLock);
 }
 
-bool CTxLockCandidate::IsTIMECCoindOut() const
+bool CTxLockCandidate::IsTIMECoindOut() const
 {
-    return GetTIMECCoin() - nTIMECCoinCreated > INSTANTSEND_LOCK_TIMECOUT_SECONDS;
+    return GetTIMECoin() - nTIMECoinCreated > INSTANTSEND_LOCK_TIMECOUT_SECONDS;
 }
 
 void CTxLockCandidate::Relay(CConnman& connman) const

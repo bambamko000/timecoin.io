@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -100,10 +100,10 @@ UniValue gobject(const UniValue& params, bool fHelp)
 
         int nRevision = 1;
 
-        int64_t nTIMECCoin = GetAdjustedTIMECCoin();
+        int64_t nTIMECoin = GetAdjustedTIMECoin();
         std::string strData = params[1].get_str();
 
-        CGovernanceObject govobj(hashParent, nRevision, nTIMECCoin, uint256(), strData);
+        CGovernanceObject govobj(hashParent, nRevision, nTIMECoin, uint256(), strData);
 
         if(govobj.GetObjectType() == GOVERNANCE_OBJECT_PROPOSAL) {
             CProposalValidator validator(strData);
@@ -142,14 +142,14 @@ UniValue gobject(const UniValue& params, bool fHelp)
         }
 
         std::string strRevision = params[2].get_str();
-        std::string strTIMECCoin = params[3].get_str();
+        std::string strTIMECoin = params[3].get_str();
         int nRevision = boost::lexical_cast<int>(strRevision);
-        int nTIMECCoin = boost::lexical_cast<int>(strTIMECCoin);
+        int nTIMECoin = boost::lexical_cast<int>(strTIMECoin);
         std::string strData = params[4].get_str();
 
         // CREATE A NEW COLLATERAL TRANSACTION FOR THIS SPECIFIC OBJECT
 
-        CGovernanceObject govobj(hashParent, nRevision, nTIMECCoin, uint256(), strData);
+        CGovernanceObject govobj(hashParent, nRevision, nTIMECoin, uint256(), strData);
 
         if(govobj.GetObjectType() == GOVERNANCE_OBJECT_PROPOSAL) {
             CProposalValidator validator(strData);
@@ -225,12 +225,12 @@ UniValue gobject(const UniValue& params, bool fHelp)
         // GET THE PARAMETERS FROM USER
 
         std::string strRevision = params[2].get_str();
-        std::string strTIMECCoin = params[3].get_str();
+        std::string strTIMECoin = params[3].get_str();
         int nRevision = boost::lexical_cast<int>(strRevision);
-        int nTIMECCoin = boost::lexical_cast<int>(strTIMECCoin);
+        int nTIMECoin = boost::lexical_cast<int>(strTIMECoin);
         std::string strData = params[4].get_str();
 
-        CGovernanceObject govobj(hashParent, nRevision, nTIMECCoin, txidFee, strData);
+        CGovernanceObject govobj(hashParent, nRevision, nTIMECoin, txidFee, strData);
 
         DBG( cout << "gobject: submit "
              << " strData = " << govobj.GetDataAsString()
@@ -625,8 +625,8 @@ UniValue gobject(const UniValue& params, bool fHelp)
 
         // GET STARTING TIMEC TO QUERY SYSTEM WITH
 
-        int nStartTIMECCoin = 0; //list
-        if(strCommand == "diff") nStartTIMECCoin = governance.GetLastDiffTIMECCoin();
+        int nStartTIMECoin = 0; //list
+        if(strCommand == "diff") nStartTIMECoin = governance.GetLastDiffTIMECoin();
 
         // SETUP BLOCK INDEX VARIABLE / RESULTS VARIABLE
 
@@ -636,8 +636,8 @@ UniValue gobject(const UniValue& params, bool fHelp)
 
         LOCK2(cs_main, governance.cs);
 
-        std::vector<CGovernanceObject*> objs = governance.GetAllNewerThan(nStartTIMECCoin);
-        governance.UpdateLastDiffTIMECCoin(GetTIMECCoin());
+        std::vector<CGovernanceObject*> objs = governance.GetAllNewerThan(nStartTIMECoin);
+        governance.UpdateLastDiffTIMECoin(GetTIMECoin());
 
         // CREATE RESULTS FOR USER
 
@@ -658,7 +658,7 @@ UniValue gobject(const UniValue& params, bool fHelp)
             bObj.push_back(Pair("Hash",  pGovObj->GetHash().ToString()));
             bObj.push_back(Pair("CollateralHash",  pGovObj->GetCollateralHash().ToString()));
             bObj.push_back(Pair("ObjectType", pGovObj->GetObjectType()));
-            bObj.push_back(Pair("CreationTIMECCoin", pGovObj->GetCreationTIMECCoin()));
+            bObj.push_back(Pair("CreationTIMECoin", pGovObj->GetCreationTIMECoin()));
             const CTxIn& masternodeVin = pGovObj->GetMasternodeVin();
             if(masternodeVin != CTxIn()) {
                 bObj.push_back(Pair("SigningMasternode", masternodeVin.prevout.ToStringShort()));
@@ -710,7 +710,7 @@ UniValue gobject(const UniValue& params, bool fHelp)
         objResult.push_back(Pair("Hash",  pGovObj->GetHash().ToString()));
         objResult.push_back(Pair("CollateralHash",  pGovObj->GetCollateralHash().ToString()));
         objResult.push_back(Pair("ObjectType", pGovObj->GetObjectType()));
-        objResult.push_back(Pair("CreationTIMECCoin", pGovObj->GetCreationTIMECCoin()));
+        objResult.push_back(Pair("CreationTIMECoin", pGovObj->GetCreationTIMECoin()));
         const CTxIn& masternodeVin = pGovObj->GetMasternodeVin();
         if(masternodeVin != CTxIn()) {
             objResult.push_back(Pair("SigningMasternode", masternodeVin.prevout.ToStringShort()));
@@ -872,7 +872,7 @@ UniValue voteraw(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid vote outcome. Please use one of the following: 'yes', 'no' or 'abstain'");
     }
 
-    int64_t nTIMECCoin = params[5].get_int64();
+    int64_t nTIMECoin = params[5].get_int64();
     std::string strSig = params[6].get_str();
     bool fInvalid = false;
     std::vector<unsigned char> vchSig = DecodeBase64(strSig.c_str(), &fInvalid);
@@ -889,7 +889,7 @@ UniValue voteraw(const UniValue& params, bool fHelp)
     }
 
     CGovernanceVote vote(outpoint, hashGovObj, eVoteSignal, eVoteOutcome);
-    vote.SetTIMECCoin(nTIMECCoin);
+    vote.SetTIMECoin(nTIMECoin);
     vote.SetSignature(vchSig);
 
     if(!vote.IsValid(true)) {

@@ -152,7 +152,7 @@ testScriptsExt = [
     'p2p-acceptblock.py', # NOTE: needs time_hash to pass
     'mempool_packages.py',
     'maxuploadtarget.py',
-    # 'replace-by-fee.py', # RBF is disabled in TIMECCoin Core
+    # 'replace-by-fee.py', # RBF is disabled in TIMECoin Core
 ]
 
 def runtests():

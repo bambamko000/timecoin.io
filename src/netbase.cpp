@@ -33,7 +33,7 @@
 static proxyType proxyInfo[NET_MAX];
 static proxyType nameProxy;
 static CCriticalSection cs_proxyInfos;
-int nConnectTIMECCoinout = DEFAULT_CONNECT_TIMECOUT;
+int nConnectTIMECoinout = DEFAULT_CONNECT_TIMECOUT;
 bool fNameLookup = DEFAULT_NAME_LOOKUP;
 
 // Need ample time for negotiation for very slow proxies such as Tor (milliseconds)
@@ -235,11 +235,11 @@ CService LookupNumeric(const char *pszName, int portDefault)
     return addr;
 }
 
-struct timeval MillisToTIMECCoinval(int64_t nTIMECCoinout)
+struct timeval MillisToTIMECoinval(int64_t nTIMECoinout)
 {
     struct timeval timeout;
-    timeout.tv_sec  = nTIMECCoinout / 1000;
-    timeout.tv_usec = (nTIMECCoinout % 1000) * 1000;
+    timeout.tv_sec  = nTIMECoinout / 1000;
+    timeout.tv_usec = (nTIMECoinout % 1000) * 1000;
     return timeout;
 }
 
@@ -250,18 +250,18 @@ struct timeval MillisToTIMECCoinval(int64_t nTIMECCoinout)
  *
  * @param data Buffer to receive into
  * @param len  Length of data to receive
- * @param timeout  TIMECCoinout in milliseconds for receive operation
+ * @param timeout  TIMECoinout in milliseconds for receive operation
  *
  * @note This function requires that hSocket is in non-blocking mode.
  */
 bool static InterruptibleRecv(char* data, size_t len, int timeout, SOCKET& hSocket)
 {
-    int64_t curTIMECCoin = GetTIMECCoinMillis();
-    int64_t endTIMECCoin = curTIMECCoin + timeout;
+    int64_t curTIMECoin = GetTIMECoinMillis();
+    int64_t endTIMECoin = curTIMECoin + timeout;
     // Maximum time to wait in one select call. It will take up until this time (in millis)
     // to break off in case of an interruption.
     const int64_t maxWait = 1000;
-    while (len > 0 && curTIMECCoin < endTIMECCoin) {
+    while (len > 0 && curTIMECoin < endTIMECoin) {
         ssize_t ret = recv(hSocket, data, len, 0); // Optimistically try the recv first
         if (ret > 0) {
             len -= ret;
@@ -274,7 +274,7 @@ bool static InterruptibleRecv(char* data, size_t len, int timeout, SOCKET& hSock
                 if (!IsSelectableSocket(hSocket)) {
                     return false;
                 }
-                struct timeval tval = MillisToTIMECCoinval(std::min(endTIMECCoin - curTIMECCoin, maxWait));
+                struct timeval tval = MillisToTIMECoinval(std::min(endTIMECoin - curTIMECoin, maxWait));
                 fd_set fdset;
                 FD_ZERO(&fdset);
                 FD_SET(hSocket, &fdset);
@@ -288,7 +288,7 @@ bool static InterruptibleRecv(char* data, size_t len, int timeout, SOCKET& hSock
         }
         if (interruptSocks5Recv)
             return false;
-        curTIMECCoin = GetTIMECCoinMillis();
+        curTIMECoin = GetTIMECoinMillis();
     }
     return len == 0;
 }
@@ -435,7 +435,7 @@ static bool Socks5(const std::string& strDest, int port, const ProxyCredentials 
     return true;
 }
 
-bool static ConnectSocketDirectly(const CService &addrConnect, SOCKET& hSocketRet, int nTIMECCoinout)
+bool static ConnectSocketDirectly(const CService &addrConnect, SOCKET& hSocketRet, int nTIMECoinout)
 {
     hSocketRet = INVALID_SOCKET;
 
@@ -473,7 +473,7 @@ bool static ConnectSocketDirectly(const CService &addrConnect, SOCKET& hSocketRe
         // WSAEINVAL is here because some legacy version of winsock uses it
         if (nErr == WSAEINPROGRESS || nErr == WSAEWOULDBLOCK || nErr == WSAEINVAL)
         {
-            struct timeval timeout = MillisToTIMECCoinval(nTIMECCoinout);
+            struct timeval timeout = MillisToTIMECoinval(nTIMECoinout);
             fd_set fdset;
             FD_ZERO(&fdset);
             FD_SET(hSocket, &fdset);
@@ -572,11 +572,11 @@ bool IsProxy(const CNetAddr &addr) {
     return false;
 }
 
-static bool ConnectThroughProxy(const proxyType &proxy, const std::string& strDest, int port, SOCKET& hSocketRet, int nTIMECCoinout, bool *outProxyConnectionFailed)
+static bool ConnectThroughProxy(const proxyType &proxy, const std::string& strDest, int port, SOCKET& hSocketRet, int nTIMECoinout, bool *outProxyConnectionFailed)
 {
     SOCKET hSocket = INVALID_SOCKET;
     // first connect to proxy server
-    if (!ConnectSocketDirectly(proxy.proxy, hSocket, nTIMECCoinout)) {
+    if (!ConnectSocketDirectly(proxy.proxy, hSocket, nTIMECoinout)) {
         if (outProxyConnectionFailed)
             *outProxyConnectionFailed = true;
         return false;
@@ -597,19 +597,19 @@ static bool ConnectThroughProxy(const proxyType &proxy, const std::string& strDe
     return true;
 }
 
-bool ConnectSocket(const CService &addrDest, SOCKET& hSocketRet, int nTIMECCoinout, bool *outProxyConnectionFailed)
+bool ConnectSocket(const CService &addrDest, SOCKET& hSocketRet, int nTIMECoinout, bool *outProxyConnectionFailed)
 {
     proxyType proxy;
     if (outProxyConnectionFailed)
         *outProxyConnectionFailed = false;
 
     if (GetProxy(addrDest.GetNetwork(), proxy))
-        return ConnectThroughProxy(proxy, addrDest.ToStringIP(), addrDest.GetPort(), hSocketRet, nTIMECCoinout, outProxyConnectionFailed);
+        return ConnectThroughProxy(proxy, addrDest.ToStringIP(), addrDest.GetPort(), hSocketRet, nTIMECoinout, outProxyConnectionFailed);
     else // no proxy needed (none set for target network)
-        return ConnectSocketDirectly(addrDest, hSocketRet, nTIMECCoinout);
+        return ConnectSocketDirectly(addrDest, hSocketRet, nTIMECoinout);
 }
 
-bool ConnectSocketByName(CService &addr, SOCKET& hSocketRet, const char *pszDest, int portDefault, int nTIMECCoinout, bool *outProxyConnectionFailed)
+bool ConnectSocketByName(CService &addr, SOCKET& hSocketRet, const char *pszDest, int portDefault, int nTIMECoinout, bool *outProxyConnectionFailed)
 {
     std::string strDest;
     int port = portDefault;
@@ -626,7 +626,7 @@ bool ConnectSocketByName(CService &addr, SOCKET& hSocketRet, const char *pszDest
     if (Lookup(strDest.c_str(), addrResolved, port, fNameLookup && !HaveNameProxy(), 256)) {
         if (addrResolved.size() > 0) {
             addr = addrResolved[GetRand(addrResolved.size())];
-            return ConnectSocket(addr, hSocketRet, nTIMECCoinout);
+            return ConnectSocket(addr, hSocketRet, nTIMECoinout);
         }
     }
 
@@ -634,7 +634,7 @@ bool ConnectSocketByName(CService &addr, SOCKET& hSocketRet, const char *pszDest
 
     if (!HaveNameProxy())
         return false;
-    return ConnectThroughProxy(nameProxy, strDest, port, hSocketRet, nTIMECCoinout, outProxyConnectionFailed);
+    return ConnectThroughProxy(nameProxy, strDest, port, hSocketRet, nTIMECoinout, outProxyConnectionFailed);
 }
 
 bool LookupSubNet(const char* pszName, CSubNet& ret)

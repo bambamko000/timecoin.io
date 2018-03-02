@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -97,14 +97,14 @@ bool CActiveMasternode::SendMasternodePing(CConnman& connman)
     CMasternodePing mnp(outpoint);
     mnp.nSentinelVersion = nSentinelVersion;
     mnp.fSentinelIsCurrent =
-            (abs(GetAdjustedTIMECCoin() - nSentinelPingTIMECCoin) < MASTERNODE_WATCHDOG_MAX_SECONDS);
+            (abs(GetAdjustedTIMECoin() - nSentinelPingTIMECoin) < MASTERNODE_WATCHDOG_MAX_SECONDS);
     if(!mnp.Sign(keyMasternode, pubKeyMasternode)) {
         LogPrintf("CActiveMasternode::SendMasternodePing -- ERROR: Couldn't sign Masternode Ping\n");
         return false;
     }
 
     // Update lastPing for our masternode in Masternode list
-    if(mnodeman.IsMasternodePingedWithin(outpoint, MASTERNODE_MIN_MNP_SECONDS, mnp.sigTIMECCoin)) {
+    if(mnodeman.IsMasternodePingedWithin(outpoint, MASTERNODE_MIN_MNP_SECONDS, mnp.sigTIMECoin)) {
         LogPrintf("CActiveMasternode::SendMasternodePing -- Too early to send Masternode Ping\n");
         return false;
     }
@@ -120,7 +120,7 @@ bool CActiveMasternode::SendMasternodePing(CConnman& connman)
 bool CActiveMasternode::UpdateSentinelPing(int version)
 {
     nSentinelVersion = version;
-    nSentinelPingTIMECCoin = GetAdjustedTIMECCoin();
+    nSentinelPingTIMECoin = GetAdjustedTIMECoin();
 
     return true;
 }

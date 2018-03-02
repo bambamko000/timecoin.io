@@ -39,14 +39,14 @@ namespace benchmark {
     class State {
         std::string name;
         double maxElapsed;
-        double beginTIMECCoin;
-        double lastTIMECCoin, minTIMECCoin, maxTIMECCoin;
+        double beginTIMECoin;
+        double lastTIMECoin, minTIMECoin, maxTIMECoin;
         int64_t count;
         int64_t timeCheckCount;
     public:
         State(std::string _name, double _maxElapsed) : name(_name), maxElapsed(_maxElapsed), count(0) {
-            minTIMECCoin = std::numeric_limits<double>::max();
-            maxTIMECCoin = std::numeric_limits<double>::min();
+            minTIMECoin = std::numeric_limits<double>::max();
+            maxTIMECoin = std::numeric_limits<double>::min();
             timeCheckCount = 1;
         }
         bool KeepRunning();
@@ -61,7 +61,7 @@ namespace benchmark {
     public:
         BenchRunner(std::string name, BenchFunction func);
 
-        static void RunAll(double elapsedTIMECCoinForOne=1.0);
+        static void RunAll(double elapsedTIMECoinForOne=1.0);
     };
 }
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -210,7 +210,7 @@ CGovernanceVote::CGovernanceVote()
       vinMasternode(),
       nParentHash(),
       nVoteOutcome(int(VOTE_OUTCOME_NONE)),
-      nTIMECCoin(0),
+      nTIMECoin(0),
       vchSig()
 {}
 
@@ -221,7 +221,7 @@ CGovernanceVote::CGovernanceVote(COutPoint outpointMasternodeIn, uint256 nParent
       vinMasternode(outpointMasternodeIn),
       nParentHash(nParentHashIn),
       nVoteOutcome(eVoteOutcomeIn),
-      nTIMECCoin(GetAdjustedTIMECCoin()),
+      nTIMECoin(GetAdjustedTIMECoin()),
       vchSig()
 {}
 
@@ -245,7 +245,7 @@ bool CGovernanceVote::Sign(CKey& keyMasternode, CPubKey& pubKeyMasternode)
 
     std::string strError;
     std::string strMessage = vinMasternode.prevout.ToStringShort() + "|" + nParentHash.ToString() + "|" +
-        boost::lexical_cast<std::string>(nVoteSignal) + "|" + boost::lexical_cast<std::string>(nVoteOutcome) + "|" + boost::lexical_cast<std::string>(nTIMECCoin);
+        boost::lexical_cast<std::string>(nVoteSignal) + "|" + boost::lexical_cast<std::string>(nVoteOutcome) + "|" + boost::lexical_cast<std::string>(nTIMECoin);
 
     if(!CMessageSigner::SignMessage(strMessage, vchSig, keyMasternode)) {
         LogPrintf("CGovernanceVote::Sign -- SignMessage() failed\n");
@@ -262,8 +262,8 @@ bool CGovernanceVote::Sign(CKey& keyMasternode, CPubKey& pubKeyMasternode)
 
 bool CGovernanceVote::IsValid(bool fSignatureCheck) const
 {
-    if(nTIMECCoin > GetAdjustedTIMECCoin() + (60*60)) {
-        LogPrint("gobject", "CGovernanceVote::IsValid -- vote is too far ahead of current time - %s - nTIMECCoin %lli - Max TIMECCoin %lli\n", GetHash().ToString(), nTIMECCoin, GetAdjustedTIMECCoin() + (60*60));
+    if(nTIMECoin > GetAdjustedTIMECoin() + (60*60)) {
+        LogPrint("gobject", "CGovernanceVote::IsValid -- vote is too far ahead of current time - %s - nTIMECoin %lli - Max TIMECoin %lli\n", GetHash().ToString(), nTIMECoin, GetAdjustedTIMECoin() + (60*60));
         return false;
     }
 
@@ -291,7 +291,7 @@ bool CGovernanceVote::IsValid(bool fSignatureCheck) const
 
     std::string strError;
     std::string strMessage = vinMasternode.prevout.ToStringShort() + "|" + nParentHash.ToString() + "|" +
-        boost::lexical_cast<std::string>(nVoteSignal) + "|" + boost::lexical_cast<std::string>(nVoteOutcome) + "|" + boost::lexical_cast<std::string>(nTIMECCoin);
+        boost::lexical_cast<std::string>(nVoteSignal) + "|" + boost::lexical_cast<std::string>(nVoteOutcome) + "|" + boost::lexical_cast<std::string>(nTIMECoin);
 
     if(!CMessageSigner::VerifyMessage(infoMn.pubKeyMasternode, vchSig, strMessage, strError)) {
         LogPrintf("CGovernanceVote::IsValid -- VerifyMessage() failed, error: %s\n", strError);
@@ -307,7 +307,7 @@ bool operator==(const CGovernanceVote& vote1, const CGovernanceVote& vote2)
                     (vote1.nParentHash == vote2.nParentHash) &&
                     (vote1.nVoteOutcome == vote2.nVoteOutcome) &&
                     (vote1.nVoteSignal == vote2.nVoteSignal) &&
-                    (vote1.nTIMECCoin == vote2.nTIMECCoin));
+                    (vote1.nTIMECoin == vote2.nTIMECoin));
     return fResult;
 }
 
@@ -337,7 +337,7 @@ bool operator<(const CGovernanceVote& vote1, const CGovernanceVote& vote2)
     }
     fResult = fResult && (vote1.nVoteSignal == vote2.nVoteSignal);
 
-    fResult = fResult && (vote1.nTIMECCoin < vote2.nTIMECCoin);
+    fResult = fResult && (vote1.nTIMECoin < vote2.nTIMECoin);
 
     return fResult;
 }

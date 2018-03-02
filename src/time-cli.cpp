@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -40,7 +40,7 @@ std::string HelpMessageCli()
     strUsage += HelpMessageOpt("-rpcwait", _("Wait for RPC server to start"));
     strUsage += HelpMessageOpt("-rpcuser=<user>", _("Username for JSON-RPC connections"));
     strUsage += HelpMessageOpt("-rpcpassword=<pw>", _("Password for JSON-RPC connections"));
-    strUsage += HelpMessageOpt("-rpcclienttimeout=<n>", strprintf(_("TIMECCoinout during HTTP requests (default: %d)"), DEFAULT_HTTP_CLIENT_TIMECOUT));
+    strUsage += HelpMessageOpt("-rpcclienttimeout=<n>", strprintf(_("TIMECoinout during HTTP requests (default: %d)"), DEFAULT_HTTP_CLIENT_TIMECOUT));
 
     return strUsage;
 }
@@ -75,10 +75,10 @@ static int AppInitRPC(int argc, char* argv[])
     //
     ParseParameters(argc, argv);
     if (argc<2 || mapArgs.count("-?") || mapArgs.count("-h") || mapArgs.count("-help") || mapArgs.count("-version")) {
-        std::string strUsage = _("TIMECCoin Core RPC client version") + " " + FormatFullVersion() + "\n";
+        std::string strUsage = _("TIMECoin Core RPC client version") + " " + FormatFullVersion() + "\n";
         if (!mapArgs.count("-version")) {
             strUsage += "\n" + _("Usage:") + "\n" +
-                  "  time-cli [options] <command> [params]  " + _("Send command to TIMECCoin Core") + "\n" +
+                  "  time-cli [options] <command> [params]  " + _("Send command to TIMECoin Core") + "\n" +
                   "  time-cli [options] help                " + _("List commands") + "\n" +
                   "  time-cli [options] help <command>      " + _("Get help for a command") + "\n";
 

@@ -161,7 +161,7 @@ Wallet:
 - Make GetAvailableCredit run GetHash() only once per transaction (performance
   improvement)
 - Lower paytxfee warning threshold
-- Fix importwallet nTIMECCoinFirstKey (trigger necessary rescans)
+- Fix importwallet nTIMECoinFirstKey (trigger necessary rescans)
 - Log BerkeleyDB version at startup
 - CWallet init fix
 - Bug fixes and new regression tests to correctly compute
@@ -242,7 +242,7 @@ Validation:
 - Fix multi-block reorg transaction resurrection
 - Reject non-canonically-encoded serialization sizes
 - Reject dust amounts during validation
-- Accept nLockTIMECCoin transactions that finalize in the next block
+- Accept nLockTIMECoin transactions that finalize in the next block
 - consensus: guard against openssl's new strict DER checks
 - fail immediately on an empty signature
 - Improve robustness of DER recoding code

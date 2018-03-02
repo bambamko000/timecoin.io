@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -76,8 +76,8 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     result.push_back(Pair("height", blockindex->nHeight));
     result.push_back(Pair("version", blockindex->nVersion));
     result.push_back(Pair("merkleroot", blockindex->hashMerkleRoot.GetHex()));
-    result.push_back(Pair("time", (int64_t)blockindex->nTIMECCoin));
-    result.push_back(Pair("mediantime", (int64_t)blockindex->GetMedianTIMECCoinPast()));
+    result.push_back(Pair("time", (int64_t)blockindex->nTIMECoin));
+    result.push_back(Pair("mediantime", (int64_t)blockindex->GetMedianTIMECoinPast()));
     result.push_back(Pair("nonce", (uint64_t)blockindex->nNonce));
     result.push_back(Pair("bits", strprintf("%08x", blockindex->nBits)));
     result.push_back(Pair("difficulty", GetDifficulty(blockindex)));
@@ -117,8 +117,8 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
             txs.push_back(tx.GetHash().GetHex());
     }
     result.push_back(Pair("tx", txs));
-    result.push_back(Pair("time", block.GetBlockTIMECCoin()));
-    result.push_back(Pair("mediantime", (int64_t)blockindex->GetMedianTIMECCoinPast()));
+    result.push_back(Pair("time", block.GetBlockTIMECoin()));
+    result.push_back(Pair("mediantime", (int64_t)blockindex->GetMedianTIMECoinPast()));
     result.push_back(Pair("nonce", (uint64_t)block.nNonce));
     result.push_back(Pair("bits", strprintf("%08x", block.nBits)));
     result.push_back(Pair("difficulty", GetDifficulty(blockindex)));
@@ -196,7 +196,7 @@ UniValue mempoolToJSON(bool fVerbose = false)
             info.push_back(Pair("size", (int)e.GetTxSize()));
             info.push_back(Pair("fee", ValueFromAmount(e.GetFee())));
             info.push_back(Pair("modifiedfee", ValueFromAmount(e.GetModifiedFee())));
-            info.push_back(Pair("time", e.GetTIMECCoin()));
+            info.push_back(Pair("time", e.GetTIMECoin()));
             info.push_back(Pair("height", (int)e.GetHeight()));
             info.push_back(Pair("startingpriority", e.GetPriority(e.GetHeight())));
             info.push_back(Pair("currentpriority", e.GetPriority(chainActive.Height())));
@@ -300,7 +300,7 @@ UniValue getblockhashes(const UniValue& params, bool fHelp)
     unsigned int low = params[1].get_int();
     std::vector<uint256> blockHashes;
 
-    if (!GetTIMECCoinstampIndex(high, low, blockHashes)) {
+    if (!GetTIMECoinstampIndex(high, low, blockHashes)) {
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "No information available for block hashes");
     }
 
@@ -862,7 +862,7 @@ UniValue getblockchaininfo(const UniValue& params, bool fHelp)
     obj.push_back(Pair("headers",               pindexBestHeader ? pindexBestHeader->nHeight : -1));
     obj.push_back(Pair("bestblockhash",         chainActive.Tip()->GetBlockHash().GetHex()));
     obj.push_back(Pair("difficulty",            (double)GetDifficulty()));
-    obj.push_back(Pair("mediantime",            (int64_t)chainActive.Tip()->GetMedianTIMECCoinPast()));
+    obj.push_back(Pair("mediantime",            (int64_t)chainActive.Tip()->GetMedianTIMECoinPast()));
     obj.push_back(Pair("verificationprogress",  Checkpoints::GuessVerificationProgress(Params().Checkpoints(), chainActive.Tip())));
     obj.push_back(Pair("chainwork",             chainActive.Tip()->nChainWork.GetHex()));
     obj.push_back(Pair("pruned",                fPruneMode));

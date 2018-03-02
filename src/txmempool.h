@@ -81,7 +81,7 @@ private:
     size_t nTxSize; //! ... and avoid recomputing tx size
     size_t nModSize; //! ... and modified size for priority
     size_t nUsageSize; //! ... and total memory usage
-    int64_t nTIMECCoin; //! Local time when entering the mempool
+    int64_t nTIMECoin; //! Local time when entering the mempool
     double entryPriority; //! Priority when entering the mempool
     unsigned int entryHeight; //! Chain height when entering the mempool
     bool hadNoDependencies; //! Not dependent on any other txs when it entered the mempool
@@ -102,7 +102,7 @@ private:
 
 public:
     CTxMemPoolEntry(const CTransaction& _tx, const CAmount& _nFee,
-                    int64_t _nTIMECCoin, double _entryPriority, unsigned int _entryHeight,
+                    int64_t _nTIMECoin, double _entryPriority, unsigned int _entryHeight,
                     bool poolHasNoInputsOf, CAmount _inChainInputValue, bool spendsCoinbase,
                     unsigned int nSigOps, LockPoints lp);
     CTxMemPoolEntry(const CTxMemPoolEntry& other);
@@ -115,7 +115,7 @@ public:
     double GetPriority(unsigned int currentHeight) const;
     const CAmount& GetFee() const { return nFee; }
     size_t GetTxSize() const { return nTxSize; }
-    int64_t GetTIMECCoin() const { return nTIMECCoin; }
+    int64_t GetTIMECoin() const { return nTIMECoin; }
     unsigned int GetHeight() const { return entryHeight; }
     bool WasClearAtEntry() const { return hadNoDependencies; }
     unsigned int GetSigOpCount() const { return sigOpCount; }
@@ -220,7 +220,7 @@ public:
         double f2 = aSize * bModFee;
 
         if (f1 == f2) {
-            return a.GetTIMECCoin() >= b.GetTIMECCoin();
+            return a.GetTIMECoin() >= b.GetTIMECoin();
         }
         return f1 < f2;
     }
@@ -252,12 +252,12 @@ public:
     }
 };
 
-class CompareTxMemPoolEntryByEntryTIMECCoin
+class CompareTxMemPoolEntryByEntryTIMECoin
 {
 public:
     bool operator()(const CTxMemPoolEntry& a, const CTxMemPoolEntry& b) const
     {
-        return a.GetTIMECCoin() < b.GetTIMECCoin();
+        return a.GetTIMECoin() < b.GetTIMECoin();
     }
 };
 
@@ -403,7 +403,7 @@ public:
             // sorted by entry time
             boost::multi_index::ordered_non_unique<
                 boost::multi_index::identity<CTxMemPoolEntry>,
-                CompareTxMemPoolEntryByEntryTIMECCoin
+                CompareTxMemPoolEntryByEntryTIMECoin
                 >,
             // sorted by score (for mining prioritization)
             boost::multi_index::ordered_unique<

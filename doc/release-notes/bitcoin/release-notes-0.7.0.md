@@ -146,7 +146,7 @@ Gavin Andresen
 Giel van Schijndel
 Gregory Maxwell
 Jeff Garzik
-Luke TIMECCoinjr
+Luke TIMECoinjr
 Matt Corallo
 Michael Ford
 Michael Hendricks

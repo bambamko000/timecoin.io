@@ -104,8 +104,8 @@ BOOST_AUTO_TEST_CASE(DoS_bantime)
     std::atomic<bool> interruptDummy(false);
 
     connman->ClearBanned();
-    int64_t nStartTIMECCoin = GetTIMECCoin();
-    SetMockTIMECCoin(nStartTIMECCoin); // Overrides future calls to GetTIMECCoin()
+    int64_t nStartTIMECoin = GetTIMECoin();
+    SetMockTIMECoin(nStartTIMECoin); // Overrides future calls to GetTIMECoin()
 
     CAddress addr(ip(0xa0b0c001), NODE_NONE);
     CNode dummyNode(id++, NODE_NETWORK, 0, INVALID_SOCKET, addr, "", true);
@@ -118,10 +118,10 @@ BOOST_AUTO_TEST_CASE(DoS_bantime)
     SendMessages(&dummyNode, *connman, interruptDummy);
     BOOST_CHECK(connman->IsBanned(addr));
 
-    SetMockTIMECCoin(nStartTIMECCoin+60*60);
+    SetMockTIMECoin(nStartTIMECoin+60*60);
     BOOST_CHECK(connman->IsBanned(addr));
 
-    SetMockTIMECCoin(nStartTIMECCoin+60*60*24+1);
+    SetMockTIMECoin(nStartTIMECoin+60*60*24+1);
     BOOST_CHECK(!connman->IsBanned(addr));
 }
 

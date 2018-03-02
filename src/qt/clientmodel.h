@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -38,7 +38,7 @@ enum NumConnections {
     CONNECTIONS_ALL  = (CONNECTIONS_IN | CONNECTIONS_OUT),
 };
 
-/** Model for TIMECCoin network client. */
+/** Model for TIMECoin network client. */
 class ClientModel : public QObject
 {
     Q_OBJECT
@@ -56,7 +56,7 @@ public:
     QString getMasternodeCountString() const;
     int getNumBlocks() const;
     int getHeaderTipHeight() const;
-    int64_t getHeaderTipTIMECCoin() const;
+    int64_t getHeaderTipTIMECoin() const;
     //! Return number of transactions in the mempool
     long getMempoolSize() const;
     //! Return the dynamic memory usage of the mempool
@@ -83,12 +83,12 @@ public:
     QString formatSubVersion() const;
     bool isReleaseVersion() const;
     QString clientName() const;
-    QString formatClientStartupTIMECCoin() const;
+    QString formatClientStartupTIMECoin() const;
     QString dataDir() const;
 
     // caches for the best header
     mutable std::atomic<int> cachedBestHeaderHeight;
-    mutable std::atomic<int64_t> cachedBestHeaderTIMECCoin;
+    mutable std::atomic<int64_t> cachedBestHeaderTIMECoin;
 
 private:
     OptionsModel *optionsModel;
@@ -96,8 +96,8 @@ private:
     QString cachedMasternodeCountString;
     BanTableModel *banTableModel;
 
-    QTimer *pollTIMECCoinr;
-    QTimer *pollMnTIMECCoinr;
+    QTimer *pollTIMECoinr;
+    QTimer *pollMnTIMECoinr;
 
     void subscribeToCoreSignals();
     void unsubscribeFromCoreSignals();
@@ -119,8 +119,8 @@ Q_SIGNALS:
     void showProgress(const QString &title, int nProgress);
 
 public Q_SLOTS:
-    void updateTIMECCoinr();
-    void updateMnTIMECCoinr();
+    void updateTIMECoinr();
+    void updateMnTIMECoinr();
     void updateNumConnections(int numConnections);
     void updateNetworkActive(bool networkActive);
     void updateAlert(const QString &hash, int status);

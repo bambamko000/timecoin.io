@@ -549,7 +549,7 @@ git merge commit are mentioned.
 - #6410 `7cdefb9` Implement accurate memory accounting for mempool (Pieter Wuille)
 - #6444 `24ce77d` Exempt unspendable transaction outputs from dust checks (dexX7)
 - #5913 `a0625b8` Add absurdly high fee message to validation state (Shaul Kfir)
-- #6177 `2f746c6` Prevent block.nTIMECCoin from decreasing (Mark Friedenbach)
+- #6177 `2f746c6` Prevent block.nTIMECoin from decreasing (Mark Friedenbach)
 - #6377 `e545371` Handle no chain tip available in InvalidChainFound() (Ross Nicoll)
 - #6551 `39ddaeb` Handle leveldb::DestroyDB() errors on wipe failure (Adam Weiss)
 - #6654 `b0ce450` Mempool package tracking (Suhas Daftuar)
@@ -592,7 +592,7 @@ git merge commit are mentioned.
 - #6530 `ea19c2b` Improve addrman Select() performance when buckets are nearly empty (Pieter Wuille)
 - #6583 `af9305a` add support for miniupnpc api version 14 (Pavel Vasin)
 - #6374 `69dc5b5` Connection slot exhaustion DoS mitigation (Patrick Strateman)
-- #6636 `536207f` net: correctly initialize nMinPingUsecTIMECCoin (Wladimir J. van der Laan)
+- #6636 `536207f` net: correctly initialize nMinPingUsecTIMECoin (Wladimir J. van der Laan)
 - #6579 `0c27795` Add NODE_BLOOM service bit and bump protocol version (Matt Corallo)
 - #6148 `999c8be` Relay blocks when pruning (Suhas Daftuar)
 - #6588 `cf9bb11` In (strCommand == "tx"), return if AlreadyHave() (Tom Harding)
@@ -649,7 +649,7 @@ git merge commit are mentioned.
 
 ### Wallet
 
-- #6183 `87550ee` Fix off-by-one error w/ nLockTIMECCoin in the wallet (Peter Todd)
+- #6183 `87550ee` Fix off-by-one error w/ nLockTIMECoin in the wallet (Peter Todd)
 - #6057 `ac5476e` re-enable wallet in autoprune (Jonas Schnelli)
 - #6356 `9e6c33b` Delay initial pruning until after wallet init (Adam Weiss)
 - #6088 `91389e5` fundrawtransaction (Matt Corallo)
@@ -784,7 +784,7 @@ git merge commit are mentioned.
 - #6790 `fa1d252` devtools: add clang-format.py (MarcoFalke)
 - #7114 `f3d0fdd` util: Don't set strMiscWarning on every exception (Wladimir J. van der Laan)
 - #7078 `93e0514` uint256::GetCheapHash bigendian compatibility (arowser)
-- #7094 `34e02e0` Assert now > 0 in GetTIMECCoin GetTIMECCoinMillis GetTIMECCoinMicros (Patrick Strateman)
+- #7094 `34e02e0` Assert now > 0 in GetTIMECoin GetTIMECoinMillis GetTIMECoinMicros (Patrick Strateman)
 
 Credits
 =======
@@ -841,7 +841,7 @@ Thanks to everyone who directly contributed to this release:
 - kazcw
 - Kevin Cooper
 - lpescher
-- Luke TIMECCoinjr
+- Luke TIMECoinjr
 - MarcoFalke
 - Mark Friedenbach
 - Matt

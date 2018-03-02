@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #include "privatesend-server.h"
@@ -19,7 +19,7 @@ CPrivateSendServer privateSendServer;
 void CPrivateSendServer::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv, CConnman& connman)
 {
     if(!fMasterNode) return;
-    if(fLiteMode) return; // ignore all TIMECCoin related functionality
+    if(fLiteMode) return; // ignore all TIMECoin related functionality
     if(!masternodeSync.IsBlockchainSynced()) return;
 
     if(strCommand == NetMsgType::DSACCEPT) {
@@ -297,7 +297,7 @@ void CPrivateSendServer::CheckPool(CConnman& connman)
     }
 
     // reset if we're here for 10 seconds
-    if((nState == POOL_STATE_ERROR || nState == POOL_STATE_SUCCESS) && GetTIMECCoinMillis() - nTIMECCoinLastSuccessfulStep >= 10000) {
+    if((nState == POOL_STATE_ERROR || nState == POOL_STATE_SUCCESS) && GetTIMECoinMillis() - nTIMECoinLastSuccessfulStep >= 10000) {
         LogPrint("privatesend", "CPrivateSendServer::CheckPool -- timeout, RESETTING\n");
         SetNull();
     }
@@ -357,7 +357,7 @@ void CPrivateSendServer::CommitFinalTransaction(CConnman& connman)
 
     // create and sign masternode dstx transaction
     if(!CPrivateSend::GetDSTX(hashTx)) {
-        CDarksendBroadcastTx dstxNew(finalTransaction, activeMasternode.outpoint, GetAdjustedTIMECCoin());
+        CDarksendBroadcastTx dstxNew(finalTransaction, activeMasternode.outpoint, GetAdjustedTIMECoin());
         dstxNew.Sign();
         CPrivateSend::AddDSTX(dstxNew);
     }
@@ -463,7 +463,7 @@ void CPrivateSendServer::ChargeFees(CConnman& connman)
 
     Being that mixing has "no fees" we need to have some kind of cost associated
     with using it to stop abuse. Otherwise it could serve as an attack vector and
-    allow endless transaction that would bloat TIMECCoin and make it unusable. To
+    allow endless transaction that would bloat TIMECoin and make it unusable. To
     stop these kinds of attacks 1 in 10 successful transactions are charged. This
     adds up to a cost of 0.001DRK per transaction on average.
 */
@@ -493,19 +493,19 @@ void CPrivateSendServer::ChargeRandomFees(CConnman& connman)
 //
 // Check for various timeouts (queue objects, mixing, etc)
 //
-void CPrivateSendServer::CheckTIMECCoinout(CConnman& connman)
+void CPrivateSendServer::CheckTIMECoinout(CConnman& connman)
 {
     CheckQueue();
 
     if(!fMasterNode) return;
 
-    int nLagTIMECCoin = fMasterNode ? 0 : 10000; // if we're the client, give the server a few extra seconds before resetting.
-    int nTIMECCoinout = (nState == POOL_STATE_SIGNING) ? PRIVATESEND_SIGNING_TIMECOUT : PRIVATESEND_QUEUE_TIMECOUT;
-    bool fTIMECCoinout = GetTIMECCoinMillis() - nTIMECCoinLastSuccessfulStep >= nTIMECCoinout*1000 + nLagTIMECCoin;
+    int nLagTIMECoin = fMasterNode ? 0 : 10000; // if we're the client, give the server a few extra seconds before resetting.
+    int nTIMECoinout = (nState == POOL_STATE_SIGNING) ? PRIVATESEND_SIGNING_TIMECOUT : PRIVATESEND_QUEUE_TIMECOUT;
+    bool fTIMECoinout = GetTIMECoinMillis() - nTIMECoinLastSuccessfulStep >= nTIMECoinout*1000 + nLagTIMECoin;
 
-    if(nState != POOL_STATE_IDLE && fTIMECCoinout) {
-        LogPrint("privatesend", "CPrivateSendServer::CheckTIMECCoinout -- %s timed out (%ds) -- restting\n",
-                (nState == POOL_STATE_SIGNING) ? "Signing" : "Session", nTIMECCoinout);
+    if(nState != POOL_STATE_IDLE && fTIMECoinout) {
+        LogPrint("privatesend", "CPrivateSendServer::CheckTIMECoinout -- %s timed out (%ds) -- restting\n",
+                (nState == POOL_STATE_SIGNING) ? "Signing" : "Session", nTIMECoinout);
         ChargeFees(connman);
         SetNull();
         SetState(POOL_STATE_ERROR);
@@ -524,7 +524,7 @@ void CPrivateSendServer::CheckForCompleteQueue(CConnman& connman)
     if(nState == POOL_STATE_QUEUE && IsSessionReady()) {
         SetState(POOL_STATE_ACCEPTING_ENTRIES);
 
-        CDarksendQueue dsq(nSessionDenom, activeMasternode.outpoint, GetAdjustedTIMECCoin(), true);
+        CDarksendQueue dsq(nSessionDenom, activeMasternode.outpoint, GetAdjustedTIMECoin(), true);
         LogPrint("privatesend", "CPrivateSendServer::CheckForCompleteQueue -- queue is ready, signing and relaying (%s)\n", dsq.ToString());
         dsq.Sign();
         dsq.Relay(connman);
@@ -618,7 +618,7 @@ bool CPrivateSendServer::AddEntry(const CDarkSendEntry& entryNew, PoolMessage& n
 
     LogPrint("privatesend", "CPrivateSendServer::AddEntry -- adding entry\n");
     nMessageIDRet = MSG_ENTRIES_ADDED;
-    nTIMECCoinLastSuccessfulStep = GetTIMECCoinMillis();
+    nTIMECoinLastSuccessfulStep = GetTIMECoinMillis();
 
     return true;
 }
@@ -726,11 +726,11 @@ bool CPrivateSendServer::CreateNewSession(int nDenom, CTransaction txCollateral,
     nSessionDenom = nDenom;
 
     SetState(POOL_STATE_QUEUE);
-    nTIMECCoinLastSuccessfulStep = GetTIMECCoinMillis();
+    nTIMECoinLastSuccessfulStep = GetTIMECoinMillis();
 
     if(!fUnitTest) {
         //broadcast that I'm accepting entries, only if it's the first entry through
-        CDarksendQueue dsq(nDenom, activeMasternode.outpoint, GetAdjustedTIMECCoin(), false);
+        CDarksendQueue dsq(nDenom, activeMasternode.outpoint, GetAdjustedTIMECoin(), false);
         LogPrint("privatesend", "CPrivateSendServer::CreateNewSession -- signing and relaying new queue: %s\n", dsq.ToString());
         dsq.Sign();
         dsq.Relay(connman);
@@ -769,7 +769,7 @@ bool CPrivateSendServer::AddUserToExistingSession(int nDenom, CTransaction txCol
     // count new user as accepted to an existing session
 
     nMessageIDRet = MSG_NOERR;
-    nTIMECCoinLastSuccessfulStep = GetTIMECCoinMillis();
+    nTIMECoinLastSuccessfulStep = GetTIMECoinMillis();
     vecSessionCollaterals.push_back(txCollateral);
 
     LogPrintf("CPrivateSendServer::AddUserToExistingSession -- new user accepted, nSessionID: %d  nSessionDenom: %d (%s)  vecSessionCollaterals.size(): %d\n",
@@ -872,7 +872,7 @@ void CPrivateSendServer::SetState(PoolState nStateNew)
 //TODO: Rename/move to core
 void ThreadCheckPrivateSendServer(CConnman& connman)
 {
-    if(fLiteMode) return; // disable all TIMECCoin specific functionality
+    if(fLiteMode) return; // disable all TIMECoin specific functionality
 
     static bool fOneThread;
     if(fOneThread) return;
@@ -889,7 +889,7 @@ void ThreadCheckPrivateSendServer(CConnman& connman)
 
         if(masternodeSync.IsBlockchainSynced() && !ShutdownRequested()) {
             nTick++;
-            privateSendServer.CheckTIMECCoinout(connman);
+            privateSendServer.CheckTIMECoinout(connman);
             privateSendServer.CheckForCompleteQueue(connman);
         }
     }

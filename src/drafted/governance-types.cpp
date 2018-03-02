@@ -7,8 +7,8 @@ GovernanceObjectType GovernanceStringToType(std::string strType) {
     if(strType == "AllTypes") type = AllTypes;
     if(strType == "Error") type = Error;
     if(strType == "ValueOverride") type = ValueOverride;
-    if(strType == "TIMECCoinNetwork") type = TIMECCoinNetwork;
-    if(strType == "TIMECCoinNetworkVariable") type = TIMECCoinNetworkVariable;
+    if(strType == "TIMECoinNetwork") type = TIMECoinNetwork;
+    if(strType == "TIMECoinNetworkVariable") type = TIMECoinNetworkVariable;
     if(strType == "Category") type = Category;
     if(strType == "Group") type = Group;
     if(strType == "User") type = User;
@@ -28,8 +28,8 @@ std::string GovernanceTypeToString(GovernanceObjectType type) {
     if(type == AllTypes) s = "AllTypes";
     if(type == Error) s = "Error";
     if(type == ValueOverride) s = "ValueOverride";
-    if(type == TIMECCoinNetwork) s = "TIMECCoinNetwork";
-    if(type == TIMECCoinNetworkVariable) s = "TIMECCoinNetworkVariable";
+    if(type == TIMECoinNetwork) s = "TIMECoinNetwork";
+    if(type == TIMECoinNetworkVariable) s = "TIMECoinNetworkVariable";
     if(type == Category) s = "Category";
     if(type == Group) s = "Group";
     if(type == User) s = "User";

@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,8 +20,8 @@ CGovernanceObject::CGovernanceObject()
   nObjectType(GOVERNANCE_OBJECT_UNKNOWN),
   nHashParent(),
   nRevision(0),
-  nTIMECCoin(0),
-  nDeletionTIMECCoin(0),
+  nTIMECoin(0),
+  nDeletionTIMECoin(0),
   nCollateralHash(),
   strData(),
   vinMasternode(),
@@ -43,13 +43,13 @@ CGovernanceObject::CGovernanceObject()
     LoadData();
 }
 
-CGovernanceObject::CGovernanceObject(uint256 nHashParentIn, int nRevisionIn, int64_t nTIMECCoinIn, uint256 nCollateralHashIn, std::string strDataIn)
+CGovernanceObject::CGovernanceObject(uint256 nHashParentIn, int nRevisionIn, int64_t nTIMECoinIn, uint256 nCollateralHashIn, std::string strDataIn)
 : cs(),
   nObjectType(GOVERNANCE_OBJECT_UNKNOWN),
   nHashParent(nHashParentIn),
   nRevision(nRevisionIn),
-  nTIMECCoin(nTIMECCoinIn),
-  nDeletionTIMECCoin(0),
+  nTIMECoin(nTIMECoinIn),
+  nDeletionTIMECoin(0),
   nCollateralHash(nCollateralHashIn),
   strData(strDataIn),
   vinMasternode(),
@@ -76,8 +76,8 @@ CGovernanceObject::CGovernanceObject(const CGovernanceObject& other)
   nObjectType(other.nObjectType),
   nHashParent(other.nHashParent),
   nRevision(other.nRevision),
-  nTIMECCoin(other.nTIMECCoin),
-  nDeletionTIMECCoin(other.nDeletionTIMECCoin),
+  nTIMECoin(other.nTIMECoin),
+  nDeletionTIMECoin(other.nDeletionTIMECoin),
   nCollateralHash(other.nCollateralHash),
   strData(other.strData),
   vinMasternode(other.vinMasternode),
@@ -105,7 +105,7 @@ bool CGovernanceObject::ProcessVote(CNode* pfrom,
         std::ostringstream ostr;
         ostr << "CGovernanceObject::ProcessVote -- Masternode index not found";
         exception = CGovernanceException(ostr.str(), GOVERNANCE_EXCEPTION_WARNING);
-        if(mapOrphanVotes.Insert(vote.GetMasternodeOutpoint(), vote_time_pair_t(vote, GetAdjustedTIMECCoin() + GOVERNANCE_ORPHAN_EXPIRATION_TIMEC))) {
+        if(mapOrphanVotes.Insert(vote.GetMasternodeOutpoint(), vote_time_pair_t(vote, GetAdjustedTIMECoin() + GOVERNANCE_ORPHAN_EXPIRATION_TIMEC))) {
             if(pfrom) {
                 mnodeman.AskForMN(pfrom, vote.GetMasternodeOutpoint(), connman);
             }
@@ -144,7 +144,7 @@ bool CGovernanceObject::ProcessVote(CNode* pfrom,
     vote_instance_t& voteInstance = it2->second;
 
     // Reject obsolete votes
-    if(vote.GetTIMECCoinstamp() < voteInstance.nCreationTIMECCoin) {
+    if(vote.GetTIMECoinstamp() < voteInstance.nCreationTIMECoin) {
         std::ostringstream ostr;
         ostr << "CGovernanceObject::ProcessVote -- Obsolete vote";
         LogPrint("gobject", "%s\n", ostr.str());
@@ -152,19 +152,19 @@ bool CGovernanceObject::ProcessVote(CNode* pfrom,
         return false;
     }
 
-    int64_t nNow = GetAdjustedTIMECCoin();
-    int64_t nVoteTIMECCoinUpdate = voteInstance.nTIMECCoin;
+    int64_t nNow = GetAdjustedTIMECoin();
+    int64_t nVoteTIMECoinUpdate = voteInstance.nTIMECoin;
     if(governance.AreRateChecksEnabled()) {
-        int64_t nTIMECCoinDelta = nNow - voteInstance.nTIMECCoin;
-        if(nTIMECCoinDelta < GOVERNANCE_UPDATE_MIN) {
+        int64_t nTIMECoinDelta = nNow - voteInstance.nTIMECoin;
+        if(nTIMECoinDelta < GOVERNANCE_UPDATE_MIN) {
             std::ostringstream ostr;
             ostr << "CGovernanceObject::ProcessVote -- Masternode voting too often"
                  << ", MN outpoint = " << vote.GetMasternodeOutpoint().ToStringShort()
                  << ", governance object hash = " << GetHash().ToString()
-                 << ", time delta = " << nTIMECCoinDelta;
+                 << ", time delta = " << nTIMECoinDelta;
             LogPrint("gobject", "%s\n", ostr.str());
             exception = CGovernanceException(ostr.str(), GOVERNANCE_EXCEPTION_TEMPORARY_ERROR);
-            nVoteTIMECCoinUpdate = nNow;
+            nVoteTIMECoinUpdate = nNow;
             return false;
         }
     }
@@ -189,7 +189,7 @@ bool CGovernanceObject::ProcessVote(CNode* pfrom,
         exception = CGovernanceException(ostr.str(), GOVERNANCE_EXCEPTION_PERMANENT_ERROR);
         return false;
     }
-    voteInstance = vote_instance_t(vote.GetOutcome(), nVoteTIMECCoinUpdate, vote.GetTIMECCoinstamp());
+    voteInstance = vote_instance_t(vote.GetOutcome(), nVoteTIMECoinUpdate, vote.GetTIMECoinstamp());
     if(!fileVotes.HasVote(vote.GetHash())) {
         fileVotes.AddVote(vote);
     }
@@ -216,7 +216,7 @@ std::string CGovernanceObject::GetSignatureMessage() const
     LOCK(cs);
     std::string strMessage = nHashParent.ToString() + "|" +
         boost::lexical_cast<std::string>(nRevision) + "|" +
-        boost::lexical_cast<std::string>(nTIMECCoin) + "|" +
+        boost::lexical_cast<std::string>(nTIMECoin) + "|" +
         strData + "|" +
         vinMasternode.prevout.ToStringShort() + "|" +
         nCollateralHash.ToString();
@@ -284,14 +284,14 @@ uint256 CGovernanceObject::GetHash() const
     CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
     ss << nHashParent;
     ss << nRevision;
-    ss << nTIMECCoin;
+    ss << nTIMECoin;
     ss << strData;
     ss << vinMasternode;
     ss << vchSig;
     // fee_tx is left out on purpose
     uint256 h1 = ss.GetHash();
 
-    DBG( printf("CGovernanceObject::GetHash %i %li %s\n", nRevision, nTIMECCoin, strData.c_str()); );
+    DBG( printf("CGovernanceObject::GetHash %i %li %s\n", nRevision, nTIMECoin, strData.c_str()); );
 
     return h1;
 }
@@ -690,8 +690,8 @@ void CGovernanceObject::UpdateSentinelVariables()
     if(GetAbsoluteYesCount(VOTE_SIGNAL_FUNDING) >= nAbsVoteReq) fCachedFunding = true;
     if((GetAbsoluteYesCount(VOTE_SIGNAL_DELETE) >= nAbsDeleteReq) && !fCachedDelete) {
         fCachedDelete = true;
-        if(nDeletionTIMECCoin == 0) {
-            nDeletionTIMECCoin = GetAdjustedTIMECCoin();
+        if(nDeletionTIMECoin == 0) {
+            nDeletionTIMECoin = GetAdjustedTIMECoin();
         }
     }
     if(GetAbsoluteYesCount(VOTE_SIGNAL_ENDORSED) >= nAbsVoteReq) fCachedEndorsed = true;
@@ -708,8 +708,8 @@ void CGovernanceObject::swap(CGovernanceObject& first, CGovernanceObject& second
     // the two classes are effectively swapped
     swap(first.nHashParent, second.nHashParent);
     swap(first.nRevision, second.nRevision);
-    swap(first.nTIMECCoin, second.nTIMECCoin);
-    swap(first.nDeletionTIMECCoin, second.nDeletionTIMECCoin);
+    swap(first.nTIMECoin, second.nTIMECoin);
+    swap(first.nDeletionTIMECoin, second.nDeletionTIMECoin);
     swap(first.nCollateralHash, second.nCollateralHash);
     swap(first.strData, second.strData);
     swap(first.nObjectType, second.nObjectType);
@@ -725,7 +725,7 @@ void CGovernanceObject::swap(CGovernanceObject& first, CGovernanceObject& second
 
 void CGovernanceObject::CheckOrphanVotes(CConnman& connman)
 {
-    int64_t nNow = GetAdjustedTIMECCoin();
+    int64_t nNow = GetAdjustedTIMECoin();
     const vote_mcache_t::list_t& listVotes = mapOrphanVotes.GetItemList();
     vote_mcache_t::list_cit it = listVotes.begin();
     while(it != listVotes.end()) {

@@ -423,7 +423,7 @@ bool CDB::Rewrite(const string& strFile, const char* pszSkip)
 
 void CDBEnv::Flush(bool fShutdown)
 {
-    int64_t nStart = GetTIMECCoinMillis();
+    int64_t nStart = GetTIMECoinMillis();
     // Flush log data to the actual data file on all files that are not in use
     LogPrint("db", "CDBEnv::Flush: Flush(%s)%s\n", fShutdown ? "true" : "false", fDbEnvInit ? "" : " database not started");
     if (!fDbEnvInit)
@@ -448,7 +448,7 @@ void CDBEnv::Flush(bool fShutdown)
             } else
                 mi++;
         }
-        LogPrint("db", "CDBEnv::Flush: Flush(%s)%s took %15dms\n", fShutdown ? "true" : "false", fDbEnvInit ? "" : " database not started", GetTIMECCoinMillis() - nStart);
+        LogPrint("db", "CDBEnv::Flush: Flush(%s)%s took %15dms\n", fShutdown ? "true" : "false", fDbEnvInit ? "" : " database not started", GetTIMECoinMillis() - nStart);
         if (fShutdown) {
             char** listp;
             if (mapFileUseCount.empty()) {

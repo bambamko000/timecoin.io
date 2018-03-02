@@ -351,23 +351,23 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, un
                     // default 4-byte limit.
                     //
                     // If we kept to that limit we'd have a year 2038 problem,
-                    // even though the nLockTIMECCoin field in transactions
+                    // even though the nLockTIMECoin field in transactions
                     // themselves is uint32 which only becomes meaningless
                     // after the year 2106.
                     //
                     // Thus as a special case we tell CScriptNum to accept up
                     // to 5-byte bignums, which are good until 2**39-1, well
-                    // beyond the 2**32-1 limit of the nLockTIMECCoin field itself.
-                    const CScriptNum nLockTIMECCoin(stacktop(-1), fRequireMinimal, 5);
+                    // beyond the 2**32-1 limit of the nLockTIMECoin field itself.
+                    const CScriptNum nLockTIMECoin(stacktop(-1), fRequireMinimal, 5);
 
                     // In the rare event that the argument may be < 0 due to
                     // some arithmetic being done first, you can always use
                     // 0 MAX CHECKLOCKTIMECVERIFY.
-                    if (nLockTIMECCoin < 0)
+                    if (nLockTIMECoin < 0)
                         return set_error(serror, SCRIPT_ERR_NEGATIVE_LOCKTIMEC);
 
                     // Actually compare the specified lock time with the transaction.
-                    if (!checker.CheckLockTIMECCoin(nLockTIMECCoin))
+                    if (!checker.CheckLockTIMECoin(nLockTIMECoin))
                         return set_error(serror, SCRIPT_ERR_UNSATISFIED_LOCKTIMEC);
 
                     break;
@@ -386,7 +386,7 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, un
                     if (stack.size() < 1)
                         return set_error(serror, SCRIPT_ERR_INVALID_STACK_OPERATION);
 
-                    // nSequence, like nLockTIMECCoin, is a 32-bit unsigned integer
+                    // nSequence, like nLockTIMECoin, is a 32-bit unsigned integer
                     // field. See the comment in CHECKLOCKTIMECVERIFY regarding
                     // 5-byte numeric operands.
                     const CScriptNum nSequence(stacktop(-1), fRequireMinimal, 5);
@@ -1099,8 +1099,8 @@ public:
         ::WriteCompactSize(s, nOutputs);
         for (unsigned int nOutput = 0; nOutput < nOutputs; nOutput++)
              SerializeOutput(s, nOutput, nType, nVersion);
-        // Serialize nLockTIMECCoin
-        ::Serialize(s, txTo.nLockTIMECCoin, nType, nVersion);
+        // Serialize nLockTIMECoin
+        ::Serialize(s, txTo.nLockTIMECoin, nType, nVersion);
     }
 };
 
@@ -1157,27 +1157,27 @@ bool TransactionSignatureChecker::CheckSig(const vector<unsigned char>& vchSigIn
     return true;
 }
 
-bool TransactionSignatureChecker::CheckLockTIMECCoin(const CScriptNum& nLockTIMECCoin) const
+bool TransactionSignatureChecker::CheckLockTIMECoin(const CScriptNum& nLockTIMECoin) const
 {
-    // There are two kinds of nLockTIMECCoin: lock-by-blockheight
+    // There are two kinds of nLockTIMECoin: lock-by-blockheight
     // and lock-by-blocktime, distinguished by whether
-    // nLockTIMECCoin < LOCKTIMEC_THRESHOLD.
+    // nLockTIMECoin < LOCKTIMEC_THRESHOLD.
     //
     // We want to compare apples to apples, so fail the script
-    // unless the type of nLockTIMECCoin being tested is the same as
-    // the nLockTIMECCoin in the transaction.
+    // unless the type of nLockTIMECoin being tested is the same as
+    // the nLockTIMECoin in the transaction.
     if (!(
-        (txTo->nLockTIMECCoin <  LOCKTIMEC_THRESHOLD && nLockTIMECCoin <  LOCKTIMEC_THRESHOLD) ||
-        (txTo->nLockTIMECCoin >= LOCKTIMEC_THRESHOLD && nLockTIMECCoin >= LOCKTIMEC_THRESHOLD)
+        (txTo->nLockTIMECoin <  LOCKTIMEC_THRESHOLD && nLockTIMECoin <  LOCKTIMEC_THRESHOLD) ||
+        (txTo->nLockTIMECoin >= LOCKTIMEC_THRESHOLD && nLockTIMECoin >= LOCKTIMEC_THRESHOLD)
     ))
         return false;
 
     // Now that we know we're comparing apples-to-apples, the
     // comparison is a simple numeric one.
-    if (nLockTIMECCoin > (int64_t)txTo->nLockTIMECCoin)
+    if (nLockTIMECoin > (int64_t)txTo->nLockTIMECoin)
         return false;
 
-    // Finally the nLockTIMECCoin feature can be disabled and thus
+    // Finally the nLockTIMECoin feature can be disabled and thus
     // CHECKLOCKTIMECVERIFY bypassed if every txin has been
     // finalized by setting nSequence to maxint. The
     // transaction would be allowed into the blockchain, making
@@ -1213,9 +1213,9 @@ bool TransactionSignatureChecker::CheckSequence(const CScriptNum& nSequence) con
 
     // Mask off any bits that do not have consensus-enforced meaning
     // before doing the integer comparisons
-    const uint32_t nLockTIMECCoinMask = CTxIn::SEQUENCE_LOCKTIMEC_TYPE_FLAG | CTxIn::SEQUENCE_LOCKTIMEC_MASK;
-    const int64_t txToSequenceMasked = txToSequence & nLockTIMECCoinMask;
-    const CScriptNum nSequenceMasked = nSequence & nLockTIMECCoinMask;
+    const uint32_t nLockTIMECoinMask = CTxIn::SEQUENCE_LOCKTIMEC_TYPE_FLAG | CTxIn::SEQUENCE_LOCKTIMEC_MASK;
+    const int64_t txToSequenceMasked = txToSequence & nLockTIMECoinMask;
+    const CScriptNum nSequenceMasked = nSequence & nLockTIMECoinMask;
 
     // There are two kinds of nSequence: lock-by-blockheight
     // and lock-by-blocktime, distinguished by whether

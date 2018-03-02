@@ -21,12 +21,12 @@ inline unsigned int MaxBlockSigOps(bool fDIP0001Active /*= false */)
 /** Coinbase transaction outputs can only be spent after this number of new blocks (network rule) */
 static const int COINBASE_MATURITY = 23;
 
-/** Flags for nSequence and nLockTIMECCoin locks */
+/** Flags for nSequence and nLockTIMECoin locks */
 enum {
     /* Interpret sequence numbers as relative lock-time constraints. */
     LOCKTIMEC_VERIFY_SEQUENCE = (1 << 0),
 
-    /* Use GetMedianTIMECCoinPast() instead of nTIMECCoin for end point timestamp. */
+    /* Use GetMedianTIMECoinPast() instead of nTIMECoin for end point timestamp. */
     LOCKTIMEC_MEDIAN_TIMEC_PAST = (1 << 1),
 };
 

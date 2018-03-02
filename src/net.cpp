@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -141,7 +141,7 @@ static std::vector<CAddress> convertSeed6(const std::vector<SeedSpec6> &vSeedsIn
         struct in6_addr ip;
         memcpy(&ip, i->addr, sizeof(ip));
         CAddress addr(CService(ip, i->port), NODE_NETWORK);
-        addr.nTIMECCoin = GetTIMECCoin() - GetRand(nOneWeek) - nOneWeek;
+        addr.nTIMECoin = GetTIMECoin() - GetRand(nOneWeek) - nOneWeek;
         vSeedsOut.push_back(addr);
     }
     return vSeedsOut;
@@ -159,7 +159,7 @@ CAddress GetLocalAddress(const CNetAddr *paddrPeer, ServiceFlags nLocalServices)
     {
         ret = CAddress(addr, nLocalServices);
     }
-    ret.nTIMECCoin = GetAdjustedTIMECCoin();
+    ret.nTIMECoin = GetAdjustedTIMECoin();
     return ret;
 }
 
@@ -375,13 +375,13 @@ CNode* CConnman::ConnectNode(CAddress addrConnect, const char *pszDest, bool fCo
     /// debug print
     LogPrint("net", "trying connection %s lastseen=%.1fhrs\n",
         pszDest ? pszDest : addrConnect.ToString(),
-        pszDest ? 0.0 : (double)(GetAdjustedTIMECCoin() - addrConnect.nTIMECCoin)/3600.0);
+        pszDest ? 0.0 : (double)(GetAdjustedTIMECoin() - addrConnect.nTIMECoin)/3600.0);
 
     // Connect
     SOCKET hSocket;
     bool proxyConnectionFailed = false;
-    if (pszDest ? ConnectSocketByName(addrConnect, hSocket, pszDest, Params().GetDefaultPort(), nConnectTIMECCoinout, &proxyConnectionFailed) :
-                  ConnectSocket(addrConnect, hSocket, nConnectTIMECCoinout, &proxyConnectionFailed))
+    if (pszDest ? ConnectSocketByName(addrConnect, hSocket, pszDest, Params().GetDefaultPort(), nConnectTIMECoinout, &proxyConnectionFailed) :
+                  ConnectSocket(addrConnect, hSocket, nConnectTIMECoinout, &proxyConnectionFailed))
     {
         if (!IsSelectableSocket(hSocket)) {
             LogPrintf("Cannot create connection: non-selectable socket created (fd >= FD_SETSIZE ?)\n");
@@ -418,7 +418,7 @@ CNode* CConnman::ConnectNode(CAddress addrConnect, const char *pszDest, bool fCo
         CNode* pnode = new CNode(GetNewNodeId(), nLocalServices, GetBestHeight(), hSocket, addrConnect, pszDest ? pszDest : "", false, true);
 
         pnode->nServicesExpected = ServiceFlags(addrConnect.nServices & nRelevantServices);
-        pnode->nTIMECCoinConnected = GetSystemTIMECCoinInSeconds();
+        pnode->nTIMECoinConnected = GetSystemTIMECoinInSeconds();
         if(fConnectToMasternode) {
             pnode->AddRef();
             pnode->fMasternode = true;
@@ -445,7 +445,7 @@ void CConnman::DumpBanlist()
     if (!BannedSetIsDirty())
         return;
 
-    int64_t nStart = GetTIMECCoinMillis();
+    int64_t nStart = GetTIMECoinMillis();
 
     CBanDB bandb;
     banmap_t banmap;
@@ -455,7 +455,7 @@ void CConnman::DumpBanlist()
         SetBannedSetDirty(true);
 
     LogPrint("net", "Flushed %d banned node ips/subnets to banlist.dat  %dms\n",
-        banmap.size(), GetTIMECCoinMillis() - nStart);
+        banmap.size(), GetTIMECoinMillis() - nStart);
 }
 
 void CNode::CloseSocketDisconnect()
@@ -490,7 +490,7 @@ bool CConnman::IsBanned(CNetAddr ip)
             CSubNet subNet = (*it).first;
             CBanEntry banEntry = (*it).second;
 
-            if(subNet.Match(ip) && GetTIMECCoin() < banEntry.nBanUntil)
+            if(subNet.Match(ip) && GetTIMECoin() < banEntry.nBanUntil)
                 fResult = true;
         }
     }
@@ -506,7 +506,7 @@ bool CConnman::IsBanned(CSubNet subnet)
         if (i != setBanned.end())
         {
             CBanEntry banEntry = (*i).second;
-            if (GetTIMECCoin() < banEntry.nBanUntil)
+            if (GetTIMECoin() < banEntry.nBanUntil)
                 fResult = true;
         }
     }
@@ -519,14 +519,14 @@ void CConnman::Ban(const CNetAddr& addr, const BanReason &banReason, int64_t ban
 }
 
 void CConnman::Ban(const CSubNet& subNet, const BanReason &banReason, int64_t bantimeoffset, bool sinceUnixEpoch) {
-    CBanEntry banEntry(GetTIMECCoin());
+    CBanEntry banEntry(GetTIMECoin());
     banEntry.banReason = banReason;
     if (bantimeoffset <= 0)
     {
         bantimeoffset = GetArg("-bantime", DEFAULT_MISBEHAVING_BANTIMEC);
         sinceUnixEpoch = false;
     }
-    banEntry.nBanUntil = (sinceUnixEpoch ? 0 : GetTIMECCoin() )+bantimeoffset;
+    banEntry.nBanUntil = (sinceUnixEpoch ? 0 : GetTIMECoin() )+bantimeoffset;
 
     {
         LOCK(cs_setBanned);
@@ -583,7 +583,7 @@ void CConnman::SetBanned(const banmap_t &banMap)
 
 void CConnman::SweepBanned()
 {
-    int64_t now = GetTIMECCoin();
+    int64_t now = GetTIMECoin();
 
     LOCK(cs_setBanned);
     banmap_t::iterator it = setBanned.begin();
@@ -639,8 +639,8 @@ void CNode::copyStats(CNodeStats &stats)
     X(fRelayTxes);
     X(nLastSend);
     X(nLastRecv);
-    X(nTIMECCoinConnected);
-    X(nTIMECCoinOffset);
+    X(nTIMECoinConnected);
+    X(nTIMECoinOffset);
     X(addrName);
     X(nVersion);
     X(cleanSubVer);
@@ -660,12 +660,12 @@ void CNode::copyStats(CNodeStats &stats)
     // the caller can immediately detect that this is happening.
     int64_t nPingUsecWait = 0;
     if ((0 != nPingNonceSent) && (0 != nPingUsecStart)) {
-        nPingUsecWait = GetTIMECCoinMicros() - nPingUsecStart;
+        nPingUsecWait = GetTIMECoinMicros() - nPingUsecStart;
     }
 
-    // Raw ping time is in microseconds, but show it to user as whole seconds (TIMECCoin users should be well used to small numbers with many decimal places by now :)
-    stats.dPingTIMECCoin = (((double)nPingUsecTIMECCoin) / 1e6);
-    stats.dMinPing  = (((double)nMinPingUsecTIMECCoin) / 1e6);
+    // Raw ping time is in microseconds, but show it to user as whole seconds (TIMECoin users should be well used to small numbers with many decimal places by now :)
+    stats.dPingTIMECoin = (((double)nPingUsecTIMECoin) / 1e6);
+    stats.dMinPing  = (((double)nMinPingUsecTIMECoin) / 1e6);
     stats.dPingWait = (((double)nPingUsecWait) / 1e6);
 
     // Leave string empty if addrLocal invalid (not filled in yet)
@@ -676,8 +676,8 @@ void CNode::copyStats(CNodeStats &stats)
 bool CNode::ReceiveMsgBytes(const char *pch, unsigned int nBytes, bool& complete)
 {
     complete = false;
-    int64_t nTIMECCoinMicros = GetTIMECCoinMicros();
-    nLastRecv = nTIMECCoinMicros / 1000000;
+    int64_t nTIMECoinMicros = GetTIMECoinMicros();
+    nLastRecv = nTIMECoinMicros / 1000000;
     nRecvBytes += nBytes;
     while (nBytes > 0) {
 
@@ -716,7 +716,7 @@ bool CNode::ReceiveMsgBytes(const char *pch, unsigned int nBytes, bool& complete
             assert(i != mapRecvBytesPerMsgCmd.end());
             i->second += msg.hdr.nMessageSize + CMessageHeader::HEADER_SIZE;
 
-            msg.nTIMECCoin = nTIMECCoinMicros;
+            msg.nTIMECoin = nTIMECoinMicros;
             complete = true;
         }
     }
@@ -817,7 +817,7 @@ size_t CConnman::SocketSendData(CNode *pnode)
         assert(data.size() > pnode->nSendOffset);
         int nBytes = send(pnode->hSocket, &data[pnode->nSendOffset], data.size() - pnode->nSendOffset, MSG_NOSIGNAL | MSG_DONTWAIT);
         if (nBytes > 0) {
-            pnode->nLastSend = GetSystemTIMECCoinInSeconds();
+            pnode->nLastSend = GetSystemTIMECoinInSeconds();
             pnode->nSendBytes += nBytes;
             pnode->nSendOffset += nBytes;
             nSentSize += nBytes;
@@ -857,10 +857,10 @@ struct NodeEvictionCandidate
 {
     NodeEvictionCandidate(CNode* pnode)
         : id(pnode->id),
-          nTIMECCoinConnected(pnode->nTIMECCoinConnected),
-          nMinPingUsecTIMECCoin(pnode->nMinPingUsecTIMECCoin),
-          nLastBlockTIMECCoin(pnode->nLastBlockTIMECCoin),
-          nLastTXTIMECCoin(pnode->nLastTXTIMECCoin),
+          nTIMECoinConnected(pnode->nTIMECoinConnected),
+          nMinPingUsecTIMECoin(pnode->nMinPingUsecTIMECoin),
+          nLastBlockTIMECoin(pnode->nLastBlockTIMECoin),
+          nLastTXTIMECoin(pnode->nLastTXTIMECoin),
           fNetworkNode(pnode->fNetworkNode),
           fRelayTxes(pnode->fRelayTxes),
           fBloomFilter(pnode->pfilter != NULL),
@@ -869,10 +869,10 @@ struct NodeEvictionCandidate
         {}
 
     int id;
-    int64_t nTIMECCoinConnected;
-    int64_t nMinPingUsecTIMECCoin;
-    int64_t nLastBlockTIMECCoin;
-    int64_t nLastTXTIMECCoin;
+    int64_t nTIMECoinConnected;
+    int64_t nMinPingUsecTIMECoin;
+    int64_t nLastBlockTIMECoin;
+    int64_t nLastTXTIMECoin;
     bool fNetworkNode;
     bool fRelayTxes;
     bool fBloomFilter;
@@ -880,14 +880,14 @@ struct NodeEvictionCandidate
     std::vector<unsigned char> vchKeyedNetGroup;
 };
 
-static bool ReverseCompareNodeMinPingTIMECCoin(const NodeEvictionCandidate& a, const NodeEvictionCandidate& b)
+static bool ReverseCompareNodeMinPingTIMECoin(const NodeEvictionCandidate& a, const NodeEvictionCandidate& b)
 {
-    return a.nMinPingUsecTIMECCoin > b.nMinPingUsecTIMECCoin;
+    return a.nMinPingUsecTIMECoin > b.nMinPingUsecTIMECoin;
 }
 
-static bool ReverseCompareNodeTIMECCoinConnected(const NodeEvictionCandidate& a, const NodeEvictionCandidate& b)
+static bool ReverseCompareNodeTIMECoinConnected(const NodeEvictionCandidate& a, const NodeEvictionCandidate& b)
 {
-    return a.nTIMECCoinConnected > b.nTIMECCoinConnected;
+    return a.nTIMECoinConnected > b.nTIMECoinConnected;
 }
 
 static bool CompareKeyedNetGroup(const NodeEvictionCandidate& a, const NodeEvictionCandidate& b)
@@ -895,21 +895,21 @@ static bool CompareKeyedNetGroup(const NodeEvictionCandidate& a, const NodeEvict
     return a.vchKeyedNetGroup < b.vchKeyedNetGroup;
 }
 
-static bool CompareNodeBlockTIMECCoin(const NodeEvictionCandidate &a, const NodeEvictionCandidate &b)
+static bool CompareNodeBlockTIMECoin(const NodeEvictionCandidate &a, const NodeEvictionCandidate &b)
 {
     // There is a fall-through here because it is common for a node to have many peers which have not yet relayed a block.
-    if (a.nLastBlockTIMECCoin != b.nLastBlockTIMECCoin) return a.nLastBlockTIMECCoin < b.nLastBlockTIMECCoin;
+    if (a.nLastBlockTIMECoin != b.nLastBlockTIMECoin) return a.nLastBlockTIMECoin < b.nLastBlockTIMECoin;
     if (a.fNetworkNode != b.fNetworkNode) return b.fNetworkNode;
-    return a.nTIMECCoinConnected > b.nTIMECCoinConnected;
+    return a.nTIMECoinConnected > b.nTIMECoinConnected;
 }
 
-static bool CompareNodeTXTIMECCoin(const NodeEvictionCandidate &a, const NodeEvictionCandidate &b)
+static bool CompareNodeTXTIMECoin(const NodeEvictionCandidate &a, const NodeEvictionCandidate &b)
 {
     // There is a fall-through here because it is common for a node to have more than a few peers that have not yet relayed txn.
-    if (a.nLastTXTIMECCoin != b.nLastTXTIMECCoin) return a.nLastTXTIMECCoin < b.nLastTXTIMECCoin;
+    if (a.nLastTXTIMECoin != b.nLastTXTIMECoin) return a.nLastTXTIMECoin < b.nLastTXTIMECoin;
     if (a.fRelayTxes != b.fRelayTxes) return b.fRelayTxes;
     if (a.fBloomFilter != b.fBloomFilter) return a.fBloomFilter;
-    return a.nTIMECCoinConnected > b.nTIMECCoinConnected;
+    return a.nTIMECoinConnected > b.nTIMECoinConnected;
 }
 
 /** Try to find a connection to evict when the node is full.
@@ -951,28 +951,28 @@ bool CConnman::AttemptToEvictConnection()
 
     // Protect the 8 nodes with the best ping times.
     // An attacker cannot manipulate this metric without physically moving nodes closer to the target.
-    std::sort(vEvictionCandidates.begin(), vEvictionCandidates.end(), ReverseCompareNodeMinPingTIMECCoin);
+    std::sort(vEvictionCandidates.begin(), vEvictionCandidates.end(), ReverseCompareNodeMinPingTIMECoin);
     vEvictionCandidates.erase(vEvictionCandidates.end() - std::min(8, static_cast<int>(vEvictionCandidates.size())), vEvictionCandidates.end());
 
     if (vEvictionCandidates.empty()) return false;
 
     // Protect 4 nodes that most recently sent us transactions.
     // An attacker cannot manipulate this metric without performing useful work.
-    std::sort(vEvictionCandidates.begin(), vEvictionCandidates.end(), CompareNodeTXTIMECCoin);
+    std::sort(vEvictionCandidates.begin(), vEvictionCandidates.end(), CompareNodeTXTIMECoin);
     vEvictionCandidates.erase(vEvictionCandidates.end() - std::min(4, static_cast<int>(vEvictionCandidates.size())), vEvictionCandidates.end());
 
     if (vEvictionCandidates.empty()) return false;
 
     // Protect 4 nodes that most recently sent us blocks.
     // An attacker cannot manipulate this metric without performing useful work.
-    std::sort(vEvictionCandidates.begin(), vEvictionCandidates.end(), CompareNodeBlockTIMECCoin);
+    std::sort(vEvictionCandidates.begin(), vEvictionCandidates.end(), CompareNodeBlockTIMECoin);
     vEvictionCandidates.erase(vEvictionCandidates.end() - std::min(4, static_cast<int>(vEvictionCandidates.size())), vEvictionCandidates.end());
 
     if (vEvictionCandidates.empty()) return false;
 
     // Protect the half of the remaining nodes which have been connected the longest.
     // This replicates the existing implicit behavior.
-    std::sort(vEvictionCandidates.begin(), vEvictionCandidates.end(), ReverseCompareNodeTIMECCoinConnected);
+    std::sort(vEvictionCandidates.begin(), vEvictionCandidates.end(), ReverseCompareNodeTIMECoinConnected);
     vEvictionCandidates.erase(vEvictionCandidates.end() - static_cast<int>(vEvictionCandidates.size() / 2), vEvictionCandidates.end());
 
     if (vEvictionCandidates.empty()) return false;
@@ -981,17 +981,17 @@ bool CConnman::AttemptToEvictConnection()
     // (vEvictionCandidates is already sorted by reverse connect time)
     std::vector<unsigned char> naMostConnections;
     unsigned int nMostConnections = 0;
-    int64_t nMostConnectionsTIMECCoin = 0;
+    int64_t nMostConnectionsTIMECoin = 0;
     std::map<std::vector<unsigned char>, std::vector<NodeEvictionCandidate> > mapAddrCounts;
     for(size_t i = 0; i < vEvictionCandidates.size(); ++i) {
         const NodeEvictionCandidate& candidate = vEvictionCandidates[i];
         mapAddrCounts[candidate.vchNetGroup].push_back(candidate);
-        int64_t grouptime = mapAddrCounts[candidate.vchNetGroup][0].nTIMECCoinConnected;
+        int64_t grouptime = mapAddrCounts[candidate.vchNetGroup][0].nTIMECoinConnected;
         size_t groupsize = mapAddrCounts[candidate.vchNetGroup].size();
 
-        if (groupsize > nMostConnections || (groupsize == nMostConnections && grouptime > nMostConnectionsTIMECCoin)) {
+        if (groupsize > nMostConnections || (groupsize == nMostConnections && grouptime > nMostConnectionsTIMECoin)) {
             nMostConnections = groupsize;
-            nMostConnectionsTIMECCoin = grouptime;
+            nMostConnectionsTIMECoin = grouptime;
             naMostConnections = candidate.vchNetGroup;
         }
     }
@@ -1354,27 +1354,27 @@ void CConnman::ThreadSocketHandler()
             //
             // Inactivity checking
             //
-            int64_t nTIMECCoin = GetSystemTIMECCoinInSeconds();
-            if (nTIMECCoin - pnode->nTIMECCoinConnected > 60)
+            int64_t nTIMECoin = GetSystemTIMECoinInSeconds();
+            if (nTIMECoin - pnode->nTIMECoinConnected > 60)
             {
                 if (pnode->nLastRecv == 0 || pnode->nLastSend == 0)
                 {
                     LogPrint("net", "socket no message in first 60 seconds, %d %d from %d\n", pnode->nLastRecv != 0, pnode->nLastSend != 0, pnode->id);
                     pnode->fDisconnect = true;
                 }
-                else if (nTIMECCoin - pnode->nLastSend > TIMECOUT_INTERVAL)
+                else if (nTIMECoin - pnode->nLastSend > TIMECOUT_INTERVAL)
                 {
-                    LogPrintf("socket sending timeout: %is\n", nTIMECCoin - pnode->nLastSend);
+                    LogPrintf("socket sending timeout: %is\n", nTIMECoin - pnode->nLastSend);
                     pnode->fDisconnect = true;
                 }
-                else if (nTIMECCoin - pnode->nLastRecv > (pnode->nVersion > BIP0031_VERSION ? TIMECOUT_INTERVAL : 90*60))
+                else if (nTIMECoin - pnode->nLastRecv > (pnode->nVersion > BIP0031_VERSION ? TIMECOUT_INTERVAL : 90*60))
                 {
-                    LogPrintf("socket receive timeout: %is\n", nTIMECCoin - pnode->nLastRecv);
+                    LogPrintf("socket receive timeout: %is\n", nTIMECoin - pnode->nLastRecv);
                     pnode->fDisconnect = true;
                 }
-                else if (pnode->nPingNonceSent && pnode->nPingUsecStart + TIMECOUT_INTERVAL * 1000000 < GetTIMECCoinMicros())
+                else if (pnode->nPingNonceSent && pnode->nPingUsecStart + TIMECOUT_INTERVAL * 1000000 < GetTIMECoinMicros())
                 {
-                    LogPrintf("ping timeout: %fs\n", 0.000001 * (GetTIMECCoinMicros() - pnode->nPingUsecStart));
+                    LogPrintf("ping timeout: %fs\n", 0.000001 * (GetTIMECoinMicros() - pnode->nPingUsecStart));
                     pnode->fDisconnect = true;
                 }
             }
@@ -1446,7 +1446,7 @@ void ThreadMapPort()
             }
         }
 
-        std::string strDesc = "TIMECCoin Core " + FormatFullVersion();
+        std::string strDesc = "TIMECoin Core " + FormatFullVersion();
 
         try {
             while (true) {
@@ -1550,7 +1550,7 @@ void CConnman::ThreadDNSAddressSeed()
                 {
                     int nOneDay = 24*3600;
                     CAddress addr = CAddress(CService(ip, Params().GetDefaultPort()), NODE_NETWORK);
-                    addr.nTIMECCoin = GetTIMECCoin() - 3*nOneDay - GetRand(4*nOneDay); // use a random age between 3 and 7 days old
+                    addr.nTIMECoin = GetTIMECoin() - 3*nOneDay - GetRand(4*nOneDay); // use a random age between 3 and 7 days old
                     vAdd.push_back(addr);
                     found++;
                 }
@@ -1583,13 +1583,13 @@ void CConnman::ThreadDNSAddressSeed()
 
 void CConnman::DumpAddresses()
 {
-    int64_t nStart = GetTIMECCoinMillis();
+    int64_t nStart = GetTIMECoinMillis();
 
     CAddrDB adb;
     adb.Write(addrman);
 
     LogPrint("net", "Flushed %d addresses to peers.dat  %dms\n",
-           addrman.size(), GetTIMECCoinMillis() - nStart);
+           addrman.size(), GetTIMECoinMillis() - nStart);
 }
 
 void CConnman::DumpData()
@@ -1640,7 +1640,7 @@ void CConnman::ThreadOpenConnections()
     }
 
     // Initiate network connections
-    int64_t nStart = GetTIMECCoin();
+    int64_t nStart = GetTIMECoin();
 
     // Minimum time before next feeler connection (in microseconds).
     int64_t nNextFeeler = PoissonNextSend(nStart*1000*1000, FEELER_INTERVAL);
@@ -1656,7 +1656,7 @@ void CConnman::ThreadOpenConnections()
             return;
 
         // Add seed nodes if DNS seeds are all down (an infrastructure attack?).
-        if (addrman.size() == 0 && (GetTIMECCoin() - nStart > 60)) {
+        if (addrman.size() == 0 && (GetTIMECoin() - nStart > 60)) {
             static bool done = false;
             if (!done) {
                 LogPrintf("Adding fixed seed nodes as DNS doesn't seem to be available.\n");
@@ -1700,16 +1700,16 @@ void CConnman::ThreadOpenConnections()
         //
         bool fFeeler = false;
         if (nOutbound >= nMaxOutbound) {
-            int64_t nTIMECCoin = GetTIMECCoinMicros(); // The current time right now (in microseconds).
-            if (nTIMECCoin > nNextFeeler) {
-                nNextFeeler = PoissonNextSend(nTIMECCoin, FEELER_INTERVAL);
+            int64_t nTIMECoin = GetTIMECoinMicros(); // The current time right now (in microseconds).
+            if (nTIMECoin > nNextFeeler) {
+                nNextFeeler = PoissonNextSend(nTIMECoin, FEELER_INTERVAL);
                 fFeeler = true;
             } else {
                 continue;
             }
         }
 
-        int64_t nANow = GetAdjustedTIMECCoin();
+        int64_t nANow = GetAdjustedTIMECoin();
         int nTries = 0;
         while (!interruptNet)
         {
@@ -2032,7 +2032,7 @@ bool CConnman::BindListenPort(const CService &addrBind, std::string& strError, b
     {
         int nErr = WSAGetLastError();
         if (nErr == WSAEADDRINUSE)
-            strError = strprintf(_("Unable to bind to %s on this computer. TIMECCoin Core is probably already running."), addrBind.ToString());
+            strError = strprintf(_("Unable to bind to %s on this computer. TIMECoin Core is probably already running."), addrBind.ToString());
         else
             strError = strprintf(_("Unable to bind to %s on this computer (bind returned error %s)"), addrBind.ToString(), NetworkErrorString(nErr));
         LogPrintf("%s\n", strError);
@@ -2158,8 +2158,8 @@ bool CConnman::Start(CScheduler& scheduler, std::string& strNodeError, Options c
     nTotalBytesSent = 0;
     nMaxOutboundLimit = 0;
     nMaxOutboundTotalBytesSentInCycle = 0;
-    nMaxOutboundTIMECCoinframe = 60*60*24; //1 day
-    nMaxOutboundCycleStartTIMECCoin = 0;
+    nMaxOutboundTIMECoinframe = 60*60*24; //1 day
+    nMaxOutboundCycleStartTIMECoin = 0;
 
     nRelevantServices = connOptions.nRelevantServices;
     nLocalServices = connOptions.nLocalServices;
@@ -2176,11 +2176,11 @@ bool CConnman::Start(CScheduler& scheduler, std::string& strNodeError, Options c
     if (clientInterface)
         clientInterface->InitMessage(_("Loading addresses..."));
     // Load addresses from peers.dat
-    int64_t nStart = GetTIMECCoinMillis();
+    int64_t nStart = GetTIMECoinMillis();
     {
         CAddrDB adb;
         if (adb.Read(addrman))
-            LogPrintf("Loaded %i addresses from peers.dat  %dms\n", addrman.size(), GetTIMECCoinMillis() - nStart);
+            LogPrintf("Loaded %i addresses from peers.dat  %dms\n", addrman.size(), GetTIMECoinMillis() - nStart);
         else {
             addrman.Clear(); // Addrman can be in an inconsistent state after failure, reset it
             LogPrintf("Invalid or missing peers.dat; recreating\n");
@@ -2190,7 +2190,7 @@ bool CConnman::Start(CScheduler& scheduler, std::string& strNodeError, Options c
     if (clientInterface)
         clientInterface->InitMessage(_("Loading banlist..."));
     // Load addresses from banlist.dat
-    nStart = GetTIMECCoinMillis();
+    nStart = GetTIMECoinMillis();
     CBanDB bandb;
     banmap_t banmap;
     if (bandb.Read(banmap)) {
@@ -2199,7 +2199,7 @@ bool CConnman::Start(CScheduler& scheduler, std::string& strNodeError, Options c
         SweepBanned(); // sweep out unused entries
 
         LogPrint("net", "Loaded %d banned node ips/subnets from banlist.dat  %dms\n",
-            banmap.size(), GetTIMECCoinMillis() - nStart);
+            banmap.size(), GetTIMECoinMillis() - nStart);
     } else {
         LogPrintf("Invalid or missing banlist.dat; recreating\n");
         SetBannedSetDirty(true); // force write
@@ -2358,9 +2358,9 @@ void CConnman::Stop()
 void CConnman::DeleteNode(CNode* pnode)
 {
     assert(pnode);
-    bool fUpdateConnectionTIMECCoin = false;
-    GetNodeSignals().FinalizeNode(pnode->GetId(), fUpdateConnectionTIMECCoin);
-    if(fUpdateConnectionTIMECCoin)
+    bool fUpdateConnectionTIMECoin = false;
+    GetNodeSignals().FinalizeNode(pnode->GetId(), fUpdateConnectionTIMECoin);
+    if(fUpdateConnectionTIMECoin)
         addrman.Connected(pnode->addr);
     delete pnode;
 }
@@ -2386,14 +2386,14 @@ void CConnman::MarkAddressGood(const CAddress& addr)
     addrman.Good(addr);
 }
 
-void CConnman::AddNewAddress(const CAddress& addr, const CAddress& addrFrom, int64_t nTIMECCoinPenalty)
+void CConnman::AddNewAddress(const CAddress& addr, const CAddress& addrFrom, int64_t nTIMECoinPenalty)
 {
-    addrman.Add(addr, addrFrom, nTIMECCoinPenalty);
+    addrman.Add(addr, addrFrom, nTIMECoinPenalty);
 }
 
-void CConnman::AddNewAddresses(const std::vector<CAddress>& vAddr, const CAddress& addrFrom, int64_t nTIMECCoinPenalty)
+void CConnman::AddNewAddresses(const std::vector<CAddress>& vAddr, const CAddress& addrFrom, int64_t nTIMECoinPenalty)
 {
-    addrman.Add(vAddr, addrFrom, nTIMECCoinPenalty);
+    addrman.Add(vAddr, addrFrom, nTIMECoinPenalty);
 }
 
 std::vector<CAddress> CConnman::GetAddresses()
@@ -2499,7 +2499,7 @@ void CConnman::RelayTransaction(const CTransaction& tx, const CDataStream& ss)
     {
         LOCK(cs_mapRelay);
         // Expire old relay messages
-        while (!vRelayExpiration.empty() && vRelayExpiration.front().first < GetTIMECCoin())
+        while (!vRelayExpiration.empty() && vRelayExpiration.front().first < GetTIMECoin())
         {
             mapRelay.erase(vRelayExpiration.front().second);
             vRelayExpiration.pop_front();
@@ -2507,7 +2507,7 @@ void CConnman::RelayTransaction(const CTransaction& tx, const CDataStream& ss)
 
         // Save original serialized message so newer versions are preserved
         mapRelay.insert(std::make_pair(inv, ss));
-        vRelayExpiration.push_back(std::make_pair(GetTIMECCoin() + 15 * 60, inv));
+        vRelayExpiration.push_back(std::make_pair(GetTIMECoin() + 15 * 60, inv));
     }
     LOCK(cs_vNodes);
     BOOST_FOREACH(CNode* pnode, vNodes)
@@ -2542,11 +2542,11 @@ void CConnman::RecordBytesSent(uint64_t bytes)
     LOCK(cs_totalBytesSent);
     nTotalBytesSent += bytes;
 
-    uint64_t now = GetTIMECCoin();
-    if (nMaxOutboundCycleStartTIMECCoin + nMaxOutboundTIMECCoinframe < now)
+    uint64_t now = GetTIMECoin();
+    if (nMaxOutboundCycleStartTIMECoin + nMaxOutboundTIMECoinframe < now)
     {
         // timeframe expired, reset cycle
-        nMaxOutboundCycleStartTIMECCoin = now;
+        nMaxOutboundCycleStartTIMECoin = now;
         nMaxOutboundTotalBytesSentInCycle = 0;
     }
 
@@ -2557,7 +2557,7 @@ void CConnman::RecordBytesSent(uint64_t bytes)
 void CConnman::SetMaxOutboundTarget(uint64_t limit)
 {
     LOCK(cs_totalBytesSent);
-    uint64_t recommendedMinimum = (nMaxOutboundTIMECCoinframe / 600) * MaxBlockSize(true);
+    uint64_t recommendedMinimum = (nMaxOutboundTIMECoinframe / 600) * MaxBlockSize(true);
     nMaxOutboundLimit = limit;
 
     if (limit > 0 && limit < recommendedMinimum)
@@ -2570,36 +2570,36 @@ uint64_t CConnman::GetMaxOutboundTarget()
     return nMaxOutboundLimit;
 }
 
-uint64_t CConnman::GetMaxOutboundTIMECCoinframe()
+uint64_t CConnman::GetMaxOutboundTIMECoinframe()
 {
     LOCK(cs_totalBytesSent);
-    return nMaxOutboundTIMECCoinframe;
+    return nMaxOutboundTIMECoinframe;
 }
 
-uint64_t CConnman::GetMaxOutboundTIMECCoinLeftInCycle()
+uint64_t CConnman::GetMaxOutboundTIMECoinLeftInCycle()
 {
     LOCK(cs_totalBytesSent);
     if (nMaxOutboundLimit == 0)
         return 0;
 
-    if (nMaxOutboundCycleStartTIMECCoin == 0)
-        return nMaxOutboundTIMECCoinframe;
+    if (nMaxOutboundCycleStartTIMECoin == 0)
+        return nMaxOutboundTIMECoinframe;
 
-    uint64_t cycleEndTIMECCoin = nMaxOutboundCycleStartTIMECCoin + nMaxOutboundTIMECCoinframe;
-    uint64_t now = GetTIMECCoin();
-    return (cycleEndTIMECCoin < now) ? 0 : cycleEndTIMECCoin - GetTIMECCoin();
+    uint64_t cycleEndTIMECoin = nMaxOutboundCycleStartTIMECoin + nMaxOutboundTIMECoinframe;
+    uint64_t now = GetTIMECoin();
+    return (cycleEndTIMECoin < now) ? 0 : cycleEndTIMECoin - GetTIMECoin();
 }
 
-void CConnman::SetMaxOutboundTIMECCoinframe(uint64_t timeframe)
+void CConnman::SetMaxOutboundTIMECoinframe(uint64_t timeframe)
 {
     LOCK(cs_totalBytesSent);
-    if (nMaxOutboundTIMECCoinframe != timeframe)
+    if (nMaxOutboundTIMECoinframe != timeframe)
     {
         // reset measure-cycle in case of changing
         // the timeframe
-        nMaxOutboundCycleStartTIMECCoin = GetTIMECCoin();
+        nMaxOutboundCycleStartTIMECoin = GetTIMECoin();
     }
-    nMaxOutboundTIMECCoinframe = timeframe;
+    nMaxOutboundTIMECoinframe = timeframe;
 }
 
 bool CConnman::OutboundTargetReached(bool historicalBlockServingLimit)
@@ -2611,7 +2611,7 @@ bool CConnman::OutboundTargetReached(bool historicalBlockServingLimit)
     if (historicalBlockServingLimit)
     {
         // keep a large enough buffer to at least relay each block once
-        uint64_t timeLeftInCycle = GetMaxOutboundTIMECCoinLeftInCycle();
+        uint64_t timeLeftInCycle = GetMaxOutboundTIMECoinLeftInCycle();
         uint64_t buffer = timeLeftInCycle / 600 * MaxBlockSize(fDIP0001ActiveAtTip);
         if (buffer >= nMaxOutboundLimit || nMaxOutboundTotalBytesSentInCycle >= nMaxOutboundLimit - buffer)
             return true;
@@ -2674,13 +2674,13 @@ CNode::CNode(NodeId idIn, ServiceFlags nLocalServicesIn, int nMyStartingHeightIn
     nLastRecv = 0;
     nSendBytes = 0;
     nRecvBytes = 0;
-    nTIMECCoinConnected = GetSystemTIMECCoinInSeconds();
-    nTIMECCoinOffset = 0;
+    nTIMECoinConnected = GetSystemTIMECoinInSeconds();
+    nTIMECoinOffset = 0;
     addr = addrIn;
     addrName = addrNameIn == "" ? addr.ToStringIPPort() : addrNameIn;
     nVersion = 0;
     nNumWarningsSkipped = 0;
-    nLastWarningTIMECCoin = 0;
+    nLastWarningTIMECoin = 0;
     strSubVer = "";
     fWhitelisted = false;
     fOneShot = false;
@@ -2702,14 +2702,14 @@ CNode::CNode(NodeId idIn, ServiceFlags nLocalServicesIn, int nMyStartingHeightIn
     nNextInvSend = 0;
     fRelayTxes = false;
     pfilter = new CBloomFilter();
-    nLastBlockTIMECCoin = 0;
-    nLastTXTIMECCoin = 0;
+    nLastBlockTIMECoin = 0;
+    nLastTXTIMECoin = 0;
     nPingNonceSent = 0;
     nPingUsecStart = 0;
-    nPingUsecTIMECCoin = 0;
+    nPingUsecTIMECoin = 0;
     fPingQueued = false;
     fMasternode = false;
-    nMinPingUsecTIMECCoin = std::numeric_limits<int64_t>::max();
+    nMinPingUsecTIMECoin = std::numeric_limits<int64_t>::max();
     vchKeyedNetGroup = CalculateKeyedNetGroup(addr);
     id = idIn;
     nLocalServices = nLocalServicesIn;
@@ -2744,11 +2744,11 @@ CNode::~CNode()
 void CNode::AskFor(const CInv& inv)
 {
     if (mapAskFor.size() > MAPASKFOR_MAX_SZ || setAskFor.size() > SETASKFOR_MAX_SZ) {
-        int64_t nNow = GetTIMECCoin();
-        if(nNow - nLastWarningTIMECCoin > WARNING_INTERVAL) {
+        int64_t nNow = GetTIMECoin();
+        if(nNow - nLastWarningTIMECoin > WARNING_INTERVAL) {
             LogPrintf("CNode::AskFor -- WARNING: inventory message dropped: mapAskFor.size = %d, setAskFor.size = %d, MAPASKFOR_MAX_SZ = %d, SETASKFOR_MAX_SZ = %d, nSkipped = %d, peer=%d\n",
                       mapAskFor.size(), setAskFor.size(), MAPASKFOR_MAX_SZ, SETASKFOR_MAX_SZ, nNumWarningsSkipped, id);
-            nLastWarningTIMECCoin = nNow;
+            nLastWarningTIMECoin = nNow;
             nNumWarningsSkipped = 0;
         }
         else {
@@ -2762,29 +2762,29 @@ void CNode::AskFor(const CInv& inv)
 
     // We're using mapAskFor as a priority queue,
     // the key is the earliest time the request can be sent
-    int64_t nRequestTIMECCoin;
+    int64_t nRequestTIMECoin;
     limitedmap<uint256, int64_t>::const_iterator it = mapAlreadyAskedFor.find(inv.hash);
     if (it != mapAlreadyAskedFor.end())
-        nRequestTIMECCoin = it->second;
+        nRequestTIMECoin = it->second;
     else
-        nRequestTIMECCoin = 0;
+        nRequestTIMECoin = 0;
 
-    LogPrint("net", "askfor %s  %d (%s) peer=%d\n", inv.ToString(), nRequestTIMECCoin, DateTIMECCoinStrFormat("%H:%M:%S", nRequestTIMECCoin/1000000), id);
+    LogPrint("net", "askfor %s  %d (%s) peer=%d\n", inv.ToString(), nRequestTIMECoin, DateTIMECoinStrFormat("%H:%M:%S", nRequestTIMECoin/1000000), id);
 
     // Make sure not to reuse time indexes to keep things in the same order
-    int64_t nNow = GetTIMECCoinMicros() - 1000000;
-    static int64_t nLastTIMECCoin;
-    ++nLastTIMECCoin;
-    nNow = std::max(nNow, nLastTIMECCoin);
-    nLastTIMECCoin = nNow;
+    int64_t nNow = GetTIMECoinMicros() - 1000000;
+    static int64_t nLastTIMECoin;
+    ++nLastTIMECoin;
+    nNow = std::max(nNow, nLastTIMECoin);
+    nLastTIMECoin = nNow;
 
     // Each retry is 2 minutes after the last
-    nRequestTIMECCoin = std::max(nRequestTIMECCoin + 2 * 60 * 1000000, nNow);
+    nRequestTIMECoin = std::max(nRequestTIMECoin + 2 * 60 * 1000000, nNow);
     if (it != mapAlreadyAskedFor.end())
-        mapAlreadyAskedFor.update(it, nRequestTIMECCoin);
+        mapAlreadyAskedFor.update(it, nRequestTIMECoin);
     else
-        mapAlreadyAskedFor.insert(std::make_pair(inv.hash, nRequestTIMECCoin));
-    mapAskFor.insert(std::make_pair(nRequestTIMECCoin, inv));
+        mapAlreadyAskedFor.insert(std::make_pair(inv.hash, nRequestTIMECoin));
+    mapAskFor.insert(std::make_pair(nRequestTIMECoin, inv));
 }
 
 bool CConnman::NodeFullyConnected(const CNode* pnode)

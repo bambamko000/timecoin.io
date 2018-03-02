@@ -633,7 +633,7 @@ Miscellaneous:
 - `fda3fed` libsecp256k1 integration
 - `2e36866` Show nodeid instead of addresses in log (for anonymity) unless otherwise requested
 - `cd01a5e` Enable paranoid corruption checks in LevelDB >= 1.16
-- `9365937` Add comment about never updating nTIMECCoinOffset past 199 samples
+- `9365937` Add comment about never updating nTIMECoinOffset past 199 samples
 - `403c1bf` contrib: remove getwork-based pyminer (as getwork API call has been removed)
 - `0c3e101` contrib: Added systemd .service file in order to help distributions integrate bitcoind
 - `0a0878d` doc: Add new DNSseed policy
@@ -714,7 +714,7 @@ Thanks to everyone who contributed to this release:
 - kiwigb
 - Kosta Zertsekel
 - LongShao007
-- Luke TIMECCoinjr
+- Luke TIMECoinjr
 - Mark Friedenbach
 - Mathy Vanvoorden
 - Matt Corallo

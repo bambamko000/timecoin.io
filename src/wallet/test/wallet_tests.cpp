@@ -32,9 +32,9 @@ static vector<COutput> vCoins;
 
 static void add_coin(const CAmount& nValue, int nAge = 6*24, bool fIsFromMe = false, int nInput=0)
 {
-    static int nextLockTIMECCoin = 0;
+    static int nextLockTIMECoin = 0;
     CMutableTransaction tx;
-    tx.nLockTIMECCoin = nextLockTIMECCoin++;        // so all transactions get different hashes
+    tx.nLockTIMECoin = nextLockTIMECoin++;        // so all transactions get different hashes
     tx.vout.resize(nInput+1);
     tx.vout[nInput].nValue = nValue;
     if (fIsFromMe) {

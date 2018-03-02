@@ -133,8 +133,8 @@ public:
     bool ReadAddressIndex(uint160 addressHash, int type,
                           std::vector<std::pair<CAddressIndexKey, CAmount> > &addressIndex,
                           int start = 0, int end = 0);
-    bool WriteTIMECCoinstampIndex(const CTIMECCoinstampIndexKey &timestampIndex);
-    bool ReadTIMECCoinstampIndex(const unsigned int &high, const unsigned int &low, std::vector<uint256> &vect);
+    bool WriteTIMECoinstampIndex(const CTIMECoinstampIndexKey &timestampIndex);
+    bool ReadTIMECoinstampIndex(const unsigned int &high, const unsigned int &low, std::vector<uint256> &vect);
     bool WriteFlag(const std::string &name, bool fValue);
     bool ReadFlag(const std::string &name, bool &fValue);
     bool LoadBlockIndexGuts(boost::function<CBlockIndex*(const uint256&)> insertBlockIndex);

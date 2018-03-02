@@ -32,10 +32,10 @@ Package: timed
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - daemon
- TIMECCoin is an experimental new digital currency that enables anonymous, instant
- payments to anyone, anywhere in the world. TIMECCoin uses peer-to-peer
+ TIMECoin is an experimental new digital currency that enables anonymous, instant
+ payments to anyone, anywhere in the world. TIMECoin uses peer-to-peer
  technology to operate with no central authority: managing transactions
- and issuing money are carried out collectively by the network. TIMECCoin Core
+ and issuing money are carried out collectively by the network. TIMECoin Core
  is the name of the open source software which enables the use of this currency.
  .
  This package provides the daemon, timed, and the CLI tool
@@ -45,22 +45,22 @@ Package: time-qt
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - Qt GUI
- TIMECCoin is an experimental new digital currency that enables anonymous, instant
- payments to anyone, anywhere in the world. TIMECCoin uses peer-to-peer
+ TIMECoin is an experimental new digital currency that enables anonymous, instant
+ payments to anyone, anywhere in the world. TIMECoin uses peer-to-peer
  technology to operate with no central authority: managing transactions
- and issuing money are carried out collectively by the network. TIMECCoin Core
+ and issuing money are carried out collectively by the network. TIMECoin Core
  is the name of the open source software which enables the use of this currency.
  .
- This package provides TIMECCoin-Qt, a GUI for TIMECCoin based on Qt.
+ This package provides TIMECoin-Qt, a GUI for TIMECoin based on Qt.
 
 Package: time-tx
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer digital currency - standalone transaction tool
- TIMECCoin is an experimental new digital currency that enables anonymous, instant
- payments to anyone, anywhere in the world. TIMECCoin uses peer-to-peer
+ TIMECoin is an experimental new digital currency that enables anonymous, instant
+ payments to anyone, anywhere in the world. TIMECoin uses peer-to-peer
  technology to operate with no central authority: managing transactions
- and issuing money are carried out collectively by the network. TIMECCoin Core
+ and issuing money are carried out collectively by the network. TIMECoin Core
  is the name of the open source software which enables the use of this currency.
  .
  This package provides time-tx, a command-line transaction creation

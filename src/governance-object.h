@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -62,13 +62,13 @@ inline bool operator<(const vote_time_pair_t& p1, const vote_time_pair_t& p2)
 struct vote_instance_t {
 
     vote_outcome_enum_t eOutcome;
-    int64_t nTIMECCoin;
-    int64_t nCreationTIMECCoin;
+    int64_t nTIMECoin;
+    int64_t nCreationTIMECoin;
 
-    vote_instance_t(vote_outcome_enum_t eOutcomeIn = VOTE_OUTCOME_NONE, int64_t nTIMECCoinIn = 0, int64_t nCreationTIMECCoinIn = 0)
+    vote_instance_t(vote_outcome_enum_t eOutcomeIn = VOTE_OUTCOME_NONE, int64_t nTIMECoinIn = 0, int64_t nCreationTIMECoinIn = 0)
         : eOutcome(eOutcomeIn),
-          nTIMECCoin(nTIMECCoinIn),
-          nCreationTIMECCoin(nCreationTIMECCoinIn)
+          nTIMECoin(nTIMECoinIn),
+          nCreationTIMECoin(nCreationTIMECoinIn)
     {}
 
     ADD_SERIALIZE_METHODS;
@@ -78,8 +78,8 @@ struct vote_instance_t {
     {
         int nOutcome = int(eOutcome);
         READWRITE(nOutcome);
-        READWRITE(nTIMECCoin);
-        READWRITE(nCreationTIMECCoin);
+        READWRITE(nTIMECoin);
+        READWRITE(nCreationTIMECoin);
         if(ser_action.ForRead()) {
             eOutcome = vote_outcome_enum_t(nOutcome);
         }
@@ -138,10 +138,10 @@ private:
     int nRevision;
 
     /// time this object was created
-    int64_t nTIMECCoin;
+    int64_t nTIMECoin;
 
     /// time this object was marked for deletion
-    int64_t nDeletionTIMECCoin;
+    int64_t nDeletionTIMECoin;
 
     /// fee-tx
     uint256 nCollateralHash;
@@ -192,7 +192,7 @@ private:
 public:
     CGovernanceObject();
 
-    CGovernanceObject(uint256 nHashParentIn, int nRevisionIn, int64_t nTIMECCoin, uint256 nCollateralHashIn, std::string strDataIn);
+    CGovernanceObject(uint256 nHashParentIn, int nRevisionIn, int64_t nTIMECoin, uint256 nCollateralHashIn, std::string strDataIn);
 
     CGovernanceObject(const CGovernanceObject& other);
 
@@ -200,12 +200,12 @@ public:
 
     // Public Getter methods
 
-    int64_t GetCreationTIMECCoin() const {
-        return nTIMECCoin;
+    int64_t GetCreationTIMECoin() const {
+        return nTIMECoin;
     }
 
-    int64_t GetDeletionTIMECCoin() const {
-        return nDeletionTIMECCoin;
+    int64_t GetDeletionTIMECoin() const {
+        return nDeletionTIMECoin;
     }
 
     int GetObjectType() const {
@@ -311,7 +311,7 @@ public:
 
         READWRITE(nHashParent);
         READWRITE(nRevision);
-        READWRITE(nTIMECCoin);
+        READWRITE(nTIMECoin);
         READWRITE(nCollateralHash);
         READWRITE(LIMITED_STRING(strData, MAX_GOVERNANCE_OBJECT_DATA_SIZE));
         READWRITE(nObjectType);
@@ -320,7 +320,7 @@ public:
         if(nType & SER_DISK) {
             // Only include these for the disk file format
             LogPrint("gobject", "CGovernanceObject::SerializationOp Reading/writing votes from/to disk\n");
-            READWRITE(nDeletionTIMECCoin);
+            READWRITE(nDeletionTIMECoin);
             READWRITE(fExpired);
             READWRITE(mapCurrentMNVotes);
             READWRITE(fileVotes);

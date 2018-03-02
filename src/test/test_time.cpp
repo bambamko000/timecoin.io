@@ -2,7 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#define BOOST_TEST_MODULE TIMECCoin Test Suite
+#define BOOST_TEST_MODULE TIMECoin Test Suite
 
 #include "test_time.h"
 
@@ -60,7 +60,7 @@ TestingSetup::TestingSetup(const std::string& chainName) : BasicTestingSetup(cha
         bitdb.MakeMock();
 #endif
         ClearDatadirCache();
-        pathTemp = GetTempPath() / strprintf("test_time_%lu_%i", (unsigned long)GetTIMECCoin(), (int)(GetRand(100000)));
+        pathTemp = GetTempPath() / strprintf("test_time_%lu_%i", (unsigned long)GetTIMECoin(), (int)(GetRand(100000)));
         boost::filesystem::create_directories(pathTemp);
         mapArgs["-datadir"] = pathTemp.string();
         pblocktree = new CBlockTreeDB(1 << 20, true);
@@ -154,7 +154,7 @@ CTxMemPoolEntry TestMemPoolEntryHelper::FromTx(CMutableTransaction &tx, CTxMemPo
     // Hack to assume either its completely dependent on other mempool txs or not at all
     CAmount inChainValue = hasNoDependencies ? txn.GetValueOut() : 0;
 
-    return CTxMemPoolEntry(txn, nFee, nTIMECCoin, dPriority, nHeight,
+    return CTxMemPoolEntry(txn, nFee, nTIMECoin, dPriority, nHeight,
                            hasNoDependencies, inChainValue, spendsCoinbase, sigOpCount, lp);
 }
 

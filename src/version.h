@@ -1,5 +1,5 @@
 // Copyright (c) 2012-2014 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,7 +21,7 @@ static const int GETHEADERS_VERSION = 80000;
 //! disconnect from peers older than this proto version
 static const int MIN_PEER_PROTO_VERSION = 80000;
 
-//! nTIMECCoin field added to CAddress, starting with this version;
+//! nTIMECoin field added to CAddress, starting with this version;
 //! if possible, avoid requesting addresses nodes older than this
 static const int CADDR_TIMEC_VERSION = 31402;
 

@@ -28,8 +28,8 @@ ThresholdState AbstractThresholdConditionChecker::GetStateFor(const CBlockIndex*
 {
     int nPeriod = Period(params);
     int nThreshold = Threshold(params);
-    int64_t nTIMECCoinStart = BeginTIMECCoin(params);
-    int64_t nTIMECCoinTIMECCoinout = EndTIMECCoin(params);
+    int64_t nTIMECoinStart = BeginTIMECoin(params);
+    int64_t nTIMECoinTIMECoinout = EndTIMECoin(params);
 
     // A block's state is always the same as that of the first of its period, so it is computed based on a pindexPrev whose height equals a multiple of nPeriod - 1.
     if (pindexPrev != NULL) {
@@ -44,7 +44,7 @@ ThresholdState AbstractThresholdConditionChecker::GetStateFor(const CBlockIndex*
             cache[pindexPrev] = THRESHOLD_DEFINED;
             break;
         }
-        if (pindexPrev->GetMedianTIMECCoinPast() < nTIMECCoinStart) {
+        if (pindexPrev->GetMedianTIMECoinPast() < nTIMECoinStart) {
             // Optimizaton: don't recompute down further, as we know every earlier block will be before the start time
             cache[pindexPrev] = THRESHOLD_DEFINED;
             break;
@@ -65,15 +65,15 @@ ThresholdState AbstractThresholdConditionChecker::GetStateFor(const CBlockIndex*
 
         switch (state) {
             case THRESHOLD_DEFINED: {
-                if (pindexPrev->GetMedianTIMECCoinPast() >= nTIMECCoinTIMECCoinout) {
+                if (pindexPrev->GetMedianTIMECoinPast() >= nTIMECoinTIMECoinout) {
                     stateNext = THRESHOLD_FAILED;
-                } else if (pindexPrev->GetMedianTIMECCoinPast() >= nTIMECCoinStart) {
+                } else if (pindexPrev->GetMedianTIMECoinPast() >= nTIMECoinStart) {
                     stateNext = THRESHOLD_STARTED;
                 }
                 break;
             }
             case THRESHOLD_STARTED: {
-                if (pindexPrev->GetMedianTIMECCoinPast() >= nTIMECCoinTIMECCoinout) {
+                if (pindexPrev->GetMedianTIMECoinPast() >= nTIMECoinTIMECoinout) {
                     stateNext = THRESHOLD_FAILED;
                     break;
                 }
@@ -118,8 +118,8 @@ private:
     const Consensus::DeploymentPos id;
 
 protected:
-    int64_t BeginTIMECCoin(const Consensus::Params& params) const { return params.vDeployments[id].nStartTIMECCoin; }
-    int64_t EndTIMECCoin(const Consensus::Params& params) const { return params.vDeployments[id].nTIMECCoinout; }
+    int64_t BeginTIMECoin(const Consensus::Params& params) const { return params.vDeployments[id].nStartTIMECoin; }
+    int64_t EndTIMECoin(const Consensus::Params& params) const { return params.vDeployments[id].nTIMECoinout; }
     int Period(const Consensus::Params& params) const { return params.vDeployments[id].nWindowSize ? params.vDeployments[id].nWindowSize : params.nMinerConfirmationWindow; }
     int Threshold(const Consensus::Params& params) const { return params.vDeployments[id].nThreshold ? params.vDeployments[id].nThreshold : params.nRuleChangeActivationThreshold; }
 

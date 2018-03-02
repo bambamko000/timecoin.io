@@ -13,7 +13,7 @@
 - (NSString *)__bundleIdentifier
 {
     if (self == [NSBundle mainBundle]) {
-        return @"org.time.TIMECCoin-Qt";
+        return @"org.time.TIMECoin-Qt";
     } else {
         return [self __bundleIdentifier];
     }

@@ -41,7 +41,7 @@ public:
 
 private:
     QMenu *contextMenu;
-    int64_t nTIMECCoinFilterUpdated;
+    int64_t nTIMECoinFilterUpdated;
     bool fFilterUpdated;
 
 public Q_SLOTS:

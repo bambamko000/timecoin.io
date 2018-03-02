@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -60,21 +60,21 @@ UniValue GetNetworkHashPS(int lookup, int height) {
         lookup = pb->nHeight;
 
     CBlockIndex *pb0 = pb;
-    int64_t minTIMECCoin = pb0->GetBlockTIMECCoin();
-    int64_t maxTIMECCoin = minTIMECCoin;
+    int64_t minTIMECoin = pb0->GetBlockTIMECoin();
+    int64_t maxTIMECoin = minTIMECoin;
     for (int i = 0; i < lookup; i++) {
         pb0 = pb0->pprev;
-        int64_t time = pb0->GetBlockTIMECCoin();
-        minTIMECCoin = std::min(time, minTIMECCoin);
-        maxTIMECCoin = std::max(time, maxTIMECCoin);
+        int64_t time = pb0->GetBlockTIMECoin();
+        minTIMECoin = std::min(time, minTIMECoin);
+        maxTIMECoin = std::max(time, maxTIMECoin);
     }
 
-    // In case there's a situation where minTIMECCoin == maxTIMECCoin, we don't want a divide by zero exception.
-    if (minTIMECCoin == maxTIMECCoin)
+    // In case there's a situation where minTIMECoin == maxTIMECoin, we don't want a divide by zero exception.
+    if (minTIMECoin == maxTIMECoin)
         return 0;
 
     arith_uint256 workDiff = pb->nChainWork - pb0->nChainWork;
-    int64_t timeDiff = maxTIMECCoin - minTIMECCoin;
+    int64_t timeDiff = maxTIMECoin - minTIMECoin;
 
     return workDiff.getdouble() / timeDiff;
 }
@@ -496,23 +496,23 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_CLIENT_P2P_DISABLED, "Error: Peer-to-peer functionality missing or disabled");
 
     if (g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL) == 0)
-        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "TIMECCoin Core is not connected!");
+        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "TIMECoin Core is not connected!");
 
     if (IsInitialBlockDownload())
-        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "TIMECCoin Core is downloading blocks...");
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "TIMECoin Core is downloading blocks...");
 
     // when enforcement is on we need information about a masternode payee or otherwise our block is going to be orphaned by the network
     CScript payee;
     if (sporkManager.IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)
         && !masternodeSync.IsWinnersListSynced()
         && !mnpayments.GetBlockPayee(chainActive.Height() + 1, payee))
-            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "TIMECCoin Core is downloading masternode winners...");
+            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "TIMECoin Core is downloading masternode winners...");
 
     // next bock is a superblock and we need governance info to correctly construct it
     if (sporkManager.IsSporkActive(SPORK_9_SUPERBLOCKS_ENABLED)
         && !masternodeSync.IsSynced()
         && CSuperblock::IsValidBlockHeight(chainActive.Height() + 1))
-            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "TIMECCoin Core is syncing with network...");
+            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "TIMECoin Core is syncing with network...");
 
     static unsigned int nTransactionsUpdatedLast;
 
@@ -548,7 +548,7 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
             {
                 if (!cvBlockChange.timed_wait(lock, checktxtime))
                 {
-                    // TIMECCoinout: Check transactions for update
+                    // TIMECoinout: Check transactions for update
                     if (mempool.GetTransactionsUpdated() != nTransactionsUpdatedLastLP)
                         break;
                     checktxtime += boost::posix_time::seconds(10);
@@ -567,7 +567,7 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
     static int64_t nStart;
     static CBlockTemplate* pblocktemplate;
     if (pindexPrev != chainActive.Tip() ||
-        (mempool.GetTransactionsUpdated() != nTransactionsUpdatedLast && GetTIMECCoin() - nStart > 5))
+        (mempool.GetTransactionsUpdated() != nTransactionsUpdatedLast && GetTIMECoin() - nStart > 5))
     {
         // Clear pindexPrev so future calls make a new block, despite any failures from here on
         pindexPrev = NULL;
@@ -575,7 +575,7 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         // Store the chainActive.Tip() used before CreateNewBlock, to avoid races
         nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
         CBlockIndex* pindexPrevNew = chainActive.Tip();
-        nStart = GetTIMECCoin();
+        nStart = GetTIMECoin();
 
         // Create new block
         if(pblocktemplate)
@@ -594,8 +594,8 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
     CBlock* pblock = &pblocktemplate->block; // pointer for convenience
     const Consensus::Params& consensusParams = Params().GetConsensus();
 
-    // Update nTIMECCoin
-    UpdateTIMECCoin(pblock, consensusParams, pindexPrev);
+    // Update nTIMECoin
+    UpdateTIMECoin(pblock, consensusParams, pindexPrev);
     pblock->nNonce = 0;
 
     UniValue aCaps(UniValue::VARR); aCaps.push_back("proposal");
@@ -705,12 +705,12 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
     result.push_back(Pair("coinbasevalue", (int64_t)pblock->vtx[0].GetValueOut()));
     result.push_back(Pair("longpollid", chainActive.Tip()->GetBlockHash().GetHex() + i64tostr(nTransactionsUpdatedLast)));
     result.push_back(Pair("target", hashTarget.GetHex()));
-    result.push_back(Pair("mintime", (int64_t)pindexPrev->GetMedianTIMECCoinPast()+1));
+    result.push_back(Pair("mintime", (int64_t)pindexPrev->GetMedianTIMECoinPast()+1));
     result.push_back(Pair("mutable", aMutable));
     result.push_back(Pair("noncerange", "00000000ffffffff"));
     result.push_back(Pair("sigoplimit", (int64_t)MaxBlockSigOps(fDIP0001ActiveAtTip)));
     result.push_back(Pair("sizelimit", (int64_t)MaxBlockSize(fDIP0001ActiveAtTip)));
-    result.push_back(Pair("curtime", pblock->GetBlockTIMECCoin()));
+    result.push_back(Pair("curtime", pblock->GetBlockTIMECoin()));
     result.push_back(Pair("bits", strprintf("%08x", pblock->nBits)));
     result.push_back(Pair("height", (int64_t)(pindexPrev->nHeight+1)));
 

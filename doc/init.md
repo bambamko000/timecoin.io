@@ -68,9 +68,9 @@ can then be controlled by group membership.
 3b) Mac OS X
 
 Binary:              `/usr/local/bin/timed`
-Configuration file:  `~/Library/Application Support/TIMECCoinCore/time.conf`
-Data directory:      `~/Library/Application Support/TIMECCoinCore`
-Lock file:           `~/Library/Application Support/TIMECCoinCore/.lock`
+Configuration file:  `~/Library/Application Support/TIMECoinCore/time.conf`
+Data directory:      `~/Library/Application Support/TIMECoinCore`
+Lock file:           `~/Library/Application Support/TIMECoinCore/.lock`
 
 4. Installing Service Configuration
 -----------------------------------

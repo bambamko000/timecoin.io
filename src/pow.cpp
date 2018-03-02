@@ -27,8 +27,8 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const Conse
     double EventHorizonDeviationFast;
     double EventHorizonDeviationSlow;
 
-    uint64_t pastSecondsMin = params.nPowTargetTIMECCoinspan * 0.025;
-    uint64_t pastSecondsMax = params.nPowTargetTIMECCoinspan * 7;
+    uint64_t pastSecondsMin = params.nPowTargetTIMECoinspan * 0.025;
+    uint64_t pastSecondsMax = params.nPowTargetTIMECoinspan * 7;
     uint64_t PastBlocksMin = pastSecondsMin / params.nPowTargetSpacing;
     uint64_t PastBlocksMax = pastSecondsMax / params.nPowTargetSpacing;
 
@@ -48,7 +48,7 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const Conse
         }
         PastDifficultyAveragePrev = PastDifficultyAverage;
 
-        PastRateActualSeconds = BlockLastSolved->GetBlockTIMECCoin() - BlockReading->GetBlockTIMECCoin();
+        PastRateActualSeconds = BlockLastSolved->GetBlockTIMECoin() - BlockReading->GetBlockTIMECoin();
         PastRateTargetSeconds = params.nPowTargetSpacing * PastBlocksMass;
         PastRateAdjustmentRatio = double(1);
         if (PastRateActualSeconds < 0) { PastRateActualSeconds = 0; }
@@ -110,18 +110,18 @@ unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consens
 
     arith_uint256 bnNew(bnPastTargetAvg);
 
-    int64_t nActualTIMECCoinspan = pindexLast->GetBlockTIMECCoin() - pindex->GetBlockTIMECCoin();
-    // NOTE: is this accurate? nActualTIMECCoinspan counts it for (nPastBlocks - 1) blocks only...
-    int64_t nTargetTIMECCoinspan = nPastBlocks * params.nPowTargetSpacing;
+    int64_t nActualTIMECoinspan = pindexLast->GetBlockTIMECoin() - pindex->GetBlockTIMECoin();
+    // NOTE: is this accurate? nActualTIMECoinspan counts it for (nPastBlocks - 1) blocks only...
+    int64_t nTargetTIMECoinspan = nPastBlocks * params.nPowTargetSpacing;
 
-    if (nActualTIMECCoinspan < nTargetTIMECCoinspan/3)
-        nActualTIMECCoinspan = nTargetTIMECCoinspan/3;
-    if (nActualTIMECCoinspan > nTargetTIMECCoinspan*3)
-        nActualTIMECCoinspan = nTargetTIMECCoinspan*3;
+    if (nActualTIMECoinspan < nTargetTIMECoinspan/3)
+        nActualTIMECoinspan = nTargetTIMECoinspan/3;
+    if (nActualTIMECoinspan > nTargetTIMECoinspan*3)
+        nActualTIMECoinspan = nTargetTIMECoinspan*3;
 
     // Retarget
-    bnNew *= nActualTIMECCoinspan;
-    bnNew /= nTargetTIMECCoinspan;
+    bnNew *= nActualTIMECoinspan;
+    bnNew /= nTargetTIMECoinspan;
 
     if (bnNew > bnPowLimit) {
         bnNew = bnPowLimit;
@@ -146,7 +146,7 @@ unsigned int GetNextWorkRequiredBTC(const CBlockIndex* pindexLast, const CBlockH
             // Special difficulty rule for testnet:
             // If the new block's timestamp is more than 2* 2.5 minutes
             // then allow mining of a min-difficulty block.
-            if (pblock->GetBlockTIMECCoin() > pindexLast->GetBlockTIMECCoin() + params.nPowTargetSpacing*2)
+            if (pblock->GetBlockTIMECoin() > pindexLast->GetBlockTIMECoin() + params.nPowTargetSpacing*2)
                 return nProofOfWorkLimit;
             else
             {
@@ -166,7 +166,7 @@ unsigned int GetNextWorkRequiredBTC(const CBlockIndex* pindexLast, const CBlockH
     const CBlockIndex* pindexFirst = pindexLast->GetAncestor(nHeightFirst);
     assert(pindexFirst);
 
-    return CalculateNextWorkRequired(pindexLast, pindexFirst->GetBlockTIMECCoin(), params);
+    return CalculateNextWorkRequired(pindexLast, pindexFirst->GetBlockTIMECoin(), params);
 }
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
@@ -175,18 +175,18 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 }
 
 // for DIFF_BTC only!
-unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nFirstBlockTIMECCoin, const Consensus::Params& params)
+unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nFirstBlockTIMECoin, const Consensus::Params& params)
 {
     if (params.fPowNoRetargeting)
         return pindexLast->nBits;
 
     // Limit adjustment step
-    int64_t nActualTIMECCoinspan = pindexLast->GetBlockTIMECCoin() - nFirstBlockTIMECCoin;
-    LogPrintf("  nActualTIMECCoinspan = %d  before bounds\n", nActualTIMECCoinspan);
-    if (nActualTIMECCoinspan < params.nPowTargetTIMECCoinspan/4)
-        nActualTIMECCoinspan = params.nPowTargetTIMECCoinspan/4;
-    if (nActualTIMECCoinspan > params.nPowTargetTIMECCoinspan*4)
-        nActualTIMECCoinspan = params.nPowTargetTIMECCoinspan*4;
+    int64_t nActualTIMECoinspan = pindexLast->GetBlockTIMECoin() - nFirstBlockTIMECoin;
+    LogPrintf("  nActualTIMECoinspan = %d  before bounds\n", nActualTIMECoinspan);
+    if (nActualTIMECoinspan < params.nPowTargetTIMECoinspan/4)
+        nActualTIMECoinspan = params.nPowTargetTIMECoinspan/4;
+    if (nActualTIMECoinspan > params.nPowTargetTIMECoinspan*4)
+        nActualTIMECoinspan = params.nPowTargetTIMECoinspan*4;
 
     // Retarget
     const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
@@ -194,15 +194,15 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
     arith_uint256 bnOld;
     bnNew.SetCompact(pindexLast->nBits);
     bnOld = bnNew;
-    bnNew *= nActualTIMECCoinspan;
-    bnNew /= params.nPowTargetTIMECCoinspan;
+    bnNew *= nActualTIMECoinspan;
+    bnNew /= params.nPowTargetTIMECoinspan;
 
     if (bnNew > bnPowLimit)
         bnNew = bnPowLimit;
 
     /// debug print
     LogPrintf("GetNextWorkRequired RETARGET\n");
-    LogPrintf("params.nPowTargetTIMECCoinspan = %d    nActualTIMECCoinspan = %d\n", params.nPowTargetTIMECCoinspan, nActualTIMECCoinspan);
+    LogPrintf("params.nPowTargetTIMECoinspan = %d    nActualTIMECoinspan = %d\n", params.nPowTargetTIMECoinspan, nActualTIMECoinspan);
     LogPrintf("Before: %08x  %s\n", pindexLast->nBits, bnOld.ToString());
     LogPrintf("After:  %08x  %s\n", bnNew.GetCompact(), bnNew.ToString());
 
@@ -243,7 +243,7 @@ arith_uint256 GetBlockProof(const CBlockIndex& block)
     return (~bnTarget / (bnTarget + 1)) + 1;
 }
 
-int64_t GetBlockProofEquivalentTIMECCoin(const CBlockIndex& to, const CBlockIndex& from, const CBlockIndex& tip, const Consensus::Params& params)
+int64_t GetBlockProofEquivalentTIMECoin(const CBlockIndex& to, const CBlockIndex& from, const CBlockIndex& tip, const Consensus::Params& params)
 {
     arith_uint256 r;
     int sign = 1;

@@ -172,7 +172,7 @@ QVariant PeerTableModel::data(const QModelIndex &index, int role) const
         case Subversion:
             return QString::fromStdString(rec->nodeStats.cleanSubVer);
         case Ping:
-            return GUIUtil::formatPingTIMECCoin(rec->nodeStats.dMinPing);
+            return GUIUtil::formatPingTIMECoin(rec->nodeStats.dMinPing);
         }
     } else if (role == Qt::TextAlignmentRole) {
         if (index.column() == Ping)

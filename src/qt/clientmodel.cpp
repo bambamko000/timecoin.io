@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -30,7 +30,7 @@
 
 class CBlockIndex;
 
-static const int64_t nClientStartupTIMECCoin = GetTIMECCoin();
+static const int64_t nClientStartupTIMECoin = GetTIMECoin();
 static int64_t nLastHeaderTipUpdateNotification = 0;
 static int64_t nLastBlockTipUpdateNotification = 0;
 
@@ -40,20 +40,20 @@ ClientModel::ClientModel(OptionsModel *optionsModel, QObject *parent) :
     peerTableModel(0),
     cachedMasternodeCountString(""),
     banTableModel(0),
-    pollTIMECCoinr(0)
+    pollTIMECoinr(0)
 {
     cachedBestHeaderHeight = -1;
-    cachedBestHeaderTIMECCoin = -1;
+    cachedBestHeaderTIMECoin = -1;
     peerTableModel = new PeerTableModel(this);
     banTableModel = new BanTableModel(this);
-    pollTIMECCoinr = new QTimer(this);
-    connect(pollTIMECCoinr, SIGNAL(timeout()), this, SLOT(updateTIMECCoinr()));
-    pollTIMECCoinr->start(MODEL_UPDATE_DELAY);
+    pollTIMECoinr = new QTimer(this);
+    connect(pollTIMECoinr, SIGNAL(timeout()), this, SLOT(updateTIMECoinr()));
+    pollTIMECoinr->start(MODEL_UPDATE_DELAY);
 
-    pollMnTIMECCoinr = new QTimer(this);
-    connect(pollMnTIMECCoinr, SIGNAL(timeout()), this, SLOT(updateMnTIMECCoinr()));
+    pollMnTIMECoinr = new QTimer(this);
+    connect(pollMnTIMECoinr, SIGNAL(timeout()), this, SLOT(updateMnTIMECoinr()));
     // no need to update as frequent as data for balances/txes/blocks
-    pollMnTIMECCoinr->start(MODEL_UPDATE_DELAY * 4);
+    pollMnTIMECoinr->start(MODEL_UPDATE_DELAY * 4);
 
     subscribeToCoreSignals();
 }
@@ -105,22 +105,22 @@ int ClientModel::getHeaderTipHeight() const
         LOCK(cs_main);
         if (pindexBestHeader) {
             cachedBestHeaderHeight = pindexBestHeader->nHeight;
-            cachedBestHeaderTIMECCoin = pindexBestHeader->GetBlockTIMECCoin();
+            cachedBestHeaderTIMECoin = pindexBestHeader->GetBlockTIMECoin();
         }
     }
     return cachedBestHeaderHeight;
 }
 
-int64_t ClientModel::getHeaderTipTIMECCoin() const
+int64_t ClientModel::getHeaderTipTIMECoin() const
 {
-    if (cachedBestHeaderTIMECCoin == -1) {
+    if (cachedBestHeaderTIMECoin == -1) {
         LOCK(cs_main);
         if (pindexBestHeader) {
             cachedBestHeaderHeight = pindexBestHeader->nHeight;
-            cachedBestHeaderTIMECCoin = pindexBestHeader->GetBlockTIMECCoin();
+            cachedBestHeaderTIMECoin = pindexBestHeader->GetBlockTIMECoin();
         }
     }
-    return cachedBestHeaderTIMECCoin;
+    return cachedBestHeaderTIMECoin;
 }
 
 quint64 ClientModel::getTotalBytesRecv() const
@@ -142,9 +142,9 @@ QDateTime ClientModel::getLastBlockDate() const
     LOCK(cs_main);
 
     if (chainActive.Tip())
-        return QDateTime::fromTime_t(chainActive.Tip()->GetBlockTIMECCoin());
+        return QDateTime::fromTime_t(chainActive.Tip()->GetBlockTIMECoin());
 
-    return QDateTime::fromTime_t(Params().GenesisBlock().GetBlockTIMECCoin()); // Genesis block's time of current network
+    return QDateTime::fromTime_t(Params().GenesisBlock().GetBlockTIMECoin()); // Genesis block's time of current network
 }
 
 long ClientModel::getMempoolSize() const
@@ -168,7 +168,7 @@ double ClientModel::getVerificationProgress(const CBlockIndex *tipIn) const
     return Checkpoints::GuessVerificationProgress(Params().Checkpoints(), tip);
 }
 
-void ClientModel::updateTIMECCoinr()
+void ClientModel::updateTIMECoinr()
 {
     // no locking required at this point
     // the following calls will acquire the required lock
@@ -176,7 +176,7 @@ void ClientModel::updateTIMECCoinr()
     Q_EMIT bytesChanged(getTotalBytesRecv(), getTotalBytesSent());
 }
 
-void ClientModel::updateMnTIMECCoinr()
+void ClientModel::updateMnTIMECoinr()
 {
     QString newMasternodeCountString = getMasternodeCountString();
 
@@ -287,9 +287,9 @@ QString ClientModel::clientName() const
     return QString::fromStdString(CLIENT_NAME);
 }
 
-QString ClientModel::formatClientStartupTIMECCoin() const
+QString ClientModel::formatClientStartupTIMECoin() const
 {
-    return QDateTime::fromTime_t(nClientStartupTIMECCoin).toString();
+    return QDateTime::fromTime_t(nClientStartupTIMECoin).toString();
 }
 
 QString ClientModel::dataDir() const
@@ -345,21 +345,21 @@ static void BlockTipChanged(ClientModel *clientmodel, bool initialSync, const CB
     // was > 250ms (MODEL_UPDATE_DELAY) ago
     int64_t now = 0;
     if (initialSync)
-        now = GetTIMECCoinMillis();
+        now = GetTIMECoinMillis();
 
     int64_t& nLastUpdateNotification = fHeader ? nLastHeaderTipUpdateNotification : nLastBlockTipUpdateNotification;
 
     if (fHeader) {
         // cache best headers time and height to reduce future cs_main locks
         clientmodel->cachedBestHeaderHeight = pIndex->nHeight;
-        clientmodel->cachedBestHeaderTIMECCoin = pIndex->GetBlockTIMECCoin();
+        clientmodel->cachedBestHeaderTIMECoin = pIndex->GetBlockTIMECoin();
     }
     // if we are in-sync, update the UI regardless of last update time
     if (!initialSync || now - nLastUpdateNotification > MODEL_UPDATE_DELAY) {
         //pass a async signal to the UI thread
         QMetaObject::invokeMethod(clientmodel, "numBlocksChanged", Qt::QueuedConnection,
                                   Q_ARG(int, pIndex->nHeight),
-                                  Q_ARG(QDateTime, QDateTime::fromTime_t(pIndex->GetBlockTIMECCoin())),
+                                  Q_ARG(QDateTime, QDateTime::fromTime_t(pIndex->GetBlockTIMECoin())),
                                   Q_ARG(double, clientmodel->getVerificationProgress(pIndex)),
                                   Q_ARG(bool, fHeader));
         nLastUpdateNotification = now;

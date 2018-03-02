@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -98,7 +98,7 @@ private:
     CTxIn vinMasternode;
     uint256 nParentHash;
     int nVoteOutcome; // see VOTE_OUTCOMES above
-    int64_t nTIMECCoin;
+    int64_t nTIMECoin;
     std::vector<unsigned char> vchSig;
 
 public:
@@ -109,7 +109,7 @@ public:
 
     bool IsSynced() const { return fSynced; }
 
-    int64_t GetTIMECCoinstamp() const { return nTIMECCoin; }
+    int64_t GetTIMECoinstamp() const { return nTIMECoin; }
 
     vote_signal_enum_t GetSignal() const  { return vote_signal_enum_t(nVoteSignal); }
 
@@ -117,7 +117,7 @@ public:
 
     const uint256& GetParentHash() const { return nParentHash; }
 
-    void SetTIMECCoin(int64_t nTIMECCoinIn) { nTIMECCoin = nTIMECCoinIn; }
+    void SetTIMECoin(int64_t nTIMECoinIn) { nTIMECoin = nTIMECoinIn; }
 
     void SetSignature(const std::vector<unsigned char>& vchSigIn) { vchSig = vchSigIn; }
 
@@ -144,7 +144,7 @@ public:
         ss << nParentHash;
         ss << nVoteSignal;
         ss << nVoteOutcome;
-        ss << nTIMECCoin;
+        ss << nTIMECoin;
         return ss.GetHash();
     }
 
@@ -152,7 +152,7 @@ public:
     {
         std::ostringstream ostr;
         ostr << vinMasternode.ToString() << ":"
-             << nTIMECCoin << ":"
+             << nTIMECoin << ":"
              << CGovernanceVoting::ConvertOutcomeToString(GetOutcome()) << ":"
              << CGovernanceVoting::ConvertSignalToString(GetSignal());
         return ostr.str();
@@ -194,7 +194,7 @@ public:
         READWRITE(nParentHash);
         READWRITE(nVoteOutcome);
         READWRITE(nVoteSignal);
-        READWRITE(nTIMECCoin);
+        READWRITE(nTIMECoin);
         READWRITE(vchSig);
     }
 

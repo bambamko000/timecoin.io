@@ -17,7 +17,7 @@
 
 class ClientModel;
 class PlatformStyle;
-class RPCTIMECCoinrInterface;
+class RPCTIMECoinrInterface;
 
 namespace Ui {
     class RPCConsole;
@@ -157,7 +157,7 @@ private:
     int historyPtr;
     QList<NodeId> cachedNodeids;
     const PlatformStyle *platformStyle;
-    RPCTIMECCoinrInterface *rpcTIMECCoinrInterface;
+    RPCTIMECoinrInterface *rpcTIMECoinrInterface;
     QMenu *peersTableContextMenu;
     QMenu *banTableContextMenu;
     int consoleFontSize;

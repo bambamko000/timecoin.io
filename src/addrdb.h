@@ -28,7 +28,7 @@ class CBanEntry
 public:
     static const int CURRENT_VERSION=1;
     int nVersion;
-    int64_t nCreateTIMECCoin;
+    int64_t nCreateTIMECoin;
     int64_t nBanUntil;
     uint8_t banReason;
 
@@ -37,10 +37,10 @@ public:
         SetNull();
     }
 
-    CBanEntry(int64_t nCreateTIMECCoinIn)
+    CBanEntry(int64_t nCreateTIMECoinIn)
     {
         SetNull();
-        nCreateTIMECCoin = nCreateTIMECCoinIn;
+        nCreateTIMECoin = nCreateTIMECoinIn;
     }
 
     ADD_SERIALIZE_METHODS;
@@ -49,7 +49,7 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(this->nVersion);
         nVersion = this->nVersion;
-        READWRITE(nCreateTIMECCoin);
+        READWRITE(nCreateTIMECoin);
         READWRITE(nBanUntil);
         READWRITE(banReason);
     }
@@ -57,7 +57,7 @@ public:
     void SetNull()
     {
         nVersion = CBanEntry::CURRENT_VERSION;
-        nCreateTIMECCoin = 0;
+        nCreateTIMECoin = 0;
         nBanUntil = 0;
         banReason = BanReasonUnknown;
     }

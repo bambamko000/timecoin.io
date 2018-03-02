@@ -13,7 +13,7 @@ from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
 
 
-class TIMECCoinstampIndexTest(BitcoinTestFramework):
+class TIMECoinstampIndexTest(BitcoinTestFramework):
 
     def setup_chain(self):
         print("Initializing test directory "+self.options.tmpdir)
@@ -48,4 +48,4 @@ class TIMECCoinstampIndexTest(BitcoinTestFramework):
 
 
 if __name__ == '__main__':
-    TIMECCoinstampIndexTest().main()
+    TIMECoinstampIndexTest().main()

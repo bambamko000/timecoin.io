@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -261,24 +261,24 @@ DBErrors CWalletDB::ReorderTransactions(CWallet* pwallet)
     // First: get all CWalletTx and CAccountingEntry into a sorted-by-time multimap.
     typedef pair<CWalletTx*, CAccountingEntry*> TxPair;
     typedef multimap<int64_t, TxPair > TxItems;
-    TxItems txByTIMECCoin;
+    TxItems txByTIMECoin;
 
     for (map<uint256, CWalletTx>::iterator it = pwallet->mapWallet.begin(); it != pwallet->mapWallet.end(); ++it)
     {
         CWalletTx* wtx = &((*it).second);
-        txByTIMECCoin.insert(make_pair(wtx->nTIMECCoinReceived, TxPair(wtx, (CAccountingEntry*)0)));
+        txByTIMECoin.insert(make_pair(wtx->nTIMECoinReceived, TxPair(wtx, (CAccountingEntry*)0)));
     }
     list<CAccountingEntry> acentries;
     ListAccountCreditDebit("", acentries);
     BOOST_FOREACH(CAccountingEntry& entry, acentries)
     {
-        txByTIMECCoin.insert(make_pair(entry.nTIMECCoin, TxPair((CWalletTx*)0, &entry)));
+        txByTIMECoin.insert(make_pair(entry.nTIMECoin, TxPair((CWalletTx*)0, &entry)));
     }
 
     int64_t& nOrderPosNext = pwallet->nOrderPosNext;
     nOrderPosNext = 0;
     std::vector<int64_t> nOrderPosOffsets;
-    for (TxItems::iterator it = txByTIMECCoin.begin(); it != txByTIMECCoin.end(); ++it)
+    for (TxItems::iterator it = txByTIMECoin.begin(); it != txByTIMECoin.end(); ++it)
     {
         CWalletTx *const pwtx = (*it).second.first;
         CAccountingEntry *const pacentry = (*it).second.second;
@@ -378,7 +378,7 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
                 return false;
 
             // Undo serialize changes in 31600
-            if (31404 <= wtx.fTIMECCoinReceivedIsTxTIMECCoin && wtx.fTIMECCoinReceivedIsTxTIMECCoin <= 31703)
+            if (31404 <= wtx.fTIMECoinReceivedIsTxTIMECoin && wtx.fTIMECoinReceivedIsTxTIMECoin <= 31703)
             {
                 if (!ssValue.empty())
                 {
@@ -386,13 +386,13 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
                     char fUnused;
                     ssValue >> fTmp >> fUnused >> wtx.strFromAccount;
                     strErr = strprintf("LoadWallet() upgrading tx ver=%d %d '%s' %s",
-                                       wtx.fTIMECCoinReceivedIsTxTIMECCoin, fTmp, wtx.strFromAccount, hash.ToString());
-                    wtx.fTIMECCoinReceivedIsTxTIMECCoin = fTmp;
+                                       wtx.fTIMECoinReceivedIsTxTIMECoin, fTmp, wtx.strFromAccount, hash.ToString());
+                    wtx.fTIMECoinReceivedIsTxTIMECoin = fTmp;
                 }
                 else
                 {
-                    strErr = strprintf("LoadWallet() repairing tx ver=%d %s", wtx.fTIMECCoinReceivedIsTxTIMECCoin, hash.ToString());
-                    wtx.fTIMECCoinReceivedIsTxTIMECCoin = 0;
+                    strErr = strprintf("LoadWallet() repairing tx ver=%d %s", wtx.fTIMECoinReceivedIsTxTIMECoin, hash.ToString());
+                    wtx.fTIMECoinReceivedIsTxTIMECoin = 0;
                 }
                 wss.vWalletUpgrade.push_back(hash);
             }
@@ -430,7 +430,7 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
 
             // Watch-only addresses have no birthday information for now,
             // so set the wallet birthday to the beginning of time.
-            pwallet->nTIMECCoinFirstKey = 1;
+            pwallet->nTIMECoinFirstKey = 1;
         }
         else if (strType == "key" || strType == "wkey")
         {
@@ -542,9 +542,9 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
             pwallet->LoadKeyMetadata(vchPubKey, keyMeta);
 
             // find earliest key creation time, as wallet birthday
-            if (!pwallet->nTIMECCoinFirstKey ||
-                (keyMeta.nCreateTIMECCoin < pwallet->nTIMECCoinFirstKey))
-                pwallet->nTIMECCoinFirstKey = keyMeta.nCreateTIMECCoin;
+            if (!pwallet->nTIMECoinFirstKey ||
+                (keyMeta.nCreateTIMECoin < pwallet->nTIMECoinFirstKey))
+                pwallet->nTIMECoinFirstKey = keyMeta.nCreateTIMECoin;
         }
         else if (strType == "defaultkey")
         {
@@ -730,9 +730,9 @@ DBErrors CWalletDB::LoadWallet(CWallet* pwallet)
     LogPrintf("Keys: %u plaintext, %u encrypted, %u w/ metadata, %u total\n",
            wss.nKeys, wss.nCKeys, wss.nKeyMeta, wss.nKeys + wss.nCKeys);
 
-    // nTIMECCoinFirstKey is only reliable if all keys have metadata
+    // nTIMECoinFirstKey is only reliable if all keys have metadata
     if ((wss.nKeys + wss.nCKeys) != wss.nKeyMeta)
-        pwallet->nTIMECCoinFirstKey = 1; // 0 would be considered 'no value'
+        pwallet->nTIMECoinFirstKey = 1; // 0 would be considered 'no value'
 
     BOOST_FOREACH(uint256 hash, wss.vWalletUpgrade)
         WriteTx(hash, pwallet->mapWallet[hash]);
@@ -853,7 +853,7 @@ void ThreadFlushWalletDB(const string& strFile)
 
     unsigned int nLastSeen = nWalletDBUpdated;
     unsigned int nLastFlushed = nWalletDBUpdated;
-    int64_t nLastWalletUpdate = GetTIMECCoin();
+    int64_t nLastWalletUpdate = GetTIMECoin();
     while (true)
     {
         MilliSleep(500);
@@ -861,10 +861,10 @@ void ThreadFlushWalletDB(const string& strFile)
         if (nLastSeen != nWalletDBUpdated)
         {
             nLastSeen = nWalletDBUpdated;
-            nLastWalletUpdate = GetTIMECCoin();
+            nLastWalletUpdate = GetTIMECoin();
         }
 
-        if (nLastFlushed != nWalletDBUpdated && GetTIMECCoin() - nLastWalletUpdate >= 2)
+        if (nLastFlushed != nWalletDBUpdated && GetTIMECoin() - nLastWalletUpdate >= 2)
         {
             TRY_LOCK(bitdb.cs_db,lockDb);
             if (lockDb)
@@ -886,14 +886,14 @@ void ThreadFlushWalletDB(const string& strFile)
                     {
                         LogPrint("db", "Flushing wallet.dat\n");
                         nLastFlushed = nWalletDBUpdated;
-                        int64_t nStart = GetTIMECCoinMillis();
+                        int64_t nStart = GetTIMECoinMillis();
 
                         // Flush wallet.dat so it's self contained
                         bitdb.CloseDb(strFile);
                         bitdb.CheckpointLSN(strFile);
 
                         bitdb.mapFileUseCount.erase(mi++);
-                        LogPrint("db", "Flushed wallet.dat %dms\n", GetTIMECCoinMillis() - nStart);
+                        LogPrint("db", "Flushed wallet.dat %dms\n", GetTIMECoinMillis() - nStart);
                     }
                 }
             }
@@ -967,13 +967,13 @@ bool AutoBackupWallet (CWallet* wallet, std::string strWalletFile, std::string& 
         }
 
         // Create backup of the ...
-        std::string dateTIMECCoinStr = DateTIMECCoinStrFormat(".%Y-%m-%d-%H-%M", GetTIMECCoin());
+        std::string dateTIMECoinStr = DateTIMECoinStrFormat(".%Y-%m-%d-%H-%M", GetTIMECoin());
         if (wallet)
         {
             // ... opened wallet
             LOCK2(cs_main, wallet->cs_wallet);
             strWalletFile = wallet->strWalletFile;
-            fs::path backupFile = backupsDir / (strWalletFile + dateTIMECCoinStr);
+            fs::path backupFile = backupsDir / (strWalletFile + dateTIMECoinStr);
             if(!BackupWallet(*wallet, backupFile.string())) {
                 strBackupWarning = strprintf(_("Failed to create backup %s!"), backupFile.string());
                 LogPrintf("%s\n", strBackupWarning);
@@ -992,7 +992,7 @@ bool AutoBackupWallet (CWallet* wallet, std::string strWalletFile, std::string& 
         } else {
             // ... strWalletFile file
             fs::path sourceFile = GetDataDir() / strWalletFile;
-            fs::path backupFile = backupsDir / (strWalletFile + dateTIMECCoinStr);
+            fs::path backupFile = backupsDir / (strWalletFile + dateTIMECoinStr);
             sourceFile.make_preferred();
             backupFile.make_preferred();
             if (fs::exists(backupFile))
@@ -1072,7 +1072,7 @@ bool CWalletDB::Recover(CDBEnv& dbenv, const std::string& filename, bool fOnlyKe
     // Rewrite salvaged data to wallet.dat
     // Set -rescan so any missing transactions will be
     // found.
-    int64_t now = GetTIMECCoin();
+    int64_t now = GetTIMECoin();
     std::string newFilename = strprintf("wallet.%d.bak", now);
 
     int result = dbenv.dbenv->dbrename(NULL, filename.c_str(), NULL,

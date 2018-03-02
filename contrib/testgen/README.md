@@ -1,6 +1,6 @@
 ### TestGen ###
 
-Utilities to generate test vectors for the data-driven TIMECCoin tests.
+Utilities to generate test vectors for the data-driven TIMECoin tests.
 
 Usage: 
 

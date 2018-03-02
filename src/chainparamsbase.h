@@ -10,7 +10,7 @@
 
 /**
  * CBaseChainParams defines the base parameters (shared between time-cli and timed)
- * of a given instance of the TIMECCoin system.
+ * of a given instance of the TIMECoin system.
  */
 class CBaseChainParams
 {

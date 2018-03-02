@@ -36,14 +36,14 @@ Instructions: Homebrew
 
 NOTE: Building with Qt4 is still supported, however, doing so could result in a broken UI. Therefore, building with Qt5 is recommended. Be aware that Qt5 5.7+ requires C++11 compiler support.
 
-### Building TIMECCoin Core
+### Building TIMECoin Core
 
 1. Clone the GitHub tree to get the source code and go into the directory.
 
         git clone https://github.com/timepay/time.git
         cd time
 
-2.  Build TIMECCoin Core:
+2.  Build TIMECoin Core:
     This will configure and build the headless time binaries as well as the gui (if Qt is found).
     You can disable the gui build by passing `--without-gui` to configure.
 
@@ -79,9 +79,9 @@ Creating a release build
 ------------------------
 You can ignore this section if you are building `timed` for your own use.
 
-timed/time-cli binaries are not included in the TIMECCoin-Qt.app bundle.
+timed/time-cli binaries are not included in the TIMECoin-Qt.app bundle.
 
-If you are building `timed` or `TIMECCoin Core` for others, your build machine should be set up
+If you are building `timed` or `TIMECoin Core` for others, your build machine should be set up
 as follows for maximum compatibility:
 
 All dependencies should be compiled with these flags:
@@ -90,7 +90,7 @@ All dependencies should be compiled with these flags:
  -arch x86_64
  -isysroot $(xcode-select --print-path)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk
 
-Once dependencies are compiled, see [doc/release-process.md](release-process.md) for how the TIMECCoin Core
+Once dependencies are compiled, see [doc/release-process.md](release-process.md) for how the TIMECoin Core
 bundle is packaged and signed to create the .dmg disk image that is distributed.
 
 Running
@@ -102,14 +102,14 @@ directory. We have to first create the RPC configuration file, though.
 Run `./timed` to get the filename where it should be put, or just try these
 commands:
 
-    echo -e "rpcuser=timerpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/TIMECCoinCore/time.conf"
-    chmod 600 "/Users/${USER}/Library/Application Support/TIMECCoinCore/time.conf"
+    echo -e "rpcuser=timerpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/TIMECoinCore/time.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/TIMECoinCore/time.conf"
 
 The next time you run it, it will start downloading the blockchain, but it won't
 output anything while it's doing this. This process may take several hours;
 you can monitor its process by looking at the debug.log file, like this:
 
-    tail -f $HOME/Library/Application\ Support/TIMECCoinCore/debug.log
+    tail -f $HOME/Library/Application\ Support/TIMECoinCore/debug.log
 
 Other commands:
 -------

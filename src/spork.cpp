@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -19,7 +19,7 @@ std::map<uint256, CSporkMessage> mapSporks;
 
 void CSporkManager::ProcessSpork(CNode* pfrom, std::string& strCommand, CDataStream& vRecv, CConnman& connman)
 {
-    if(fLiteMode) return; // disable all TIMECCoin specific functionality
+    if(fLiteMode) return; // disable all TIMECoin specific functionality
 
     if (strCommand == NetMsgType::SPORK) {
 
@@ -37,7 +37,7 @@ void CSporkManager::ProcessSpork(CNode* pfrom, std::string& strCommand, CDataStr
         }
 
         if(mapSporksActive.count(spork.nSporkID)) {
-            if (mapSporksActive[spork.nSporkID].nTIMECCoinSigned >= spork.nTIMECCoinSigned) {
+            if (mapSporksActive[spork.nSporkID].nTIMECoinSigned >= spork.nTIMECoinSigned) {
                 LogPrint("spork", "%s seen\n", strLogMsg);
                 return;
             } else {
@@ -79,12 +79,12 @@ void CSporkManager::ExecuteSpork(int nSporkID, int nValue)
         // allow to reprocess 24h of blocks max, which should be enough to resolve any issues
         int64_t nMaxBlocks = 576;
         // this potentially can be a heavy operation, so only allow this to be executed once per 10 minutes
-        int64_t nTIMECCoinout = 10 * 60;
+        int64_t nTIMECoinout = 10 * 60;
 
-        static int64_t nTIMECCoinExecuted = 0; // i.e. it was never executed before
+        static int64_t nTIMECoinExecuted = 0; // i.e. it was never executed before
 
-        if(GetTIMECCoin() - nTIMECCoinExecuted < nTIMECCoinout) {
-            LogPrint("spork", "CSporkManager::ExecuteSpork -- ERROR: Trying to reconsider blocks, too soon - %d/%d\n", GetTIMECCoin() - nTIMECCoinExecuted, nTIMECCoinout);
+        if(GetTIMECoin() - nTIMECoinExecuted < nTIMECoinout) {
+            LogPrint("spork", "CSporkManager::ExecuteSpork -- ERROR: Trying to reconsider blocks, too soon - %d/%d\n", GetTIMECoin() - nTIMECoinExecuted, nTIMECoinout);
             return;
         }
 
@@ -97,14 +97,14 @@ void CSporkManager::ExecuteSpork(int nSporkID, int nValue)
         LogPrintf("CSporkManager::ExecuteSpork -- Reconsider Last %d Blocks\n", nValue);
 
         ReprocessBlocks(nValue);
-        nTIMECCoinExecuted = GetTIMECCoin();
+        nTIMECoinExecuted = GetTIMECoin();
     }
 }
 
 bool CSporkManager::UpdateSpork(int nSporkID, int64_t nValue, CConnman& connman)
 {
 
-    CSporkMessage spork = CSporkMessage(nSporkID, nValue, GetAdjustedTIMECCoin());
+    CSporkMessage spork = CSporkMessage(nSporkID, nValue, GetAdjustedTIMECoin());
 
     if(spork.Sign(strMasterPrivKey)) {
         spork.Relay(connman);
@@ -141,7 +141,7 @@ bool CSporkManager::IsSporkActive(int nSporkID)
         }
     }
 
-    return r < GetAdjustedTIMECCoin();
+    return r < GetAdjustedTIMECoin();
 }
 
 // grab the value of the spork on the network, or the default
@@ -222,7 +222,7 @@ bool CSporkMessage::Sign(std::string strSignKey)
     CKey key;
     CPubKey pubkey;
     std::string strError = "";
-    std::string strMessage = boost::lexical_cast<std::string>(nSporkID) + boost::lexical_cast<std::string>(nValue) + boost::lexical_cast<std::string>(nTIMECCoinSigned);
+    std::string strMessage = boost::lexical_cast<std::string>(nSporkID) + boost::lexical_cast<std::string>(nValue) + boost::lexical_cast<std::string>(nTIMECoinSigned);
 
     if(!CMessageSigner::GetKeysFromSecret(strSignKey, key, pubkey)) {
         LogPrintf("CSporkMessage::Sign -- GetKeysFromSecret() failed, invalid spork key %s\n", strSignKey);
@@ -246,7 +246,7 @@ bool CSporkMessage::CheckSignature()
 {
     //note: need to investigate why this is failing
     std::string strError = "";
-    std::string strMessage = boost::lexical_cast<std::string>(nSporkID) + boost::lexical_cast<std::string>(nValue) + boost::lexical_cast<std::string>(nTIMECCoinSigned);
+    std::string strMessage = boost::lexical_cast<std::string>(nSporkID) + boost::lexical_cast<std::string>(nValue) + boost::lexical_cast<std::string>(nTIMECoinSigned);
     CPubKey pubkey(ParseHex(Params().SporkPubKey()));
 
     if(!CMessageSigner::VerifyMessage(pubkey, vchSig, strMessage, strError)) {

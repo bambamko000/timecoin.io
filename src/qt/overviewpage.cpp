@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -105,7 +105,7 @@ public:
         painter->drawText(amountRect, Qt::AlignRight|Qt::AlignVCenter, amountText);
 
         painter->setPen(option.palette.color(QPalette::Text));
-        painter->drawText(amountRect, Qt::AlignLeft|Qt::AlignVCenter, GUIUtil::dateTIMECCoinStr(date));
+        painter->drawText(amountRect, Qt::AlignLeft|Qt::AlignVCenter, GUIUtil::dateTIMECoinStr(date));
 
         painter->restore();
     }
@@ -457,12 +457,12 @@ void OverviewPage::privateSendStatus()
 {
     if(!masternodeSync.IsBlockchainSynced() || ShutdownRequested()) return;
 
-    static int64_t nLastDSProgressBlockTIMECCoin = 0;
+    static int64_t nLastDSProgressBlockTIMECoin = 0;
     int nBestHeight = clientModel->getNumBlocks();
 
     // We are processing more then 1 block per second, we'll just leave
-    if(((nBestHeight - privateSendClient.nCachedNumBlocks) / (GetTIMECCoinMillis() - nLastDSProgressBlockTIMECCoin + 1) > 1)) return;
-    nLastDSProgressBlockTIMECCoin = GetTIMECCoinMillis();
+    if(((nBestHeight - privateSendClient.nCachedNumBlocks) / (GetTIMECoinMillis() - nLastDSProgressBlockTIMECoin + 1) > 1)) return;
+    nLastDSProgressBlockTIMECoin = GetTIMECoinMillis();
 
     QString strKeysLeftText(tr("keys left: %1").arg(pwalletMain->nKeysLeftSinceAutoBackup));
     if(pwalletMain->nKeysLeftSinceAutoBackup < PRIVATESEND_KEYS_THRESHOLD_WARNING) {

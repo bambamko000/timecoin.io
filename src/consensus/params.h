@@ -27,10 +27,10 @@ enum DeploymentPos
 struct BIP9Deployment {
     /** Bit position to select the particular bit in nVersion. */
     int bit;
-    /** Start MedianTIMECCoin for version bits miner confirmation. Can be a date in the past */
-    int64_t nStartTIMECCoin;
-    /** TIMECCoinout/expiry MedianTIMECCoin for the deployment attempt. */
-    int64_t nTIMECCoinout;
+    /** Start MedianTIMECoin for version bits miner confirmation. Can be a date in the past */
+    int64_t nStartTIMECoin;
+    /** TIMECoinout/expiry MedianTIMECoin for the deployment attempt. */
+    int64_t nTIMECoinout;
     /** The number of past blocks (including the block under consideration) to be taken into account for locking in a fork. */
     int64_t nWindowSize;
     /** A number of blocks, in the range of 1..nWindowSize, which must signal for a fork in order to lock it in. */
@@ -48,7 +48,7 @@ struct Params {
     int nBudgetPaymentsStartBlock;
     int nBudgetPaymentsCycleBlocks;
     int nBudgetPaymentsWindowBlocks;
-    int nBudgetProposalEstablishingTIMECCoin; // in seconds
+    int nBudgetProposalEstablishingTIMECoin; // in seconds
     int nSuperblockStartBlock;
     int nSuperblockCycle; // in blocks
     int nGovernanceMinQuorum; // Min absolute vote count to trigger an action
@@ -63,7 +63,7 @@ struct Params {
     uint256 BIP34Hash;
     /**
      * Minimum blocks including miner confirmation of the total of nMinerConfirmationWindow blocks in a retargetting period,
-     * (nPowTargetTIMECCoinspan / nPowTargetSpacing) which is also used for BIP9 deployments.
+     * (nPowTargetTIMECoinspan / nPowTargetSpacing) which is also used for BIP9 deployments.
      * Default BIP9Deployment::nThreshold value for deployments where it's not specified and for unknown deployments.
      * Examples: 1916 for 95%, 1512 for testchains.
      */
@@ -76,8 +76,8 @@ struct Params {
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     int64_t nPowTargetSpacing;
-    int64_t nPowTargetTIMECCoinspan;
-    int64_t DifficultyAdjustmentInterval() const { return nPowTargetTIMECCoinspan / nPowTargetSpacing; }
+    int64_t nPowTargetTIMECoinspan;
+    int64_t DifficultyAdjustmentInterval() const { return nPowTargetTIMECoinspan / nPowTargetSpacing; }
     uint256 nMinimumChainWork;
     uint256 defaultAssumeValid;
 };

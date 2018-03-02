@@ -13,7 +13,7 @@
  * for both timed and time-qt, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("TIMECCoin Core");
+const std::string CLIENT_NAME("TIMECoin Core");
 
 /**
  * Client version number

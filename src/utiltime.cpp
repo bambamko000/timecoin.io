@@ -15,23 +15,23 @@
 
 using namespace std;
 
-static int64_t nMockTIMECCoin = 0;  //! For unit testing
+static int64_t nMockTIMECoin = 0;  //! For unit testing
 
-int64_t GetTIMECCoin()
+int64_t GetTIMECoin()
 {
-    if (nMockTIMECCoin) return nMockTIMECCoin;
+    if (nMockTIMECoin) return nMockTIMECoin;
 
     time_t now = time(NULL);
     assert(now > 0);
     return now;
 }
 
-void SetMockTIMECCoin(int64_t nMockTIMECCoinIn)
+void SetMockTIMECoin(int64_t nMockTIMECoinIn)
 {
-    nMockTIMECCoin = nMockTIMECCoinIn;
+    nMockTIMECoin = nMockTIMECoinIn;
 }
 
-int64_t GetTIMECCoinMillis()
+int64_t GetTIMECoinMillis()
 {
     int64_t now = (boost::posix_time::microsec_clock::universal_time() -
                    boost::posix_time::ptime(boost::gregorian::date(1970,1,1))).total_milliseconds();
@@ -39,7 +39,7 @@ int64_t GetTIMECCoinMillis()
     return now;
 }
 
-int64_t GetTIMECCoinMicros()
+int64_t GetTIMECoinMicros()
 {
     int64_t now = (boost::posix_time::microsec_clock::universal_time() -
                    boost::posix_time::ptime(boost::gregorian::date(1970,1,1))).total_microseconds();
@@ -47,17 +47,17 @@ int64_t GetTIMECCoinMicros()
     return now;
 }
 
-int64_t GetSystemTIMECCoinInSeconds()
+int64_t GetSystemTIMECoinInSeconds()
 {
-    return GetTIMECCoinMicros()/1000000;
+    return GetTIMECoinMicros()/1000000;
 }
 
 /** Return a time useful for the debug log */
-int64_t GetLogTIMECCoinMicros()
+int64_t GetLogTIMECoinMicros()
 {
-    if (nMockTIMECCoin) return nMockTIMECCoin*1000000;
+    if (nMockTIMECoin) return nMockTIMECoin*1000000;
 
-    return GetTIMECCoinMicros();
+    return GetTIMECoinMicros();
 }
 
 void MilliSleep(int64_t n)
@@ -78,24 +78,24 @@ void MilliSleep(int64_t n)
 #endif
 }
 
-std::string DateTIMECCoinStrFormat(const char* pszFormat, int64_t nTIMECCoin)
+std::string DateTIMECoinStrFormat(const char* pszFormat, int64_t nTIMECoin)
 {
     // std::locale takes ownership of the pointer
     std::locale loc(std::locale::classic(), new boost::posix_time::time_facet(pszFormat));
     std::stringstream ss;
     ss.imbue(loc);
-    ss << boost::posix_time::from_time_t(nTIMECCoin);
+    ss << boost::posix_time::from_time_t(nTIMECoin);
     return ss.str();
 }
 
-std::string DurationToDHMS(int64_t nDurationTIMECCoin)
+std::string DurationToDHMS(int64_t nDurationTIMECoin)
 {
-    int seconds = nDurationTIMECCoin % 60;
-    nDurationTIMECCoin /= 60;
-    int minutes = nDurationTIMECCoin % 60;
-    nDurationTIMECCoin /= 60;
-    int hours = nDurationTIMECCoin % 24;
-    int days = nDurationTIMECCoin / 24;
+    int seconds = nDurationTIMECoin % 60;
+    nDurationTIMECoin /= 60;
+    int minutes = nDurationTIMECoin % 60;
+    nDurationTIMECoin /= 60;
+    int hours = nDurationTIMECoin % 24;
+    int days = nDurationTIMECoin / 24;
     if(days)
         return strprintf("%dd %02dh:%02dm:%02ds", days, hours, minutes, seconds);
     if(hours)

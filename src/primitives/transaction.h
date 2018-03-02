@@ -63,7 +63,7 @@ public:
     uint32_t nSequence;
 
     /* Setting nSequence to this value for every input in a transaction
-     * disables nLockTIMECCoin. */
+     * disables nLockTIMECoin. */
     static const uint32_t SEQUENCE_FINAL = 0xffffffff;
 
     /* Below flags apply in the context of BIP 68*/
@@ -231,7 +231,7 @@ public:
     const int32_t nVersion;
     const std::vector<CTxIn> vin;
     const std::vector<CTxOut> vout;
-    const uint32_t nLockTIMECCoin;
+    const uint32_t nLockTIMECoin;
 
     /** Construct a CTransaction that qualifies as IsNull() */
     CTransaction();
@@ -249,7 +249,7 @@ public:
         nVersion = this->nVersion;
         READWRITE(*const_cast<std::vector<CTxIn>*>(&vin));
         READWRITE(*const_cast<std::vector<CTxOut>*>(&vout));
-        READWRITE(*const_cast<uint32_t*>(&nLockTIMECCoin));
+        READWRITE(*const_cast<uint32_t*>(&nLockTIMECoin));
         if (ser_action.ForRead())
             UpdateHash();
     }
@@ -304,7 +304,7 @@ struct CMutableTransaction
     int32_t nVersion;
     std::vector<CTxIn> vin;
     std::vector<CTxOut> vout;
-    uint32_t nLockTIMECCoin;
+    uint32_t nLockTIMECoin;
 
     CMutableTransaction();
     CMutableTransaction(const CTransaction& tx);
@@ -317,7 +317,7 @@ struct CMutableTransaction
         nVersion = this->nVersion;
         READWRITE(vin);
         READWRITE(vout);
-        READWRITE(nLockTIMECCoin);
+        READWRITE(nLockTIMECoin);
     }
 
     /** Compute the hash of this CMutableTransaction. This is computed on the

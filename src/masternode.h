@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -34,7 +34,7 @@ class CMasternodePing
 public:
     CTxIn vin{};
     uint256 blockHash{};
-    int64_t sigTIMECCoin{}; //mnb message times
+    int64_t sigTIMECoin{}; //mnb message times
     std::vector<unsigned char> vchSig{};
     bool fSentinelIsCurrent = false; // true if last sentinel ping was actual
     // MSB is always 0, other 3 bits corresponds to x.x.x version scheme
@@ -50,7 +50,7 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         READWRITE(vin);
         READWRITE(blockHash);
-        READWRITE(sigTIMECCoin);
+        READWRITE(sigTIMECoin);
         READWRITE(vchSig);
         if(ser_action.ForRead() && (s.size() == 0))
         {
@@ -66,11 +66,11 @@ public:
     {
         CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
         ss << vin;
-        ss << sigTIMECCoin;
+        ss << sigTIMECoin;
         return ss.GetHash();
     }
 
-    bool IsExpired() const { return GetAdjustedTIMECCoin() - sigTIMECCoin > MASTERNODE_NEW_START_REQUIRED_SECONDS; }
+    bool IsExpired() const { return GetAdjustedTIMECoin() - sigTIMECoin > MASTERNODE_NEW_START_REQUIRED_SECONDS; }
 
     bool Sign(const CKey& keyMasternode, const CPubKey& pubKeyMasternode);
     bool CheckSignature(CPubKey& pubKeyMasternode, int &nDos);
@@ -95,32 +95,32 @@ struct masternode_info_t
     masternode_info_t() = default;
     masternode_info_t(masternode_info_t const&) = default;
 
-    masternode_info_t(int activeState, int protoVer, int64_t sTIMECCoin) :
-        nActiveState{activeState}, nProtocolVersion{protoVer}, sigTIMECCoin{sTIMECCoin} {}
+    masternode_info_t(int activeState, int protoVer, int64_t sTIMECoin) :
+        nActiveState{activeState}, nProtocolVersion{protoVer}, sigTIMECoin{sTIMECoin} {}
 
-    masternode_info_t(int activeState, int protoVer, int64_t sTIMECCoin,
+    masternode_info_t(int activeState, int protoVer, int64_t sTIMECoin,
                       COutPoint const& outpoint, CService const& addr,
                       CPubKey const& pkCollAddr, CPubKey const& pkMN,
                       int64_t tWatchdogV = 0) :
-        nActiveState{activeState}, nProtocolVersion{protoVer}, sigTIMECCoin{sTIMECCoin},
+        nActiveState{activeState}, nProtocolVersion{protoVer}, sigTIMECoin{sTIMECoin},
         vin{outpoint}, addr{addr},
         pubKeyCollateralAddress{pkCollAddr}, pubKeyMasternode{pkMN},
-        nTIMECCoinLastWatchdogVote{tWatchdogV} {}
+        nTIMECoinLastWatchdogVote{tWatchdogV} {}
 
     int nActiveState = 0;
     int nProtocolVersion = 0;
-    int64_t sigTIMECCoin = 0; //mnb message time
+    int64_t sigTIMECoin = 0; //mnb message time
 
     CTxIn vin{};
     CService addr{};
     CPubKey pubKeyCollateralAddress{};
     CPubKey pubKeyMasternode{};
-    int64_t nTIMECCoinLastWatchdogVote = 0;
+    int64_t nTIMECoinLastWatchdogVote = 0;
 
     int64_t nLastDsq = 0; //the dsq count from the last dsq broadcast of this node
-    int64_t nTIMECCoinLastChecked = 0;
-    int64_t nTIMECCoinLastPaid = 0;
-    int64_t nTIMECCoinLastPing = 0; //* not in CMN
+    int64_t nTIMECoinLastChecked = 0;
+    int64_t nTIMECoinLastPaid = 0;
+    int64_t nTIMECoinLastPing = 0; //* not in CMN
     bool fInfoValid = false; //* not in CMN
 };
 
@@ -182,11 +182,11 @@ public:
         READWRITE(pubKeyMasternode);
         READWRITE(lastPing);
         READWRITE(vchSig);
-        READWRITE(sigTIMECCoin);
+        READWRITE(sigTIMECoin);
         READWRITE(nLastDsq);
-        READWRITE(nTIMECCoinLastChecked);
-        READWRITE(nTIMECCoinLastPaid);
-        READWRITE(nTIMECCoinLastWatchdogVote);
+        READWRITE(nTIMECoinLastChecked);
+        READWRITE(nTIMECoinLastPaid);
+        READWRITE(nTIMECoinLastWatchdogVote);
         READWRITE(nActiveState);
         READWRITE(nCollateralMinConfBlockHash);
         READWRITE(nBlockLastPaid);
@@ -207,16 +207,16 @@ public:
     static CollateralStatus CheckCollateral(const COutPoint& outpoint, int& nHeightRet);
     void Check(bool fForce = false);
 
-    bool IsBroadcastedWithin(int nSeconds) { return GetAdjustedTIMECCoin() - sigTIMECCoin < nSeconds; }
+    bool IsBroadcastedWithin(int nSeconds) { return GetAdjustedTIMECoin() - sigTIMECoin < nSeconds; }
 
-    bool IsPingedWithin(int nSeconds, int64_t nTIMECCoinToCheckAt = -1)
+    bool IsPingedWithin(int nSeconds, int64_t nTIMECoinToCheckAt = -1)
     {
         if(lastPing == CMasternodePing()) return false;
 
-        if(nTIMECCoinToCheckAt == -1) {
-            nTIMECCoinToCheckAt = GetAdjustedTIMECCoin();
+        if(nTIMECoinToCheckAt == -1) {
+            nTIMECoinToCheckAt = GetAdjustedTIMECoin();
         }
-        return nTIMECCoinToCheckAt - lastPing.sigTIMECCoin < nSeconds;
+        return nTIMECoinToCheckAt - lastPing.sigTIMECoin < nSeconds;
     }
 
     bool IsEnabled() { return nActiveState == MASTERNODE_ENABLED; }
@@ -267,7 +267,7 @@ public:
     std::string GetStateString() const;
     std::string GetStatus() const;
 
-    int GetLastPaidTIMECCoin() { return nTIMECCoinLastPaid; }
+    int GetLastPaidTIMECoin() { return nTIMECoinLastPaid; }
     int GetLastPaidBlock() { return nBlockLastPaid; }
     void UpdateLastPaid(const CBlockIndex *pindex, int nMaxBlocksToScanBack);
 
@@ -278,7 +278,7 @@ public:
 
     void RemoveGovernanceObject(uint256 nGovernanceObjectHash);
 
-    void UpdateWatchdogVoteTIMECCoin(uint64_t nVoteTIMECCoin = 0);
+    void UpdateWatchdogVoteTIMECoin(uint64_t nVoteTIMECoin = 0);
 
     CMasternode& operator=(CMasternode const& from)
     {
@@ -330,7 +330,7 @@ public:
         READWRITE(pubKeyCollateralAddress);
         READWRITE(pubKeyMasternode);
         READWRITE(vchSig);
-        READWRITE(sigTIMECCoin);
+        READWRITE(sigTIMECoin);
         READWRITE(nProtocolVersion);
         READWRITE(lastPing);
     }
@@ -340,7 +340,7 @@ public:
         CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
         ss << vin;
         ss << pubKeyCollateralAddress;
-        ss << sigTIMECCoin;
+        ss << sigTIMECoin;
         return ss.GetHash();
     }
 

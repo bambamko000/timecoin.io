@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -114,7 +114,7 @@ struct CompactTallyItem
 class CKeyPool
 {
 public:
-    int64_t nTIMECCoin;
+    int64_t nTIMECoin;
     CPubKey vchPubKey;
     bool fInternal; // for change outputs
 
@@ -127,7 +127,7 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
         if (!(nType & SER_GETHASH))
             READWRITE(nVersion);
-        READWRITE(nTIMECCoin);
+        READWRITE(nTIMECoin);
         READWRITE(vchPubKey);
         if (ser_action.ForRead()) {
             try {
@@ -271,9 +271,9 @@ private:
 public:
     mapValue_t mapValue;
     std::vector<std::pair<std::string, std::string> > vOrderForm;
-    unsigned int fTIMECCoinReceivedIsTxTIMECCoin;
-    unsigned int nTIMECCoinReceived; //! time received by this node
-    unsigned int nTIMECCoinSmart;
+    unsigned int fTIMECoinReceivedIsTxTIMECoin;
+    unsigned int nTIMECoinReceived; //! time received by this node
+    unsigned int nTIMECoinSmart;
     char fFromMe;
     std::string strFromAccount;
     int64_t nOrderPos; //! position in ordered transaction list
@@ -329,9 +329,9 @@ public:
         pwallet = pwalletIn;
         mapValue.clear();
         vOrderForm.clear();
-        fTIMECCoinReceivedIsTxTIMECCoin = false;
-        nTIMECCoinReceived = 0;
-        nTIMECCoinSmart = 0;
+        fTIMECoinReceivedIsTxTIMECoin = false;
+        nTIMECoinReceived = 0;
+        nTIMECoinSmart = 0;
         fFromMe = false;
         strFromAccount.clear();
         fDebitCached = false;
@@ -375,8 +375,8 @@ public:
 
             WriteOrderPos(nOrderPos, mapValue);
 
-            if (nTIMECCoinSmart)
-                mapValue["timesmart"] = strprintf("%u", nTIMECCoinSmart);
+            if (nTIMECoinSmart)
+                mapValue["timesmart"] = strprintf("%u", nTIMECoinSmart);
         }
 
         READWRITE(*(CMerkleTx*)this);
@@ -384,8 +384,8 @@ public:
         READWRITE(vUnused);
         READWRITE(mapValue);
         READWRITE(vOrderForm);
-        READWRITE(fTIMECCoinReceivedIsTxTIMECCoin);
-        READWRITE(nTIMECCoinReceived);
+        READWRITE(fTIMECoinReceivedIsTxTIMECoin);
+        READWRITE(nTIMECoinReceived);
         READWRITE(fFromMe);
         READWRITE(fSpent);
 
@@ -395,7 +395,7 @@ public:
 
             ReadOrderPos(nOrderPos, mapValue);
 
-            nTIMECCoinSmart = mapValue.count("timesmart") ? (unsigned int)atoi64(mapValue["timesmart"]) : 0;
+            nTIMECoinSmart = mapValue.count("timesmart") ? (unsigned int)atoi64(mapValue["timesmart"]) : 0;
         }
 
         mapValue.erase("fromaccount");
@@ -459,7 +459,7 @@ public:
 
     bool WriteToDisk(CWalletDB *pwalletdb);
 
-    int64_t GetTxTIMECCoin() const;
+    int64_t GetTxTIMECoin() const;
     int GetRequestCount() const;
 
     bool RelayWalletTransaction(CConnman* connman, std::string strCommand="tx");
@@ -498,8 +498,8 @@ class CWalletKey
 {
 public:
     CPrivKey vchPrivKey;
-    int64_t nTIMECCoinCreated;
-    int64_t nTIMECCoinExpires;
+    int64_t nTIMECoinCreated;
+    int64_t nTIMECoinExpires;
     std::string strComment;
     //! todo: add something to note what created it (user, getnewaddress, change)
     //!   maybe should have a map<string, string> property map
@@ -513,8 +513,8 @@ public:
         if (!(nType & SER_GETHASH))
             READWRITE(nVersion);
         READWRITE(vchPrivKey);
-        READWRITE(nTIMECCoinCreated);
-        READWRITE(nTIMECCoinExpires);
+        READWRITE(nTIMECoinCreated);
+        READWRITE(nTIMECoinExpires);
         READWRITE(LIMITED_STRING(strComment, 65536));
     }
 };
@@ -528,7 +528,7 @@ class CAccountingEntry
 public:
     std::string strAccount;
     CAmount nCreditDebit;
-    int64_t nTIMECCoin;
+    int64_t nTIMECoin;
     std::string strOtherAccount;
     std::string strComment;
     mapValue_t mapValue;
@@ -543,7 +543,7 @@ public:
     void SetNull()
     {
         nCreditDebit = 0;
-        nTIMECCoin = 0;
+        nTIMECoin = 0;
         strAccount.clear();
         strOtherAccount.clear();
         strComment.clear();
@@ -559,7 +559,7 @@ public:
             READWRITE(nVersion);
         //! Note: strAccount is serialized as part of the key, not here.
         READWRITE(nCreditDebit);
-        READWRITE(nTIMECCoin);
+        READWRITE(nTIMECoin);
         READWRITE(LIMITED_STRING(strOtherAccount, 65536));
 
         if (!ser_action.ForRead())
@@ -678,7 +678,7 @@ public:
         // stored metadata for that key later, which is fine.
         CKeyID keyid = keypool.vchPubKey.GetID();
         if (mapKeyMetadata.count(keyid) == 0)
-            mapKeyMetadata[keyid] = CKeyMetadata(keypool.nTIMECCoin);
+            mapKeyMetadata[keyid] = CKeyMetadata(keypool.nTIMECoin);
     }
 
     std::set<int64_t> setInternalKeyPool;
@@ -718,7 +718,7 @@ public:
         nOrderPosNext = 0;
         nNextResend = 0;
         nLastResend = 0;
-        nTIMECCoinFirstKey = 0;
+        nTIMECoinFirstKey = 0;
         fBroadcastTransactions = false;
         fAnonymizableTallyCached = false;
         fAnonymizableTallyCachedNonDenom = false;
@@ -742,7 +742,7 @@ public:
 
     std::set<COutPoint> setLockedCoins;
 
-    int64_t nTIMECCoinFirstKey;
+    int64_t nTIMECoinFirstKey;
     int64_t nKeysLeftSinceAutoBackup;
 
     std::map<CKeyID, CHDPubKey> mapHdPubKeys; //<! memory map of HD extended pubkeys
@@ -845,7 +845,7 @@ public:
     bool ChangeWalletPassphrase(const SecureString& strOldWalletPassphrase, const SecureString& strNewWalletPassphrase);
     bool EncryptWallet(const SecureString& strWalletPassphrase);
 
-    void GetKeyBirthTIMECCoins(std::map<CKeyID, int64_t> &mapKeyBirth) const;
+    void GetKeyBirthTIMECoins(std::map<CKeyID, int64_t> &mapKeyBirth) const;
 
     /** 
      * Increment the next transaction order id
@@ -859,8 +859,8 @@ public:
     bool AddToWalletIfInvolvingMe(const CTransaction& tx, const CBlock* pblock, bool fUpdate);
     int ScanForWalletTransactions(CBlockIndex* pindexStart, bool fUpdate = false);
     void ReacceptWalletTransactions();
-    void ResendWalletTransactions(int64_t nBestBlockTIMECCoin, CConnman* connman);
-    std::vector<uint256> ResendWalletTransactionsBefore(int64_t nTIMECCoin, CConnman* connman);
+    void ResendWalletTransactions(int64_t nBestBlockTIMECoin, CConnman* connman);
+    std::vector<uint256> ResendWalletTransactionsBefore(int64_t nTIMECoin, CConnman* connman);
     CAmount GetBalance() const;
     CAmount GetUnconfirmedBalance() const;
     CAmount GetImmatureBalance() const;
@@ -918,7 +918,7 @@ public:
     void KeepKey(int64_t nIndex);
     void ReturnKey(int64_t nIndex, bool fInternal);
     bool GetKeyFromPool(CPubKey &key, bool fInternal /*= false*/);
-    int64_t GetOldestKeyPoolTIMECCoin();
+    int64_t GetOldestKeyPoolTIMECoin();
     void GetAllReserveKeys(std::set<CKeyID>& setAddress) const;
 
     std::set< std::set<CTxDestination> > GetAddressGroupings();

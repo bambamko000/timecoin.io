@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -52,7 +52,7 @@
 using namespace std;
 
 #if defined(NDEBUG)
-# error "TIMECCoin Core cannot be compiled without assertions."
+# error "TIMECoin Core cannot be compiled without assertions."
 #endif
 
 /**
@@ -71,7 +71,7 @@ bool fImporting = false;
 bool fReindex = false;
 bool fTxIndex = true;
 bool fAddressIndex = false;
-bool fTIMECCoinstampIndex = false;
+bool fTIMECoinstampIndex = false;
 bool fSpentIndex = false;
 bool fHavePruned = false;
 bool fPruneMode = false;
@@ -198,11 +198,11 @@ enum FlushStateMode {
 // See definition for documentation
 bool static FlushStateToDisk(CValidationState &state, FlushStateMode mode);
 
-bool IsFinalTx(const CTransaction &tx, int nBlockHeight, int64_t nBlockTIMECCoin)
+bool IsFinalTx(const CTransaction &tx, int nBlockHeight, int64_t nBlockTIMECoin)
 {
-    if (tx.nLockTIMECCoin == 0)
+    if (tx.nLockTIMECoin == 0)
         return true;
-    if ((int64_t)tx.nLockTIMECCoin < ((int64_t)tx.nLockTIMECCoin < LOCKTIMEC_THRESHOLD ? (int64_t)nBlockHeight : nBlockTIMECCoin))
+    if ((int64_t)tx.nLockTIMECoin < ((int64_t)tx.nLockTIMECoin < LOCKTIMEC_THRESHOLD ? (int64_t)nBlockHeight : nBlockTIMECoin))
         return true;
     BOOST_FOREACH(const CTxIn& txin, tx.vin) {
         if (!(txin.nSequence == CTxIn::SEQUENCE_FINAL))
@@ -224,23 +224,23 @@ bool CheckFinalTx(const CTransaction &tx, int flags)
     flags = std::max(flags, 0);
 
     // CheckFinalTx() uses chainActive.Height()+1 to evaluate
-    // nLockTIMECCoin because when IsFinalTx() is called within
+    // nLockTIMECoin because when IsFinalTx() is called within
     // CBlock::AcceptBlock(), the height of the block *being*
     // evaluated is what is used. Thus if we want to know if a
     // transaction can be part of the *next* block, we need to call
     // IsFinalTx() with one more than chainActive.Height().
     const int nBlockHeight = chainActive.Height() + 1;
 
-    // BIP113 will require that time-locked transactions have nLockTIMECCoin set to
+    // BIP113 will require that time-locked transactions have nLockTIMECoin set to
     // less than the median time of the previous block they're contained in.
     // When the next block is created its previous block will be the current
     // chain tip, so we use that to calculate the median time passed to
     // IsFinalTx() if LOCKTIMEC_MEDIAN_TIMEC_PAST is set.
-    const int64_t nBlockTIMECCoin = (flags & LOCKTIMEC_MEDIAN_TIMEC_PAST)
-                             ? chainActive.Tip()->GetMedianTIMECCoinPast()
-                             : GetAdjustedTIMECCoin();
+    const int64_t nBlockTIMECoin = (flags & LOCKTIMEC_MEDIAN_TIMEC_PAST)
+                             ? chainActive.Tip()->GetMedianTIMECoinPast()
+                             : GetAdjustedTIMECoin();
 
-    return IsFinalTx(tx, nBlockHeight, nBlockTIMECCoin);
+    return IsFinalTx(tx, nBlockHeight, nBlockTIMECoin);
 }
 
 /**
@@ -253,13 +253,13 @@ static std::pair<int, int64_t> CalculateSequenceLocks(const CTransaction &tx, in
 {
     assert(prevHeights->size() == tx.vin.size());
 
-    // Will be set to the equivalent height- and time-based nLockTIMECCoin
+    // Will be set to the equivalent height- and time-based nLockTIMECoin
     // values that would be necessary to satisfy all relative lock-
     // time constraints given our view of block chain history.
-    // The semantics of nLockTIMECCoin are the last invalid height/time, so
+    // The semantics of nLockTIMECoin are the last invalid height/time, so
     // use -1 to have the effect of any height or time being valid.
     int nMinHeight = -1;
-    int64_t nMinTIMECCoin = -1;
+    int64_t nMinTIMECoin = -1;
 
     // tx.nVersion is signed integer so requires cast to unsigned otherwise
     // we would be doing a signed comparison and half the range of nVersion
@@ -270,7 +270,7 @@ static std::pair<int, int64_t> CalculateSequenceLocks(const CTransaction &tx, in
     // Do not enforce sequence numbers as a relative lock time
     // unless we have been instructed to
     if (!fEnforceBIP68) {
-        return std::make_pair(nMinHeight, nMinTIMECCoin);
+        return std::make_pair(nMinHeight, nMinTIMECoin);
     }
 
     for (size_t txinIndex = 0; txinIndex < tx.vin.size(); txinIndex++) {
@@ -288,34 +288,34 @@ static std::pair<int, int64_t> CalculateSequenceLocks(const CTransaction &tx, in
         int nCoinHeight = (*prevHeights)[txinIndex];
 
         if (txin.nSequence & CTxIn::SEQUENCE_LOCKTIMEC_TYPE_FLAG) {
-            int64_t nCoinTIMECCoin = block.GetAncestor(std::max(nCoinHeight-1, 0))->GetMedianTIMECCoinPast();
-            // NOTE: Subtract 1 to maintain nLockTIMECCoin semantics
+            int64_t nCoinTIMECoin = block.GetAncestor(std::max(nCoinHeight-1, 0))->GetMedianTIMECoinPast();
+            // NOTE: Subtract 1 to maintain nLockTIMECoin semantics
             // BIP 68 relative lock times have the semantics of calculating
             // the first block or time at which the transaction would be
             // valid. When calculating the effective block time or height
             // for the entire transaction, we switch to using the
-            // semantics of nLockTIMECCoin which is the last invalid block
+            // semantics of nLockTIMECoin which is the last invalid block
             // time or height.  Thus we subtract 1 from the calculated
             // time or height.
 
-            // TIMECCoin-based relative lock-times are measured from the
+            // TIMECoin-based relative lock-times are measured from the
             // smallest allowed timestamp of the block containing the
             // txout being spent, which is the median time past of the
             // block prior.
-            nMinTIMECCoin = std::max(nMinTIMECCoin, nCoinTIMECCoin + (int64_t)((txin.nSequence & CTxIn::SEQUENCE_LOCKTIMEC_MASK) << CTxIn::SEQUENCE_LOCKTIMEC_GRANULARITY) - 1);
+            nMinTIMECoin = std::max(nMinTIMECoin, nCoinTIMECoin + (int64_t)((txin.nSequence & CTxIn::SEQUENCE_LOCKTIMEC_MASK) << CTxIn::SEQUENCE_LOCKTIMEC_GRANULARITY) - 1);
         } else {
             nMinHeight = std::max(nMinHeight, nCoinHeight + (int)(txin.nSequence & CTxIn::SEQUENCE_LOCKTIMEC_MASK) - 1);
         }
     }
 
-    return std::make_pair(nMinHeight, nMinTIMECCoin);
+    return std::make_pair(nMinHeight, nMinTIMECoin);
 }
 
 static bool EvaluateSequenceLocks(const CBlockIndex& block, std::pair<int, int64_t> lockPair)
 {
     assert(block.pprev);
-    int64_t nBlockTIMECCoin = block.pprev->GetMedianTIMECCoinPast();
-    if (lockPair.first >= block.nHeight || lockPair.second >= nBlockTIMECCoin)
+    int64_t nBlockTIMECoin = block.pprev->GetMedianTIMECoinPast();
+    if (lockPair.first >= block.nHeight || lockPair.second >= nBlockTIMECoin)
         return false;
 
     return true;
@@ -532,7 +532,7 @@ bool ContextualCheckTransaction(const CTransaction& tx, CValidationState &state,
 }
 
 void LimitMempoolSize(CTxMemPool& pool, size_t limit, unsigned long age) {
-    int expired = pool.Expire(GetTIMECCoin() - age);
+    int expired = pool.Expire(GetTIMECoin() - age);
     if (expired != 0)
         LogPrint("mempool", "Expired %i transactions from the memory pool\n", expired);
 
@@ -579,7 +579,7 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState &state, const C
         return state.DoS(0, false, REJECT_NONSTANDARD, "premature-version2-tx");
     }
 
-    // Only accept nLockTIMECCoin-using transactions that can be mined in the next
+    // Only accept nLockTIMECoin-using transactions that can be mined in the next
     // block; we don't want our mempool filled up with transactions that can't
     // be mined yet.
     if (!CheckFinalTx(tx, STANDARD_LOCKTIMEC_VERIFY_FLAGS))
@@ -631,7 +631,7 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState &state, const C
                 // Allow opt-out of transaction replacement by setting
                 // nSequence >= maxint-1 on all inputs.
                 //
-                // maxint-1 is picked to still allow use of nLockTIMECCoin by
+                // maxint-1 is picked to still allow use of nLockTIMECoin by
                 // non-replacable transactions. All inputs rather than just one
                 // is for the sake of multi-party protocols, where we don't
                 // want a single party to be able to disable replacement.
@@ -742,7 +742,7 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState &state, const C
             }
         }
 
-        CTxMemPoolEntry entry(tx, nFees, GetTIMECCoin(), dPriority, chainActive.Height(), pool.HasNoInputsOf(tx), inChainInputValue, fSpendsCoinbase, nSigOps, lp);
+        CTxMemPoolEntry entry(tx, nFees, GetTIMECoin(), dPriority, chainActive.Height(), pool.HasNoInputsOf(tx), inChainInputValue, fSpendsCoinbase, nSigOps, lp);
         unsigned int nSize = entry.GetTxSize();
 
         // Check that the transaction doesn't have an excessive number of
@@ -769,14 +769,14 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState &state, const C
         {
             static CCriticalSection csFreeLimiter;
             static double dFreeCount;
-            static int64_t nLastTIMECCoin;
-            int64_t nNow = GetTIMECCoin();
+            static int64_t nLastTIMECoin;
+            int64_t nNow = GetTIMECoin();
 
             LOCK(csFreeLimiter);
 
             // Use an exponentially decaying ~10-minute window:
-            dFreeCount *= pow(1.0 - 1.0/600.0, (double)(nNow - nLastTIMECCoin));
-            nLastTIMECCoin = nNow;
+            dFreeCount *= pow(1.0 - 1.0/600.0, (double)(nNow - nLastTIMECoin));
+            nLastTIMECoin = nNow;
             // -limitfreerelay unit is thousand-bytes-per-minute
             // At default rate it would take over a month to fill 1GB
             if (dFreeCount >= GetArg("-limitfreerelay", DEFAULT_LIMITFREERELAY) * 10 * 1000)
@@ -1032,12 +1032,12 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState &state, const CTransa
     return res;
 }
 
-bool GetTIMECCoinstampIndex(const unsigned int &high, const unsigned int &low, std::vector<uint256> &hashes)
+bool GetTIMECoinstampIndex(const unsigned int &high, const unsigned int &low, std::vector<uint256> &hashes)
 {
-    if (!fTIMECCoinstampIndex)
-        return error("TIMECCoinstamp index not enabled");
+    if (!fTIMECoinstampIndex)
+        return error("TIMECoinstamp index not enabled");
 
-    if (!pblocktree->ReadTIMECCoinstampIndex(high, low, hashes))
+    if (!pblocktree->ReadTIMECoinstampIndex(high, low, hashes))
         return error("Unable to get hashes for timestamps");
 
     return true;
@@ -1233,7 +1233,7 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     CAmount nSubsidy = 1 * COIN;
 
     if (nPrevHeight == 0)
-        nSubsidy = 450000 * COIN; // premine (1,25%)
+        nSubsidy = 500000 * COIN; // premine (1,25%)
 
     else if (nPrevHeight > 1)
         nSubsidy = 0.1 * COIN; // INSTA MINE PROTECTION
@@ -1294,7 +1294,7 @@ bool IsInitialBlockDownload()
         return true;
     if (chainActive.Tip()->nChainWork < UintToArith256(chainParams.GetConsensus().nMinimumChainWork))
         return true;
-    if (chainActive.Tip()->GetBlockTIMECCoin() < (GetTIMECCoin() - chainParams.MaxTipAge()))
+    if (chainActive.Tip()->GetBlockTIMECoin() < (GetTIMECoin() - chainParams.MaxTipAge()))
         return true;
     lockIBDState = true;
     return false;
@@ -1392,13 +1392,13 @@ void static InvalidChainFound(CBlockIndex* pindexNew)
 
     LogPrintf("%s: invalid block=%s  height=%d  log2_work=%.8g  date=%s\n", __func__,
       pindexNew->GetBlockHash().ToString(), pindexNew->nHeight,
-      log(pindexNew->nChainWork.getdouble())/log(2.0), DateTIMECCoinStrFormat("%Y-%m-%d %H:%M:%S",
-      pindexNew->GetBlockTIMECCoin()));
+      log(pindexNew->nChainWork.getdouble())/log(2.0), DateTIMECoinStrFormat("%Y-%m-%d %H:%M:%S",
+      pindexNew->GetBlockTIMECoin()));
     CBlockIndex *tip = chainActive.Tip();
     assert (tip);
     LogPrintf("%s:  current best=%s  height=%d  log2_work=%.8g  date=%s\n", __func__,
       tip->GetBlockHash().ToString(), chainActive.Height(), log(tip->nChainWork.getdouble())/log(2.0),
-      DateTIMECCoinStrFormat("%Y-%m-%d %H:%M:%S", tip->GetBlockTIMECCoin()));
+      DateTIMECoinStrFormat("%Y-%m-%d %H:%M:%S", tip->GetBlockTIMECoin()));
     CheckForkWarningConditions();
 }
 
@@ -1910,8 +1910,8 @@ private:
 public:
     WarningBitsConditionChecker(int bitIn) : bit(bitIn) {}
 
-    int64_t BeginTIMECCoin(const Consensus::Params& params) const { return 0; }
-    int64_t EndTIMECCoin(const Consensus::Params& params) const { return std::numeric_limits<int64_t>::max(); }
+    int64_t BeginTIMECoin(const Consensus::Params& params) const { return 0; }
+    int64_t EndTIMECoin(const Consensus::Params& params) const { return std::numeric_limits<int64_t>::max(); }
     int Period(const Consensus::Params& params) const { return params.nMinerConfirmationWindow; }
     int Threshold(const Consensus::Params& params) const { return params.nRuleChangeActivationThreshold; }
 
@@ -1926,13 +1926,13 @@ public:
 // Protected by cs_main
 static ThresholdConditionCache warningcache[VERSIONBITS_NUM_BITS];
 
-static int64_t nTIMECCoinCheck = 0;
-static int64_t nTIMECCoinForks = 0;
-static int64_t nTIMECCoinVerify = 0;
-static int64_t nTIMECCoinConnect = 0;
-static int64_t nTIMECCoinIndex = 0;
-static int64_t nTIMECCoinCallbacks = 0;
-static int64_t nTIMECCoinTotal = 0;
+static int64_t nTIMECoinCheck = 0;
+static int64_t nTIMECoinForks = 0;
+static int64_t nTIMECoinVerify = 0;
+static int64_t nTIMECoinConnect = 0;
+static int64_t nTIMECoinIndex = 0;
+static int64_t nTIMECoinCallbacks = 0;
+static int64_t nTIMECoinTotal = 0;
 
 /** Apply the effects of this block (with given index) on the UTXO set represented by coins.
  *  Validity checks that depend on the UTXO set are also done; ConnectBlock()
@@ -1942,7 +1942,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     const CChainParams& chainparams = Params();
     AssertLockHeld(cs_main);
 
-    int64_t nTIMECCoinStart = GetTIMECCoinMicros();
+    int64_t nTIMECoinStart = GetTIMECoinMicros();
 
     // Check it again in case a previous version let a bad block in
     if (!CheckBlock(block, state, !fJustCheck, !fJustCheck))
@@ -1981,13 +1981,13 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                 //  artificially set the default assumed verified block further back.
                 // The test against nMinimumChainWork prevents the skipping when denied access to any chain at
                 //  least as good as the expected chain.
-                fScriptChecks = (GetBlockProofEquivalentTIMECCoin(*pindexBestHeader, *pindex, *pindexBestHeader, chainparams.GetConsensus()) <= 60 * 60 * 24 * 7 * 2);
+                fScriptChecks = (GetBlockProofEquivalentTIMECoin(*pindexBestHeader, *pindex, *pindexBestHeader, chainparams.GetConsensus()) <= 60 * 60 * 24 * 7 * 2);
             }
         }
     }
 
-    int64_t nTIMECCoin1 = GetTIMECCoinMicros(); nTIMECCoinCheck += nTIMECCoin1 - nTIMECCoinStart;
-    LogPrint("bench", "    - Sanity checks: %.2fms [%.2fs]\n", 0.001 * (nTIMECCoin1 - nTIMECCoinStart), nTIMECCoinCheck * 0.000001);
+    int64_t nTIMECoin1 = GetTIMECoinMicros(); nTIMECoinCheck += nTIMECoin1 - nTIMECoinStart;
+    LogPrint("bench", "    - Sanity checks: %.2fms [%.2fs]\n", 0.001 * (nTIMECoin1 - nTIMECoinStart), nTIMECoinCheck * 0.000001);
 
     // Do not allow blocks that contain transactions which 'overwrite' older transactions,
     // unless those are already completely spent.
@@ -2027,8 +2027,8 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     }
 
     // BIP16 didn't become active until Apr 1 2012
-    int64_t nBIP16SwitchTIMECCoin = 1333238400;
-    bool fStrictPayToScriptHash = (pindex->GetBlockTIMECCoin() >= nBIP16SwitchTIMECCoin);
+    int64_t nBIP16SwitchTIMECoin = 1333238400;
+    bool fStrictPayToScriptHash = (pindex->GetBlockTIMECoin() >= nBIP16SwitchTIMECoin);
 
     unsigned int flags = fStrictPayToScriptHash ? SCRIPT_VERIFY_P2SH : SCRIPT_VERIFY_NONE;
 
@@ -2045,14 +2045,14 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     }
 
     // Start enforcing BIP68 (sequence locks) and BIP112 (CHECKSEQUENCEVERIFY) using versionbits logic.
-    int nLockTIMECCoinFlags = 0;
+    int nLockTIMECoinFlags = 0;
     if (VersionBitsState(pindex->pprev, chainparams.GetConsensus(), Consensus::DEPLOYMENT_CSV, versionbitscache) == THRESHOLD_ACTIVE) {
         flags |= SCRIPT_VERIFY_CHECKSEQUENCEVERIFY;
-        nLockTIMECCoinFlags |= LOCKTIMEC_VERIFY_SEQUENCE;
+        nLockTIMECoinFlags |= LOCKTIMEC_VERIFY_SEQUENCE;
     }
 
-    int64_t nTIMECCoin2 = GetTIMECCoinMicros(); nTIMECCoinForks += nTIMECCoin2 - nTIMECCoin1;
-    LogPrint("bench", "    - Fork checks: %.2fms [%.2fs]\n", 0.001 * (nTIMECCoin2 - nTIMECCoin1), nTIMECCoinForks * 0.000001);
+    int64_t nTIMECoin2 = GetTIMECoinMicros(); nTIMECoinForks += nTIMECoin2 - nTIMECoin1;
+    LogPrint("bench", "    - Fork checks: %.2fms [%.2fs]\n", 0.001 * (nTIMECoin2 - nTIMECoin1), nTIMECoinForks * 0.000001);
 
     CBlockUndo blockundo;
 
@@ -2090,14 +2090,14 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                                  REJECT_INVALID, "bad-txns-inputs-missingorspent");
 
             // Check that transaction is BIP68 final
-            // BIP68 lock checks (as opposed to nLockTIMECCoin checks) must
+            // BIP68 lock checks (as opposed to nLockTIMECoin checks) must
             // be in ConnectBlock because they require the UTXO set
             prevheights.resize(tx.vin.size());
             for (size_t j = 0; j < tx.vin.size(); j++) {
                 prevheights[j] = view.AccessCoin(tx.vin[j].prevout).nHeight;
             }
 
-            if (!SequenceLocks(tx, nLockTIMECCoinFlags, &prevheights, *pindex)) {
+            if (!SequenceLocks(tx, nLockTIMECoinFlags, &prevheights, *pindex)) {
                 return state.DoS(100, error("%s: contains a non-BIP68-final transaction", __func__),
                                  REJECT_INVALID, "bad-txns-nonfinal");
             }
@@ -2198,8 +2198,8 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
         vPos.push_back(std::make_pair(tx.GetHash(), pos));
         pos.nTxOffset += ::GetSerializeSize(tx, SER_DISK, CLIENT_VERSION);
     }
-    int64_t nTIMECCoin3 = GetTIMECCoinMicros(); nTIMECCoinConnect += nTIMECCoin3 - nTIMECCoin2;
-    LogPrint("bench", "      - Connect %u transactions: %.2fms (%.3fms/tx, %.3fms/txin) [%.2fs]\n", (unsigned)block.vtx.size(), 0.001 * (nTIMECCoin3 - nTIMECCoin2), 0.001 * (nTIMECCoin3 - nTIMECCoin2) / block.vtx.size(), nInputs <= 1 ? 0 : 0.001 * (nTIMECCoin3 - nTIMECCoin2) / (nInputs-1), nTIMECCoinConnect * 0.000001);
+    int64_t nTIMECoin3 = GetTIMECoinMicros(); nTIMECoinConnect += nTIMECoin3 - nTIMECoin2;
+    LogPrint("bench", "      - Connect %u transactions: %.2fms (%.3fms/tx, %.3fms/txin) [%.2fs]\n", (unsigned)block.vtx.size(), 0.001 * (nTIMECoin3 - nTIMECoin2), 0.001 * (nTIMECoin3 - nTIMECoin2) / block.vtx.size(), nInputs <= 1 ? 0 : 0.001 * (nTIMECoin3 - nTIMECoin2) / (nInputs-1), nTIMECoinConnect * 0.000001);
 
     // TIMEC : MODIFIED TO CHECK MASTERNODE PAYMENTS AND SUPERBLOCKS
 
@@ -2216,7 +2216,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     }
 
     if (!IsBlockPayeeValid(block.vtx[0], pindex->nHeight, blockReward)) {
-        mapRejectedBlocks.insert(make_pair(block.GetHash(), GetTIMECCoin()));
+        mapRejectedBlocks.insert(make_pair(block.GetHash(), GetTIMECoin()));
         return state.DoS(0, error("ConnectBlock(TIMEC): couldn't find masternode or superblock payments"),
                                 REJECT_INVALID, "bad-cb-payee");
     }
@@ -2224,8 +2224,8 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
 
     if (!control.Wait())
         return state.DoS(100, false);
-    int64_t nTIMECCoin4 = GetTIMECCoinMicros(); nTIMECCoinVerify += nTIMECCoin4 - nTIMECCoin2;
-    LogPrint("bench", "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs]\n", nInputs - 1, 0.001 * (nTIMECCoin4 - nTIMECCoin2), nInputs <= 1 ? 0 : 0.001 * (nTIMECCoin4 - nTIMECCoin2) / (nInputs-1), nTIMECCoinVerify * 0.000001);
+    int64_t nTIMECoin4 = GetTIMECoinMicros(); nTIMECoinVerify += nTIMECoin4 - nTIMECoin2;
+    LogPrint("bench", "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs]\n", nInputs - 1, 0.001 * (nTIMECoin4 - nTIMECoin2), nInputs <= 1 ? 0 : 0.001 * (nTIMECoin4 - nTIMECoin2) / (nInputs-1), nTIMECoinVerify * 0.000001);
 
     if (fJustCheck)
         return true;
@@ -2267,23 +2267,23 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
         if (!pblocktree->UpdateSpentIndex(spentIndex))
             return AbortNode(state, "Failed to write transaction index");
 
-    if (fTIMECCoinstampIndex)
-        if (!pblocktree->WriteTIMECCoinstampIndex(CTIMECCoinstampIndexKey(pindex->nTIMECCoin, pindex->GetBlockHash())))
+    if (fTIMECoinstampIndex)
+        if (!pblocktree->WriteTIMECoinstampIndex(CTIMECoinstampIndexKey(pindex->nTIMECoin, pindex->GetBlockHash())))
             return AbortNode(state, "Failed to write timestamp index");
 
     // add this block to the view's block chain
     view.SetBestBlock(pindex->GetBlockHash());
 
-    int64_t nTIMECCoin5 = GetTIMECCoinMicros(); nTIMECCoinIndex += nTIMECCoin5 - nTIMECCoin4;
-    LogPrint("bench", "    - Index writing: %.2fms [%.2fs]\n", 0.001 * (nTIMECCoin5 - nTIMECCoin4), nTIMECCoinIndex * 0.000001);
+    int64_t nTIMECoin5 = GetTIMECoinMicros(); nTIMECoinIndex += nTIMECoin5 - nTIMECoin4;
+    LogPrint("bench", "    - Index writing: %.2fms [%.2fs]\n", 0.001 * (nTIMECoin5 - nTIMECoin4), nTIMECoinIndex * 0.000001);
 
     // Watch for changes to the previous coinbase transaction.
     static uint256 hashPrevBestCoinBase;
     GetMainSignals().UpdatedTransaction(hashPrevBestCoinBase);
     hashPrevBestCoinBase = block.vtx[0].GetHash();
 
-    int64_t nTIMECCoin6 = GetTIMECCoinMicros(); nTIMECCoinCallbacks += nTIMECCoin6 - nTIMECCoin5;
-    LogPrint("bench", "    - Callbacks: %.2fms [%.2fs]\n", 0.001 * (nTIMECCoin6 - nTIMECCoin5), nTIMECCoinCallbacks * 0.000001);
+    int64_t nTIMECoin6 = GetTIMECoinMicros(); nTIMECoinCallbacks += nTIMECoin6 - nTIMECoin5;
+    LogPrint("bench", "    - Callbacks: %.2fms [%.2fs]\n", 0.001 * (nTIMECoin6 - nTIMECoin5), nTIMECoinCallbacks * 0.000001);
 
     return true;
 }
@@ -2315,7 +2315,7 @@ bool static FlushStateToDisk(CValidationState &state, FlushStateMode mode) {
             }
         }
     }
-    int64_t nNow = GetTIMECCoinMicros();
+    int64_t nNow = GetTIMECoinMicros();
     // Avoid writing/flushing immediately after startup.
     if (nLastWrite == 0) {
         nLastWrite = nNow;
@@ -2415,7 +2415,7 @@ void static UpdateTip(CBlockIndex *pindexNew) {
 
     LogPrintf("%s: new best=%s  height=%d  log2_work=%.8g  tx=%lu  date=%s progress=%f  cache=%.1fMiB(%utxo)\n", __func__,
       chainActive.Tip()->GetBlockHash().ToString(), chainActive.Height(), log(chainActive.Tip()->nChainWork.getdouble())/log(2.0), (unsigned long)chainActive.Tip()->nChainTx,
-      DateTIMECCoinStrFormat("%Y-%m-%d %H:%M:%S", chainActive.Tip()->GetBlockTIMECCoin()),
+      DateTIMECoinStrFormat("%Y-%m-%d %H:%M:%S", chainActive.Tip()->GetBlockTIMECoin()),
       Checkpoints::GuessVerificationProgress(chainParams.Checkpoints(), chainActive.Tip()), pcoinsTip->DynamicMemoryUsage() * (1.0 / (1<<20)), pcoinsTip->GetCacheSize());
 
     cvBlockChange.notify_all();
@@ -2472,14 +2472,14 @@ bool static DisconnectTip(CValidationState& state, const Consensus::Params& cons
     if (!ReadBlockFromDisk(block, pindexDelete, consensusParams))
         return AbortNode(state, "Failed to read block");
     // Apply the block atomically to the chain state.
-    int64_t nStart = GetTIMECCoinMicros();
+    int64_t nStart = GetTIMECoinMicros();
     {
         CCoinsViewCache view(pcoinsTip);
         if (DisconnectBlock(block, state, pindexDelete, view) != DISCONNECT_OK)
             return error("DisconnectTip(): DisconnectBlock %s failed", pindexDelete->GetBlockHash().ToString());
         assert(view.Flush());
     }
-    LogPrint("bench", "- Disconnect block: %.2fms\n", (GetTIMECCoinMicros() - nStart) * 0.001);
+    LogPrint("bench", "- Disconnect block: %.2fms\n", (GetTIMECoinMicros() - nStart) * 0.001);
     // Write the chain state to disk, if necessary.
     if (!FlushStateToDisk(state, FLUSH_STATE_IF_NEEDED))
         return false;
@@ -2511,11 +2511,11 @@ bool static DisconnectTip(CValidationState& state, const Consensus::Params& cons
     return true;
 }
 
-static int64_t nTIMECCoinReadFromDisk = 0;
-static int64_t nTIMECCoinConnectTotal = 0;
-static int64_t nTIMECCoinFlush = 0;
-static int64_t nTIMECCoinChainState = 0;
-static int64_t nTIMECCoinPostConnect = 0;
+static int64_t nTIMECoinReadFromDisk = 0;
+static int64_t nTIMECoinConnectTotal = 0;
+static int64_t nTIMECoinFlush = 0;
+static int64_t nTIMECoinChainState = 0;
+static int64_t nTIMECoinPostConnect = 0;
 
 /**
  * Connect a new block to chainActive. pblock is either NULL or a pointer to a CBlock
@@ -2525,7 +2525,7 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
 {
     assert(pindexNew->pprev == chainActive.Tip());
     // Read block from disk.
-    int64_t nTIMECCoin1 = GetTIMECCoinMicros();
+    int64_t nTIMECoin1 = GetTIMECoinMicros();
     CBlock block;
     if (!pblock) {
         if (!ReadBlockFromDisk(block, pindexNew, chainparams.GetConsensus()))
@@ -2533,9 +2533,9 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
         pblock = &block;
     }
     // Apply the block atomically to the chain state.
-    int64_t nTIMECCoin2 = GetTIMECCoinMicros(); nTIMECCoinReadFromDisk += nTIMECCoin2 - nTIMECCoin1;
-    int64_t nTIMECCoin3;
-    LogPrint("bench", "  - Load block from disk: %.2fms [%.2fs]\n", (nTIMECCoin2 - nTIMECCoin1) * 0.001, nTIMECCoinReadFromDisk * 0.000001);
+    int64_t nTIMECoin2 = GetTIMECoinMicros(); nTIMECoinReadFromDisk += nTIMECoin2 - nTIMECoin1;
+    int64_t nTIMECoin3;
+    LogPrint("bench", "  - Load block from disk: %.2fms [%.2fs]\n", (nTIMECoin2 - nTIMECoin1) * 0.001, nTIMECoinReadFromDisk * 0.000001);
     {
         CCoinsViewCache view(pcoinsTip);
         bool rv = ConnectBlock(*pblock, state, pindexNew, view);
@@ -2545,17 +2545,17 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
                 InvalidBlockFound(pindexNew, state);
             return error("ConnectTip(): ConnectBlock %s failed", pindexNew->GetBlockHash().ToString());
         }
-        nTIMECCoin3 = GetTIMECCoinMicros(); nTIMECCoinConnectTotal += nTIMECCoin3 - nTIMECCoin2;
-        LogPrint("bench", "  - Connect total: %.2fms [%.2fs]\n", (nTIMECCoin3 - nTIMECCoin2) * 0.001, nTIMECCoinConnectTotal * 0.000001);
+        nTIMECoin3 = GetTIMECoinMicros(); nTIMECoinConnectTotal += nTIMECoin3 - nTIMECoin2;
+        LogPrint("bench", "  - Connect total: %.2fms [%.2fs]\n", (nTIMECoin3 - nTIMECoin2) * 0.001, nTIMECoinConnectTotal * 0.000001);
         assert(view.Flush());
     }
-    int64_t nTIMECCoin4 = GetTIMECCoinMicros(); nTIMECCoinFlush += nTIMECCoin4 - nTIMECCoin3;
-    LogPrint("bench", "  - Flush: %.2fms [%.2fs]\n", (nTIMECCoin4 - nTIMECCoin3) * 0.001, nTIMECCoinFlush * 0.000001);
+    int64_t nTIMECoin4 = GetTIMECoinMicros(); nTIMECoinFlush += nTIMECoin4 - nTIMECoin3;
+    LogPrint("bench", "  - Flush: %.2fms [%.2fs]\n", (nTIMECoin4 - nTIMECoin3) * 0.001, nTIMECoinFlush * 0.000001);
     // Write the chain state to disk, if necessary.
     if (!FlushStateToDisk(state, FLUSH_STATE_IF_NEEDED))
         return false;
-    int64_t nTIMECCoin5 = GetTIMECCoinMicros(); nTIMECCoinChainState += nTIMECCoin5 - nTIMECCoin4;
-    LogPrint("bench", "  - Writing chainstate: %.2fms [%.2fs]\n", (nTIMECCoin5 - nTIMECCoin4) * 0.001, nTIMECCoinChainState * 0.000001);
+    int64_t nTIMECoin5 = GetTIMECoinMicros(); nTIMECoinChainState += nTIMECoin5 - nTIMECoin4;
+    LogPrint("bench", "  - Writing chainstate: %.2fms [%.2fs]\n", (nTIMECoin5 - nTIMECoin4) * 0.001, nTIMECoinChainState * 0.000001);
     // Remove conflicting transactions from the mempool.
     list<CTransaction> txConflicted;
     mempool.removeForBlock(pblock->vtx, pindexNew->nHeight, txConflicted, !IsInitialBlockDownload());
@@ -2571,9 +2571,9 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
         GetMainSignals().SyncTransaction(tx, pblock);
     }
 
-    int64_t nTIMECCoin6 = GetTIMECCoinMicros(); nTIMECCoinPostConnect += nTIMECCoin6 - nTIMECCoin5; nTIMECCoinTotal += nTIMECCoin6 - nTIMECCoin1;
-    LogPrint("bench", "  - Connect postprocess: %.2fms [%.2fs]\n", (nTIMECCoin6 - nTIMECCoin5) * 0.001, nTIMECCoinPostConnect * 0.000001);
-    LogPrint("bench", "- Connect block: %.2fms [%.2fs]\n", (nTIMECCoin6 - nTIMECCoin1) * 0.001, nTIMECCoinTotal * 0.000001);
+    int64_t nTIMECoin6 = GetTIMECoinMicros(); nTIMECoinPostConnect += nTIMECoin6 - nTIMECoin5; nTIMECoinTotal += nTIMECoin6 - nTIMECoin1;
+    LogPrint("bench", "  - Connect postprocess: %.2fms [%.2fs]\n", (nTIMECoin6 - nTIMECoin5) * 0.001, nTIMECoinPostConnect * 0.000001);
+    LogPrint("bench", "- Connect block: %.2fms [%.2fs]\n", (nTIMECoin6 - nTIMECoin1) * 0.001, nTIMECoinTotal * 0.000001);
     return true;
 }
 
@@ -2601,7 +2601,7 @@ void ReprocessBlocks(int nBlocks)
     std::map<uint256, int64_t>::iterator it = mapRejectedBlocks.begin();
     while(it != mapRejectedBlocks.end()){
         //use a window twice as large as is usual for the nBlocks we want to reset
-        if((*it).second  > GetTIMECCoin() - (nBlocks*60*5)) {
+        if((*it).second  > GetTIMECoin() - (nBlocks*60*5)) {
             BlockMap::iterator mi = mapBlockIndex.find((*it).first);
             if (mi != mapBlockIndex.end() && (*mi).second) {
 
@@ -3002,7 +3002,7 @@ bool ReceivedBlockTransactions(const CBlock &block, CValidationState& state, CBl
     return true;
 }
 
-bool FindBlockPos(CValidationState &state, CDiskBlockPos &pos, unsigned int nAddSize, unsigned int nHeight, uint64_t nTIMECCoin, bool fKnown = false)
+bool FindBlockPos(CValidationState &state, CDiskBlockPos &pos, unsigned int nAddSize, unsigned int nHeight, uint64_t nTIMECoin, bool fKnown = false)
 {
     LOCK(cs_LastBlockFile);
 
@@ -3030,7 +3030,7 @@ bool FindBlockPos(CValidationState &state, CDiskBlockPos &pos, unsigned int nAdd
         nLastBlockFile = nFile;
     }
 
-    vinfoBlockFile[nFile].AddBlock(nHeight, nTIMECCoin);
+    vinfoBlockFile[nFile].AddBlock(nHeight, nTIMECoin);
     if (fKnown)
         vinfoBlockFile[nFile].nSize = std::max(pos.nPos + nAddSize, vinfoBlockFile[nFile].nSize);
     else
@@ -3098,7 +3098,7 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, bool f
                          REJECT_INVALID, "high-hash");
 
     // Check timestamp
-    if (block.GetBlockTIMECCoin() > GetAdjustedTIMECCoin() + 2 * 60 * 60)
+    if (block.GetBlockTIMECoin() > GetAdjustedTIMECoin() + 2 * 60 * 60)
         return state.Invalid(error("CheckBlockHeader(): block timestamp too far in the future"),
                              REJECT_INVALID, "time-too-new");
 
@@ -3168,7 +3168,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                     // The node which relayed this will have to switch later,
                     // relaying instantsend data won't help it.
                     LOCK(cs_main);
-                    mapRejectedBlocks.insert(make_pair(block.GetHash(), GetTIMECCoin()));
+                    mapRejectedBlocks.insert(make_pair(block.GetHash(), GetTIMECoin()));
                     return state.DoS(0, error("CheckBlock(TIMEC): transaction %s conflicts with transaction lock %s",
                                                 tx.GetHash().ToString(), hashLocked.ToString()),
                                      REJECT_INVALID, "conflict-tx-lock");
@@ -3239,7 +3239,7 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
     }
 
     // Check timestamp against prev
-    if (block.GetBlockTIMECCoin() <= pindexPrev->GetMedianTIMECCoinPast())
+    if (block.GetBlockTIMECoin() <= pindexPrev->GetMedianTIMECoinPast())
         return state.Invalid(error("%s: block's timestamp is too early", __func__),
                              REJECT_INVALID, "time-too-old");
 
@@ -3266,15 +3266,15 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
     const int nHeight = pindexPrev == NULL ? 0 : pindexPrev->nHeight + 1;
     const Consensus::Params& consensusParams = Params().GetConsensus();
 
-    // Start enforcing BIP113 (Median TIMECCoin Past) using versionbits logic.
-    int nLockTIMECCoinFlags = 0;
+    // Start enforcing BIP113 (Median TIMECoin Past) using versionbits logic.
+    int nLockTIMECoinFlags = 0;
     if (VersionBitsState(pindexPrev, consensusParams, Consensus::DEPLOYMENT_CSV, versionbitscache) == THRESHOLD_ACTIVE) {
-        nLockTIMECCoinFlags |= LOCKTIMEC_MEDIAN_TIMEC_PAST;
+        nLockTIMECoinFlags |= LOCKTIMEC_MEDIAN_TIMEC_PAST;
     }
 
-    int64_t nLockTIMECCoinCutoff = (nLockTIMECCoinFlags & LOCKTIMEC_MEDIAN_TIMEC_PAST)
-                              ? pindexPrev->GetMedianTIMECCoinPast()
-                              : block.GetBlockTIMECCoin();
+    int64_t nLockTIMECoinCutoff = (nLockTIMECoinFlags & LOCKTIMEC_MEDIAN_TIMEC_PAST)
+                              ? pindexPrev->GetMedianTIMECoinPast()
+                              : block.GetBlockTIMECoin();
 
     bool fDIP0001Active_context = (VersionBitsState(pindexPrev, consensusParams, Consensus::DEPLOYMENT_DIP0001, versionbitscache) == THRESHOLD_ACTIVE);
 
@@ -3288,7 +3288,7 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
     // Also count sigops
     unsigned int nSigOps = 0;
     BOOST_FOREACH(const CTransaction& tx, block.vtx) {
-        if (!IsFinalTx(tx, nHeight, nLockTIMECCoinCutoff)) {
+        if (!IsFinalTx(tx, nHeight, nLockTIMECoinCutoff)) {
             return state.DoS(10, error("%s: contains a non-final transaction", __func__), REJECT_INVALID, "bad-txns-nonfinal");
         }
         if (fDIP0001Active_context && ::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION) > MAX_STANDARD_TX_SIZE) {
@@ -3440,7 +3440,7 @@ static bool AcceptBlock(const CBlock& block, CValidationState& state, const CCha
         CDiskBlockPos blockPos;
         if (dbp != NULL)
             blockPos = *dbp;
-        if (!FindBlockPos(state, blockPos, nBlockSize+8, nHeight, block.GetBlockTIMECCoin(), dbp != NULL))
+        if (!FindBlockPos(state, blockPos, nBlockSize+8, nHeight, block.GetBlockTIMECoin(), dbp != NULL))
             return error("AcceptBlock(): FindBlockPos failed");
         if (dbp == NULL)
             if (!WriteBlockToDisk(block, blockPos, chainparams.MessageStart()))
@@ -3794,8 +3794,8 @@ bool static LoadBlockIndexDB()
     LogPrintf("%s: address index %s\n", __func__, fAddressIndex ? "enabled" : "disabled");
 
     // Check whether we have a timestamp index
-    pblocktree->ReadFlag("timestampindex", fTIMECCoinstampIndex);
-    LogPrintf("%s: timestamp index %s\n", __func__, fTIMECCoinstampIndex ? "enabled" : "disabled");
+    pblocktree->ReadFlag("timestampindex", fTIMECoinstampIndex);
+    LogPrintf("%s: timestamp index %s\n", __func__, fTIMECoinstampIndex ? "enabled" : "disabled");
 
     // Check whether we have a spent index
     pblocktree->ReadFlag("spentindex", fSpentIndex);
@@ -3811,7 +3811,7 @@ bool static LoadBlockIndexDB()
 
     LogPrintf("%s: hashBestChain=%s height=%d date=%s progress=%f\n", __func__,
         chainActive.Tip()->GetBlockHash().ToString(), chainActive.Height(),
-        DateTIMECCoinStrFormat("%Y-%m-%d %H:%M:%S", chainActive.Tip()->GetBlockTIMECCoin()),
+        DateTIMECoinStrFormat("%Y-%m-%d %H:%M:%S", chainActive.Tip()->GetBlockTIMECoin()),
         Checkpoints::GuessVerificationProgress(chainparams.Checkpoints(), chainActive.Tip()));
 
     return true;
@@ -3961,8 +3961,8 @@ bool InitBlockIndex(const CChainParams& chainparams)
     pblocktree->WriteFlag("addressindex", fAddressIndex);
 
     // Use the provided setting for -timestampindex in the new database
-    fTIMECCoinstampIndex = GetBoolArg("-timestampindex", DEFAULT_TIMECSTAMPINDEX);
-    pblocktree->WriteFlag("timestampindex", fTIMECCoinstampIndex);
+    fTIMECoinstampIndex = GetBoolArg("-timestampindex", DEFAULT_TIMECSTAMPINDEX);
+    pblocktree->WriteFlag("timestampindex", fTIMECoinstampIndex);
 
     fSpentIndex = GetBoolArg("-spentindex", DEFAULT_SPENTINDEX);
     pblocktree->WriteFlag("spentindex", fSpentIndex);
@@ -3977,7 +3977,7 @@ bool InitBlockIndex(const CChainParams& chainparams)
             unsigned int nBlockSize = ::GetSerializeSize(block, SER_DISK, CLIENT_VERSION);
             CDiskBlockPos blockPos;
             CValidationState state;
-            if (!FindBlockPos(state, blockPos, nBlockSize+8, 0, block.GetBlockTIMECCoin()))
+            if (!FindBlockPos(state, blockPos, nBlockSize+8, 0, block.GetBlockTIMECoin()))
                 return error("%s: FindBlockPos failed", __func__);
             if (!WriteBlockToDisk(block, blockPos, chainparams.MessageStart()))
                 return error("%s: writing genesis block to disk failed", __func__);
@@ -4000,7 +4000,7 @@ bool LoadExternalBlockFile(const CChainParams& chainparams, FILE* fileIn, CDiskB
 {
     // Map of disk positions for blocks with unknown parent (only used for reindex)
     static std::multimap<uint256, CDiskBlockPos> mapBlocksUnknownParent;
-    int64_t nStart = GetTIMECCoinMillis();
+    int64_t nStart = GetTIMECoinMillis();
 
     int nLoaded = 0;
     try {
@@ -4108,7 +4108,7 @@ bool LoadExternalBlockFile(const CChainParams& chainparams, FILE* fileIn, CDiskB
         AbortNode(std::string("System error: ") + e.what());
     }
     if (nLoaded > 0)
-        LogPrintf("Loaded %i blocks from external file in %dms\n", nLoaded, GetTIMECCoinMillis() - nStart);
+        LogPrintf("Loaded %i blocks from external file in %dms\n", nLoaded, GetTIMECoinMillis() - nStart);
     return nLoaded > 0;
 }
 
@@ -4360,7 +4360,7 @@ std::string GetWarnings(const std::string& strFor)
     return "error";
 }
  std::string CBlockFileInfo::ToString() const {
-     return strprintf("CBlockFileInfo(blocks=%u, size=%u, heights=%u...%u, time=%s...%s)", nBlocks, nSize, nHeightFirst, nHeightLast, DateTIMECCoinStrFormat("%Y-%m-%d", nTIMECCoinFirst), DateTIMECCoinStrFormat("%Y-%m-%d", nTIMECCoinLast));
+     return strprintf("CBlockFileInfo(blocks=%u, size=%u, heights=%u...%u, time=%s...%s)", nBlocks, nSize, nHeightFirst, nHeightLast, DateTIMECoinStrFormat("%Y-%m-%d", nTIMECoinFirst), DateTIMECoinStrFormat("%Y-%m-%d", nTIMECoinLast));
  }
 
 ThresholdState VersionBitsTipState(const Consensus::Params& params, Consensus::DeploymentPos pos)

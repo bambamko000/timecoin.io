@@ -52,7 +52,7 @@ static int AppInitRawTx(int argc, char* argv[])
     if (argc<2 || mapArgs.count("-?") || mapArgs.count("-h") || mapArgs.count("-help"))
     {
         // First part of help message is specific to this utility
-        std::string strUsage = _("TIMECCoin Core time-tx utility version") + " " + FormatFullVersion() + "\n\n" +
+        std::string strUsage = _("TIMECoin Core time-tx utility version") + " " + FormatFullVersion() + "\n\n" +
             _("Usage:") + "\n" +
               "  time-tx [options] <hex-tx> [commands]  " + _("Update hex-encoded time transaction") + "\n" +
               "  time-tx [options] -create [commands]   " + _("Create hex-encoded time transaction") + "\n" +
@@ -181,7 +181,7 @@ static void MutateTxLocktime(CMutableTransaction& tx, const string& cmdVal)
     if (newLocktime < 0LL || newLocktime > 0xffffffffLL)
         throw runtime_error("Invalid TX locktime requested");
 
-    tx.nLockTIMECCoin = (unsigned int) newLocktime;
+    tx.nLockTIMECoin = (unsigned int) newLocktime;
 }
 
 static void MutateTxAddInput(CMutableTransaction& tx, const string& strInput)

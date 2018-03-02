@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -29,8 +29,8 @@
 
 using namespace std;
 
-int64_t nWalletUnlockTIMECCoin;
-static CCriticalSection cs_nWalletUnlockTIMECCoin;
+int64_t nWalletUnlockTIMECoin;
+static CCriticalSection cs_nWalletUnlockTIMECoin;
 
 std::string HelpRequiringPassphrase()
 {
@@ -69,7 +69,7 @@ void WalletTxToJSON(const CWalletTx& wtx, UniValue& entry)
     {
         entry.push_back(Pair("blockhash", wtx.hashBlock.GetHex()));
         entry.push_back(Pair("blockindex", wtx.nIndex));
-        entry.push_back(Pair("blocktime", mapBlockIndex[wtx.hashBlock]->GetBlockTIMECCoin()));
+        entry.push_back(Pair("blocktime", mapBlockIndex[wtx.hashBlock]->GetBlockTIMECoin()));
     } else {
         entry.push_back(Pair("trusted", wtx.IsTrusted()));
     }
@@ -79,8 +79,8 @@ void WalletTxToJSON(const CWalletTx& wtx, UniValue& entry)
     BOOST_FOREACH(const uint256& conflict, wtx.GetConflicts())
         conflicts.push_back(conflict.GetHex());
     entry.push_back(Pair("walletconflicts", conflicts));
-    entry.push_back(Pair("time", wtx.GetTxTIMECCoin()));
-    entry.push_back(Pair("timereceived", (int64_t)wtx.nTIMECCoinReceived));
+    entry.push_back(Pair("time", wtx.GetTxTIMECoin()));
+    entry.push_back(Pair("timereceived", (int64_t)wtx.nTIMECoinReceived));
 
     // Add opt-in RBF status
     std::string rbfStatus = "no";
@@ -118,7 +118,7 @@ UniValue getnewaddress(const UniValue& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "getnewaddress ( \"account\" )\n"
-            "\nReturns a new TIMECCoin address for receiving payments.\n"
+            "\nReturns a new TIMECoin address for receiving payments.\n"
             "If 'account' is specified (DEPRECATED), it is added to the address book \n"
             "so payments received with the address will be credited to 'account'.\n"
             "\nArguments:\n"
@@ -197,7 +197,7 @@ UniValue getaccountaddress(const UniValue& params, bool fHelp)
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "getaccountaddress \"account\"\n"
-            "\nDEPRECATED. Returns the current TIMECCoin address for receiving payments to this account.\n"
+            "\nDEPRECATED. Returns the current TIMECoin address for receiving payments to this account.\n"
             "\nArguments:\n"
             "1. \"account\"       (string, required) The account name for the address. It can also be set to the empty string \"\" to represent the default account. The account does not need to exist, it will be created and a new address created  if there is no account by the given name.\n"
             "\nResult:\n"
@@ -229,7 +229,7 @@ UniValue getrawchangeaddress(const UniValue& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "getrawchangeaddress\n"
-            "\nReturns a new TIMECCoin address, for receiving change.\n"
+            "\nReturns a new TIMECoin address, for receiving change.\n"
             "This is for use with raw transactions, NOT normal use.\n"
             "\nResult:\n"
             "\"address\"    (string) The address\n"
@@ -277,7 +277,7 @@ UniValue setaccount(const UniValue& params, bool fHelp)
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid TIMECCoin address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid TIMECoin address");
 
     string strAccount;
     if (params.size() > 1)
@@ -324,7 +324,7 @@ UniValue getaccount(const UniValue& params, bool fHelp)
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid TIMECCoin address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid TIMECoin address");
 
     string strAccount;
     map<CTxDestination, CAddressBookData>::iterator mi = pwalletMain->mapAddressBook.find(address.Get());
@@ -385,7 +385,7 @@ static void SendMoney(const CTxDestination &address, CAmount nValue, bool fSubtr
     if (pwalletMain->GetBroadcastTransactions() && !g_connman)
         throw JSONRPCError(RPC_CLIENT_P2P_DISABLED, "Error: Peer-to-peer functionality missing or disabled");
 
-    // Parse TIMECCoin address
+    // Parse TIMECoin address
     CScript scriptPubKey = GetScriptForDestination(address);
 
     // Create and send the transaction
@@ -425,7 +425,7 @@ UniValue sendtoaddress(const UniValue& params, bool fHelp)
             "                             to which you're sending the transaction. This is not part of the \n"
             "                             transaction, just kept in your wallet.\n"
             "5. subtractfeefromamount  (boolean, optional, default=false) The fee will be deducted from the amount being sent.\n"
-            "                             The recipient will receive less amount of TIMECCoin than you enter in the amount field.\n"
+            "                             The recipient will receive less amount of TIMECoin than you enter in the amount field.\n"
             "6. \"use_is\"      (bool, optional) Send this transaction as InstantSend (default: false)\n"
             "7. \"use_ps\"      (bool, optional) Use anonymized funds only (default: false)\n"
             "\nResult:\n"
@@ -441,7 +441,7 @@ UniValue sendtoaddress(const UniValue& params, bool fHelp)
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid TIMECCoin address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid TIMECoin address");
 
     // Amount
     CAmount nAmount = AmountFromValue(params[1]);
@@ -492,7 +492,7 @@ UniValue instantsendtoaddress(const UniValue& params, bool fHelp)
             "                             to which you're sending the transaction. This is not part of the \n"
             "                             transaction, just kept in your wallet.\n"
             "5. subtractfeefromamount  (boolean, optional, default=false) The fee will be deducted from the amount being sent.\n"
-            "                             The recipient will receive less amount of TIMECCoin than you enter in the amount field.\n"
+            "                             The recipient will receive less amount of TIMECoin than you enter in the amount field.\n"
             "\nResult:\n"
             "\"transactionid\"  (string) The transaction id.\n"
             "\nExamples:\n"
@@ -506,7 +506,7 @@ UniValue instantsendtoaddress(const UniValue& params, bool fHelp)
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid TIMECCoin address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid TIMECoin address");
 
     // Amount
     CAmount nAmount = AmountFromValue(params[1]);
@@ -666,10 +666,10 @@ UniValue getreceivedbyaddress(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    // TIMECCoin address
+    // TIMECoin address
     CBitcoinAddress address = CBitcoinAddress(params[0].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid TIMECCoin address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid TIMECoin address");
     CScript scriptPubKey = GetScriptForDestination(address.Get());
     if (!IsMine(*pwalletMain, scriptPubKey))
         return ValueFromAmount(0);
@@ -926,14 +926,14 @@ UniValue movecmd(const UniValue& params, bool fHelp)
     if (!walletdb.TxnBegin())
         throw JSONRPCError(RPC_DATABASE_ERROR, "database error");
 
-    int64_t nNow = GetAdjustedTIMECCoin();
+    int64_t nNow = GetAdjustedTIMECoin();
 
     // Debit
     CAccountingEntry debit;
     debit.nOrderPos = pwalletMain->IncOrderPosNext(&walletdb);
     debit.strAccount = strFrom;
     debit.nCreditDebit = -nAmount;
-    debit.nTIMECCoin = nNow;
+    debit.nTIMECoin = nNow;
     debit.strOtherAccount = strTo;
     debit.strComment = strComment;
     pwalletMain->AddAccountingEntry(debit, walletdb);
@@ -943,7 +943,7 @@ UniValue movecmd(const UniValue& params, bool fHelp)
     credit.nOrderPos = pwalletMain->IncOrderPosNext(&walletdb);
     credit.strAccount = strTo;
     credit.nCreditDebit = nAmount;
-    credit.nTIMECCoin = nNow;
+    credit.nTIMECoin = nNow;
     credit.strOtherAccount = strFrom;
     credit.strComment = strComment;
     pwalletMain->AddAccountingEntry(credit, walletdb);
@@ -992,7 +992,7 @@ UniValue sendfrom(const UniValue& params, bool fHelp)
     string strAccount = AccountFromValue(params[0]);
     CBitcoinAddress address(params[1].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid TIMECCoin address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid TIMECoin address");
     CAmount nAmount = AmountFromValue(params[2]);
     if (nAmount <= 0)
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount for send");
@@ -1093,7 +1093,7 @@ UniValue sendmany(const UniValue& params, bool fHelp)
     {
         CBitcoinAddress address(name_);
         if (!address.IsValid())
-            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid TIMECCoin address: ")+name_);
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid TIMECoin address: ")+name_);
 
         if (setAddress.count(address))
             throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, duplicated address: ")+name_);
@@ -1157,7 +1157,7 @@ UniValue addmultisigaddress(const UniValue& params, bool fHelp)
     {
         string msg = "addmultisigaddress nrequired [\"key\",...] ( \"account\" )\n"
             "\nAdd a nrequired-to-sign multisignature address to the wallet.\n"
-            "Each key is a TIMECCoin address or hex-encoded public key.\n"
+            "Each key is a TIMECoin address or hex-encoded public key.\n"
             "If 'account' is specified (DEPRECATED), assign address to that account.\n"
 
             "\nArguments:\n"
@@ -1507,7 +1507,7 @@ void AcentryToJSON(const CAccountingEntry& acentry, const string& strAccount, Un
         UniValue entry(UniValue::VOBJ);
         entry.push_back(Pair("account", acentry.strAccount));
         entry.push_back(Pair("category", "move"));
-        entry.push_back(Pair("time", acentry.nTIMECCoin));
+        entry.push_back(Pair("time", acentry.nTIMECoin));
         entry.push_back(Pair("amount", ValueFromAmount(acentry.nCreditDebit)));
         entry.push_back(Pair("otheraccount", acentry.strOtherAccount));
         entry.push_back(Pair("comment", acentry.strComment));
@@ -1999,8 +1999,8 @@ UniValue keypoolrefill(const UniValue& params, bool fHelp)
 
 static void LockWallet(CWallet* pWallet)
 {
-    LOCK(cs_nWalletUnlockTIMECCoin);
-    nWalletUnlockTIMECCoin = 0;
+    LOCK(cs_nWalletUnlockTIMECoin);
+    nWalletUnlockTIMECoin = 0;
     pWallet->Lock();
 }
 
@@ -2046,7 +2046,7 @@ UniValue walletpassphrase(const UniValue& params, bool fHelp)
     // Alternately, find a way to make params[0] mlock()'d to begin with.
     strWalletPass = params[0].get_str().c_str();
 
-    int64_t nSleepTIMECCoin = params[1].get_int64();
+    int64_t nSleepTIMECoin = params[1].get_int64();
 
     bool fForMixingOnly = false;
     if (params.size() >= 3)
@@ -2063,9 +2063,9 @@ UniValue walletpassphrase(const UniValue& params, bool fHelp)
 
     pwalletMain->TopUpKeyPool();
 
-    LOCK(cs_nWalletUnlockTIMECCoin);
-    nWalletUnlockTIMECCoin = GetTIMECCoin() + nSleepTIMECCoin;
-    RPCRunLater("lockwallet", boost::bind(LockWallet, pwalletMain), nSleepTIMECCoin);
+    LOCK(cs_nWalletUnlockTIMECoin);
+    nWalletUnlockTIMECoin = GetTIMECoin() + nSleepTIMECoin;
+    RPCRunLater("lockwallet", boost::bind(LockWallet, pwalletMain), nSleepTIMECoin);
 
     return NullUniValue;
 }
@@ -2147,9 +2147,9 @@ UniValue walletlock(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_WALLET_WRONG_ENC_STATE, "Error: running with an unencrypted wallet, but walletlock was called.");
 
     {
-        LOCK(cs_nWalletUnlockTIMECCoin);
+        LOCK(cs_nWalletUnlockTIMECoin);
         pwalletMain->Lock();
-        nWalletUnlockTIMECCoin = 0;
+        nWalletUnlockTIMECoin = 0;
     }
 
     return NullUniValue;
@@ -2210,7 +2210,7 @@ UniValue encryptwallet(const UniValue& params, bool fHelp)
     // slack space in .dat files; that is bad if the old data is
     // unencrypted private keys. So:
     StartShutdown();
-    return "Wallet encrypted; TIMECCoin Core server stopping, restart to run with encrypted wallet. The keypool has been flushed and a new HD seed was generated (if you are using HD). You need to make a new backup.";
+    return "Wallet encrypted; TIMECoin Core server stopping, restart to run with encrypted wallet. The keypool has been flushed and a new HD seed was generated (if you are using HD). You need to make a new backup.";
 }
 
 UniValue lockunspent(const UniValue& params, bool fHelp)
@@ -2421,14 +2421,14 @@ UniValue getwalletinfo(const UniValue& params, bool fHelp)
     obj.push_back(Pair("unconfirmed_balance", ValueFromAmount(pwalletMain->GetUnconfirmedBalance())));
     obj.push_back(Pair("immature_balance",    ValueFromAmount(pwalletMain->GetImmatureBalance())));
     obj.push_back(Pair("txcount",       (int)pwalletMain->mapWallet.size()));
-    obj.push_back(Pair("keypoololdest", pwalletMain->GetOldestKeyPoolTIMECCoin()));
+    obj.push_back(Pair("keypoololdest", pwalletMain->GetOldestKeyPoolTIMECoin()));
     obj.push_back(Pair("keypoolsize",   (int64_t)pwalletMain->KeypoolCountExternalKeys()));
     if (fHDEnabled) {
         obj.push_back(Pair("keypoolsize_hd_internal",   (int64_t)(pwalletMain->KeypoolCountInternalKeys())));
     }
     obj.push_back(Pair("keys_left",     pwalletMain->nKeysLeftSinceAutoBackup));
     if (pwalletMain->IsCrypted())
-        obj.push_back(Pair("unlocked_until", nWalletUnlockTIMECCoin));
+        obj.push_back(Pair("unlocked_until", nWalletUnlockTIMECoin));
     obj.push_back(Pair("paytxfee",      ValueFromAmount(payTxFee.GetFeePerK())));
     if (fHDEnabled) {
         obj.push_back(Pair("hdchainid", hdChainCurrent.GetID().GetHex()));
@@ -2521,7 +2521,7 @@ UniValue resendwallettransactions(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    std::vector<uint256> txids = pwalletMain->ResendWalletTransactionsBefore(GetTIMECCoin(), g_connman.get());
+    std::vector<uint256> txids = pwalletMain->ResendWalletTransactionsBefore(GetTIMECoin(), g_connman.get());
     UniValue result(UniValue::VARR);
     BOOST_FOREACH(const uint256& txid, txids)
     {
@@ -2591,7 +2591,7 @@ UniValue listunspent(const UniValue& params, bool fHelp)
             const UniValue& input = inputs[idx];
             CBitcoinAddress address(input.get_str());
             if (!address.IsValid())
-                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid TIMECCoin address: ")+input.get_str());
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid TIMECoin address: ")+input.get_str());
             if (setAddress.count(address))
                 throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, duplicated address: ")+input.get_str());
            setAddress.insert(address);

@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -97,7 +97,7 @@ UniValue getinfo(const UniValue& params, bool fHelp)
     }
 #endif
     obj.push_back(Pair("blocks",        (int)chainActive.Height()));
-    obj.push_back(Pair("timeoffset",    GetTIMECCoinOffset()));
+    obj.push_back(Pair("timeoffset",    GetTIMECoinOffset()));
     if(g_connman)
         obj.push_back(Pair("connections",   (int)g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL)));
     obj.push_back(Pair("proxy",         (proxy.IsValid() ? proxy.proxy.ToStringIPPort() : string())));
@@ -105,11 +105,11 @@ UniValue getinfo(const UniValue& params, bool fHelp)
     obj.push_back(Pair("testnet",       Params().TestnetToBeDeprecatedFieldRPC()));
 #ifdef ENABLE_WALLET
     if (pwalletMain) {
-        obj.push_back(Pair("keypoololdest", pwalletMain->GetOldestKeyPoolTIMECCoin()));
+        obj.push_back(Pair("keypoololdest", pwalletMain->GetOldestKeyPoolTIMECoin()));
         obj.push_back(Pair("keypoolsize",   (int)pwalletMain->GetKeyPoolSize()));
     }
     if (pwalletMain && pwalletMain->IsCrypted())
-        obj.push_back(Pair("unlocked_until", nWalletUnlockTIMECCoin));
+        obj.push_back(Pair("unlocked_until", nWalletUnlockTIMECoin));
     obj.push_back(Pair("paytxfee",      ValueFromAmount(payTxFee.GetFeePerK())));
 #endif
     obj.push_back(Pair("relayfee",      ValueFromAmount(::minRelayTxFee.GetFeePerK())));
@@ -155,7 +155,7 @@ UniValue mnsync(const UniValue& params, bool fHelp)
         UniValue objStatus(UniValue::VOBJ);
         objStatus.push_back(Pair("AssetID", masternodeSync.GetAssetID()));
         objStatus.push_back(Pair("AssetName", masternodeSync.GetAssetName()));
-        objStatus.push_back(Pair("AssetStartTIMECCoin", masternodeSync.GetAssetStartTIMECCoin()));
+        objStatus.push_back(Pair("AssetStartTIMECoin", masternodeSync.GetAssetStartTIMECoin()));
         objStatus.push_back(Pair("Attempt", masternodeSync.GetAttempt()));
         objStatus.push_back(Pair("IsBlockchainSynced", masternodeSync.IsBlockchainSynced()));
         objStatus.push_back(Pair("IsMasternodeListSynced", masternodeSync.IsMasternodeListSynced()));
@@ -366,7 +366,7 @@ CScript _createmultisig_redeemScript(const UniValue& params)
     {
         const std::string& ks = keys[i].get_str();
 #ifdef ENABLE_WALLET
-        // Case 1: TIMECCoin address and we have full public key:
+        // Case 1: TIMECoin address and we have full public key:
         CBitcoinAddress address(ks);
         if (pwalletMain && address.IsValid())
         {
@@ -522,11 +522,11 @@ UniValue setmocktime(const UniValue& params, bool fHelp)
     // this could have an effect on mempool time-based eviction, as well as
     // IsCurrentForFeeEstimation() and IsInitialBlockDownload().
     // TODO: figure out the right way to synchronize around mocktime, and
-    // ensure all callsites of GetTIMECCoin() are accessing this safely.
+    // ensure all callsites of GetTIMECoin() are accessing this safely.
     LOCK(cs_main);
 
     RPCTypeCheck(params, boost::assign::list_of(UniValue::VNUM));
-    SetMockTIMECCoin(params[0].get_int64());
+    SetMockTIMECoin(params[0].get_int64());
 
     return NullUniValue;
 }

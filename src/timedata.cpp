@@ -14,8 +14,8 @@
 
 using namespace std;
 
-static CCriticalSection cs_nTIMECCoinOffset;
-static int64_t nTIMECCoinOffset = 0;
+static CCriticalSection cs_nTIMECoinOffset;
+static int64_t nTIMECoinOffset = 0;
 
 /**
  * "Never go to sea with two chronometers; take one or three."
@@ -24,15 +24,15 @@ static int64_t nTIMECCoinOffset = 0;
  *  - Median of other nodes clocks
  *  - The user (asking the user to fix the system clock if the first two disagree)
  */
-int64_t GetTIMECCoinOffset()
+int64_t GetTIMECoinOffset()
 {
-    LOCK(cs_nTIMECCoinOffset);
-    return nTIMECCoinOffset;
+    LOCK(cs_nTIMECoinOffset);
+    return nTIMECoinOffset;
 }
 
-int64_t GetAdjustedTIMECCoin()
+int64_t GetAdjustedTIMECoin()
 {
-    return GetTIMECCoin() + GetTIMECCoinOffset();
+    return GetTIMECoin() + GetTIMECoinOffset();
 }
 
 static int64_t abs64(int64_t n)
@@ -42,9 +42,9 @@ static int64_t abs64(int64_t n)
 
 #define BITCOIN_TIMECDATA_MAX_SAMPLES 200
 
-void AddTIMECCoinData(const CNetAddr& ip, int64_t nOffsetSample)
+void AddTIMECoinData(const CNetAddr& ip, int64_t nOffsetSample)
 {
-    LOCK(cs_nTIMECCoinOffset);
+    LOCK(cs_nTIMECoinOffset);
     // Ignore duplicates
     static set<CNetAddr> setKnown;
     if (setKnown.size() == BITCOIN_TIMECDATA_MAX_SAMPLES)
@@ -53,18 +53,18 @@ void AddTIMECCoinData(const CNetAddr& ip, int64_t nOffsetSample)
         return;
 
     // Add data
-    static CMedianFilter<int64_t> vTIMECCoinOffsets(BITCOIN_TIMECDATA_MAX_SAMPLES, 0);
-    vTIMECCoinOffsets.input(nOffsetSample);
-    LogPrint("net","added time data, samples %d, offset %+d (%+d minutes)\n", vTIMECCoinOffsets.size(), nOffsetSample, nOffsetSample/60);
+    static CMedianFilter<int64_t> vTIMECoinOffsets(BITCOIN_TIMECDATA_MAX_SAMPLES, 0);
+    vTIMECoinOffsets.input(nOffsetSample);
+    LogPrint("net","added time data, samples %d, offset %+d (%+d minutes)\n", vTIMECoinOffsets.size(), nOffsetSample, nOffsetSample/60);
 
     // There is a known issue here (see issue #4521):
     //
-    // - The structure vTIMECCoinOffsets contains up to 200 elements, after which
+    // - The structure vTIMECoinOffsets contains up to 200 elements, after which
     // any new element added to it will not increase its size, replacing the
     // oldest element.
     //
-    // - The condition to update nTIMECCoinOffset includes checking whether the
-    // number of elements in vTIMECCoinOffsets is odd, which will never happen after
+    // - The condition to update nTIMECoinOffset includes checking whether the
+    // number of elements in vTIMECoinOffsets is odd, which will never happen after
     // there are 200 elements.
     //
     // But in this case the 'bug' is protective against some attacks, and may
@@ -74,18 +74,18 @@ void AddTIMECCoinData(const CNetAddr& ip, int64_t nOffsetSample)
     // So we should hold off on fixing this and clean it up as part of
     // a timing cleanup that strengthens it in a number of other ways.
     //
-    if (vTIMECCoinOffsets.size() >= 5 && vTIMECCoinOffsets.size() % 2 == 1)
+    if (vTIMECoinOffsets.size() >= 5 && vTIMECoinOffsets.size() % 2 == 1)
     {
-        int64_t nMedian = vTIMECCoinOffsets.median();
-        std::vector<int64_t> vSorted = vTIMECCoinOffsets.sorted();
+        int64_t nMedian = vTIMECoinOffsets.median();
+        std::vector<int64_t> vSorted = vTIMECoinOffsets.sorted();
         // Only let other nodes change our time by so much
         if (abs64(nMedian) < 70 * 60)
         {
-            nTIMECCoinOffset = nMedian;
+            nTIMECoinOffset = nMedian;
         }
         else
         {
-            nTIMECCoinOffset = 0;
+            nTIMECoinOffset = 0;
 
             static bool fDone;
             if (!fDone)
@@ -99,7 +99,7 @@ void AddTIMECCoinData(const CNetAddr& ip, int64_t nOffsetSample)
                 if (!fMatch)
                 {
                     fDone = true;
-                    string strMessage = _("Please check that your computer's date and time are correct! If your clock is wrong TIMECCoin Core will not work properly.");
+                    string strMessage = _("Please check that your computer's date and time are correct! If your clock is wrong TIMECoin Core will not work properly.");
                     strMiscWarning = strMessage;
                     uiInterface.ThreadSafeMessageBox(strMessage, "", CClientUIInterface::MSG_WARNING);
                 }
@@ -110,6 +110,6 @@ void AddTIMECCoinData(const CNetAddr& ip, int64_t nOffsetSample)
             LogPrint("net", "%+d  ", n);
         LogPrint("net", "|  ");
         
-        LogPrint("net", "nTIMECCoinOffset = %+d  (%+d minutes)\n", nTIMECCoinOffset, nTIMECCoinOffset/60);
+        LogPrint("net", "nTIMECoinOffset = %+d  (%+d minutes)\n", nTIMECoinOffset, nTIMECoinOffset/60);
     }
 }

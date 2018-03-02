@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -58,9 +58,9 @@ WalletModel::WalletModel(const PlatformStyle *platformStyle, CWallet *wallet, Op
     recentRequestsTableModel = new RecentRequestsTableModel(wallet, this);
 
     // This timer will be fired repeatedly to update the balance
-    pollTIMECCoinr = new QTimer(this);
-    connect(pollTIMECCoinr, SIGNAL(timeout()), this, SLOT(pollBalanceChanged()));
-    pollTIMECCoinr->start(MODEL_UPDATE_DELAY);
+    pollTIMECoinr = new QTimer(this);
+    connect(pollTIMECoinr, SIGNAL(timeout()), this, SLOT(pollBalanceChanged()));
+    pollTIMECoinr->start(MODEL_UPDATE_DELAY);
 
     subscribeToCoreSignals();
 }

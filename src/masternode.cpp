@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,12 +21,12 @@
 
 
 CMasternode::CMasternode() :
-    masternode_info_t{ MASTERNODE_ENABLED, PROTOCOL_VERSION, GetAdjustedTIMECCoin()},
+    masternode_info_t{ MASTERNODE_ENABLED, PROTOCOL_VERSION, GetAdjustedTIMECoin()},
     fAllowMixingTx(true)
 {}
 
 CMasternode::CMasternode(CService addr, COutPoint outpoint, CPubKey pubKeyCollateralAddress, CPubKey pubKeyMasternode, int nProtocolVersionIn) :
-    masternode_info_t{ MASTERNODE_ENABLED, nProtocolVersionIn, GetAdjustedTIMECCoin(),
+    masternode_info_t{ MASTERNODE_ENABLED, nProtocolVersionIn, GetAdjustedTIMECoin(),
                        outpoint, addr, pubKeyCollateralAddress, pubKeyMasternode},
     fAllowMixingTx(true)
 {}
@@ -44,9 +44,9 @@ CMasternode::CMasternode(const CMasternode& other) :
 {}
 
 CMasternode::CMasternode(const CMasternodeBroadcast& mnb) :
-    masternode_info_t{ mnb.nActiveState, mnb.nProtocolVersion, mnb.sigTIMECCoin,
+    masternode_info_t{ mnb.nActiveState, mnb.nProtocolVersion, mnb.sigTIMECoin,
                        mnb.vin.prevout, mnb.addr, mnb.pubKeyCollateralAddress, mnb.pubKeyMasternode,
-                       mnb.sigTIMECCoin /*nTIMECCoinLastWatchdogVote*/},
+                       mnb.sigTIMECoin /*nTIMECoinLastWatchdogVote*/},
     lastPing(mnb.lastPing),
     vchSig(mnb.vchSig),
     fAllowMixingTx(true)
@@ -57,16 +57,16 @@ CMasternode::CMasternode(const CMasternodeBroadcast& mnb) :
 //
 bool CMasternode::UpdateFromNewBroadcast(CMasternodeBroadcast& mnb, CConnman& connman)
 {
-    if(mnb.sigTIMECCoin <= sigTIMECCoin && !mnb.fRecovery) return false;
+    if(mnb.sigTIMECoin <= sigTIMECoin && !mnb.fRecovery) return false;
 
     pubKeyMasternode = mnb.pubKeyMasternode;
-    sigTIMECCoin = mnb.sigTIMECCoin;
+    sigTIMECoin = mnb.sigTIMECoin;
     vchSig = mnb.vchSig;
     nProtocolVersion = mnb.nProtocolVersion;
     addr = mnb.addr;
     nPoSeBanScore = 0;
     nPoSeBanHeight = 0;
-    nTIMECCoinLastChecked = 0;
+    nTIMECoinLastChecked = 0;
     int nDos = 0;
     if(mnb.lastPing == CMasternodePing() || (mnb.lastPing != CMasternodePing() && mnb.lastPing.CheckAndUpdate(this, true, nDos, connman))) {
         lastPing = mnb.lastPing;
@@ -130,8 +130,8 @@ void CMasternode::Check(bool fForce)
 
     if(ShutdownRequested()) return;
 
-    if(!fForce && (GetTIMECCoin() - nTIMECCoinLastChecked < MASTERNODE_CHECK_SECONDS)) return;
-    nTIMECCoinLastChecked = GetTIMECCoin();
+    if(!fForce && (GetTIMECoin() - nTIMECoinLastChecked < MASTERNODE_CHECK_SECONDS)) return;
+    nTIMECoinLastChecked = GetTIMECoin();
 
     LogPrint("masternode", "CMasternode::Check -- Masternode %s is in %s state\n", vin.prevout.ToStringShort(), GetStateString());
 
@@ -207,10 +207,10 @@ void CMasternode::Check(bool fForce)
         }
 
         bool fWatchdogActive = masternodeSync.IsSynced() && mnodeman.IsWatchdogActive();
-        bool fWatchdogExpired = (fWatchdogActive && ((GetAdjustedTIMECCoin() - nTIMECCoinLastWatchdogVote) > MASTERNODE_WATCHDOG_MAX_SECONDS));
+        bool fWatchdogExpired = (fWatchdogActive && ((GetAdjustedTIMECoin() - nTIMECoinLastWatchdogVote) > MASTERNODE_WATCHDOG_MAX_SECONDS));
 
-        LogPrint("masternode", "CMasternode::Check -- outpoint=%s, nTIMECCoinLastWatchdogVote=%d, GetAdjustedTIMECCoin()=%d, fWatchdogExpired=%d\n",
-                vin.prevout.ToStringShort(), nTIMECCoinLastWatchdogVote, GetAdjustedTIMECCoin(), fWatchdogExpired);
+        LogPrint("masternode", "CMasternode::Check -- outpoint=%s, nTIMECoinLastWatchdogVote=%d, GetAdjustedTIMECoin()=%d, fWatchdogExpired=%d\n",
+                vin.prevout.ToStringShort(), nTIMECoinLastWatchdogVote, GetAdjustedTIMECoin(), fWatchdogExpired);
 
         if(fWatchdogExpired) {
             nActiveState = MASTERNODE_WATCHDOG_EXPIRED;
@@ -229,7 +229,7 @@ void CMasternode::Check(bool fForce)
         }
     }
 
-    if(lastPing.sigTIMECCoin - sigTIMECCoin < MASTERNODE_MIN_MNP_SECONDS) {
+    if(lastPing.sigTIMECoin - sigTIMECoin < MASTERNODE_MIN_MNP_SECONDS) {
         nActiveState = MASTERNODE_PRE_ENABLED;
         if(nActiveStatePrev != nActiveState) {
             LogPrint("masternode", "CMasternode::Check -- Masternode %s is in %s state now\n", vin.prevout.ToStringShort(), GetStateString());
@@ -274,7 +274,7 @@ bool CMasternode::IsValidNetAddr(CService addrIn)
 masternode_info_t CMasternode::GetInfo()
 {
     masternode_info_t info{*this};
-    info.nTIMECCoinLastPing = lastPing.sigTIMECCoin;
+    info.nTIMECoinLastPing = lastPing.sigTIMECoin;
     info.fInfoValid = true;
     return info;
 }
@@ -329,7 +329,7 @@ void CMasternode::UpdateLastPaid(const CBlockIndex *pindex, int nMaxBlocksToScan
             BOOST_FOREACH(CTxOut txout, block.vtx[0].vout)
                 if(mnpayee == txout.scriptPubKey && nMasternodePayment == txout.nValue) {
                     nBlockLastPaid = BlockReading->nHeight;
-                    nTIMECCoinLastPaid = BlockReading->nTIMECCoin;
+                    nTIMECoinLastPaid = BlockReading->nTIMECoin;
                     LogPrint("masternode", "CMasternode::UpdateLastPaidBlock -- searching for block with payment to %s -- found new %d\n", vin.prevout.ToStringShort(), nBlockLastPaid);
                     return;
                 }
@@ -429,13 +429,13 @@ bool CMasternodeBroadcast::SimpleCheck(int& nDos)
     }
 
     // make sure signature isn't in the future (past is OK)
-    if (sigTIMECCoin > GetAdjustedTIMECCoin() + 60 * 60) {
+    if (sigTIMECoin > GetAdjustedTIMECoin() + 60 * 60) {
         LogPrintf("CMasternodeBroadcast::SimpleCheck -- Signature rejected, too far into the future: masternode=%s\n", vin.prevout.ToStringShort());
         nDos = 1;
         return false;
     }
 
-    // empty ping or incorrect sigTIMECCoin/unknown blockhash
+    // empty ping or incorrect sigTIMECoin/unknown blockhash
     if(lastPing == CMasternodePing() || !lastPing.SimpleCheck(nDos)) {
         // one of us is probably forked or smth, just mark it as expired and check the rest of the rules
         nActiveState = MASTERNODE_EXPIRED;
@@ -482,7 +482,7 @@ bool CMasternodeBroadcast::Update(CMasternode* pmn, int& nDos, CConnman& connman
 {
     nDos = 0;
 
-    if(pmn->sigTIMECCoin == sigTIMECCoin && !fRecovery) {
+    if(pmn->sigTIMECoin == sigTIMECoin && !fRecovery) {
         // mapSeenMasternodeBroadcast in CMasternodeMan::CheckMnbAndUpdateMasternodeList should filter legit duplicates
         // but this still can happen if we just started, which is ok, just do nothing here.
         return false;
@@ -490,9 +490,9 @@ bool CMasternodeBroadcast::Update(CMasternode* pmn, int& nDos, CConnman& connman
 
     // this broadcast is older than the one that we already have - it's bad and should never happen
     // unless someone is doing something fishy
-    if(pmn->sigTIMECCoin > sigTIMECCoin) {
-        LogPrintf("CMasternodeBroadcast::Update -- Bad sigTIMECCoin %d (existing broadcast is at %d) for Masternode %s %s\n",
-                      sigTIMECCoin, pmn->sigTIMECCoin, vin.prevout.ToStringShort(), addr.ToString());
+    if(pmn->sigTIMECoin > sigTIMECoin) {
+        LogPrintf("CMasternodeBroadcast::Update -- Bad sigTIMECoin %d (existing broadcast is at %d) for Masternode %s %s\n",
+                      sigTIMECoin, pmn->sigTIMECoin, vin.prevout.ToStringShort(), addr.ToString());
         return false;
     }
 
@@ -524,7 +524,7 @@ bool CMasternodeBroadcast::Update(CMasternode* pmn, int& nDos, CConnman& connman
             pmn->Check();
             Relay(connman);
         }
-        masternodeSync.BumpAssetLastTIMECCoin("CMasternodeBroadcast::Update");
+        masternodeSync.BumpAssetLastTIMECoin("CMasternodeBroadcast::Update");
     }
 
     return true;
@@ -596,9 +596,9 @@ bool CMasternodeBroadcast::CheckOutpoint(int& nDos)
         if (mi != mapBlockIndex.end() && (*mi).second) {
             CBlockIndex* pMNIndex = (*mi).second; // block for 10000 TIMEC tx -> 1 confirmation
             CBlockIndex* pConfIndex = chainActive[pMNIndex->nHeight + Params().GetConsensus().nMasternodeMinimumConfirmations - 1]; // block where tx got nMasternodeMinimumConfirmations
-            if(pConfIndex->GetBlockTIMECCoin() > sigTIMECCoin) {
-                LogPrintf("CMasternodeBroadcast::CheckOutpoint -- Bad sigTIMECCoin %d (%d conf block is at %d) for Masternode %s %s\n",
-                          sigTIMECCoin, Params().GetConsensus().nMasternodeMinimumConfirmations, pConfIndex->GetBlockTIMECCoin(), vin.prevout.ToStringShort(), addr.ToString());
+            if(pConfIndex->GetBlockTIMECoin() > sigTIMECoin) {
+                LogPrintf("CMasternodeBroadcast::CheckOutpoint -- Bad sigTIMECoin %d (%d conf block is at %d) for Masternode %s %s\n",
+                          sigTIMECoin, Params().GetConsensus().nMasternodeMinimumConfirmations, pConfIndex->GetBlockTIMECoin(), vin.prevout.ToStringShort(), addr.ToString());
                 return false;
             }
         }
@@ -612,9 +612,9 @@ bool CMasternodeBroadcast::Sign(const CKey& keyCollateralAddress)
     std::string strError;
     std::string strMessage;
 
-    sigTIMECCoin = GetAdjustedTIMECCoin();
+    sigTIMECoin = GetAdjustedTIMECoin();
 
-    strMessage = addr.ToString(false) + boost::lexical_cast<std::string>(sigTIMECCoin) +
+    strMessage = addr.ToString(false) + boost::lexical_cast<std::string>(sigTIMECoin) +
                     pubKeyCollateralAddress.GetID().ToString() + pubKeyMasternode.GetID().ToString() +
                     boost::lexical_cast<std::string>(nProtocolVersion);
 
@@ -637,7 +637,7 @@ bool CMasternodeBroadcast::CheckSignature(int& nDos)
     std::string strError = "";
     nDos = 0;
 
-    strMessage = addr.ToString(false) + boost::lexical_cast<std::string>(sigTIMECCoin) +
+    strMessage = addr.ToString(false) + boost::lexical_cast<std::string>(sigTIMECoin) +
                     pubKeyCollateralAddress.GetID().ToString() + pubKeyMasternode.GetID().ToString() +
                     boost::lexical_cast<std::string>(nProtocolVersion);
 
@@ -671,7 +671,7 @@ CMasternodePing::CMasternodePing(const COutPoint& outpoint)
 
     vin = CTxIn(outpoint);
     blockHash = chainActive[chainActive.Height() - 12]->GetBlockHash();
-    sigTIMECCoin = GetAdjustedTIMECCoin();
+    sigTIMECoin = GetAdjustedTIMECoin();
 }
 
 bool CMasternodePing::Sign(const CKey& keyMasternode, const CPubKey& pubKeyMasternode)
@@ -680,8 +680,8 @@ bool CMasternodePing::Sign(const CKey& keyMasternode, const CPubKey& pubKeyMaste
     std::string strMasterNodeSignMessage;
 
     // TODO: add sentinel data
-    sigTIMECCoin = GetAdjustedTIMECCoin();
-    std::string strMessage = vin.ToString() + blockHash.ToString() + boost::lexical_cast<std::string>(sigTIMECCoin);
+    sigTIMECoin = GetAdjustedTIMECoin();
+    std::string strMessage = vin.ToString() + blockHash.ToString() + boost::lexical_cast<std::string>(sigTIMECoin);
 
     if(!CMessageSigner::SignMessage(strMessage, vchSig, keyMasternode)) {
         LogPrintf("CMasternodePing::Sign -- SignMessage() failed\n");
@@ -699,7 +699,7 @@ bool CMasternodePing::Sign(const CKey& keyMasternode, const CPubKey& pubKeyMaste
 bool CMasternodePing::CheckSignature(CPubKey& pubKeyMasternode, int &nDos)
 {
     // TODO: add sentinel data
-    std::string strMessage = vin.ToString() + blockHash.ToString() + boost::lexical_cast<std::string>(sigTIMECCoin);
+    std::string strMessage = vin.ToString() + blockHash.ToString() + boost::lexical_cast<std::string>(sigTIMECoin);
     std::string strError = "";
     nDos = 0;
 
@@ -716,7 +716,7 @@ bool CMasternodePing::SimpleCheck(int& nDos)
     // don't ban by default
     nDos = 0;
 
-    if (sigTIMECCoin > GetAdjustedTIMECCoin() + 60 * 60) {
+    if (sigTIMECoin > GetAdjustedTIMECoin() + 60 * 60) {
         LogPrintf("CMasternodePing::SimpleCheck -- Signature rejected, too far into the future, masternode=%s\n", vin.prevout.ToStringShort());
         nDos = 1;
         return false;
@@ -732,7 +732,7 @@ bool CMasternodePing::SimpleCheck(int& nDos)
             return false;
         }
     }
-    LogPrint("masternode", "CMasternodePing::SimpleCheck -- Masternode ping verified: masternode=%s  blockHash=%s  sigTIMECCoin=%d\n", vin.prevout.ToStringShort(), blockHash.ToString(), sigTIMECCoin);
+    LogPrint("masternode", "CMasternodePing::SimpleCheck -- Masternode ping verified: masternode=%s  blockHash=%s  sigTIMECoin=%d\n", vin.prevout.ToStringShort(), blockHash.ToString(), sigTIMECoin);
     return true;
 }
 
@@ -772,12 +772,12 @@ bool CMasternodePing::CheckAndUpdate(CMasternode* pmn, bool fFromNewBroadcast, i
         }
     }
 
-    LogPrint("masternode", "CMasternodePing::CheckAndUpdate -- New ping: masternode=%s  blockHash=%s  sigTIMECCoin=%d\n", vin.prevout.ToStringShort(), blockHash.ToString(), sigTIMECCoin);
+    LogPrint("masternode", "CMasternodePing::CheckAndUpdate -- New ping: masternode=%s  blockHash=%s  sigTIMECoin=%d\n", vin.prevout.ToStringShort(), blockHash.ToString(), sigTIMECoin);
 
     // LogPrintf("mnping - Found corresponding mn for vin: %s\n", vin.prevout.ToStringShort());
     // update only if there is no known ping for this masternode or
     // last ping was more then MASTERNODE_MIN_MNP_SECONDS-60 ago comparing to this one
-    if (pmn->IsPingedWithin(MASTERNODE_MIN_MNP_SECONDS - 60, sigTIMECCoin)) {
+    if (pmn->IsPingedWithin(MASTERNODE_MIN_MNP_SECONDS - 60, sigTIMECoin)) {
         LogPrint("masternode", "CMasternodePing::CheckAndUpdate -- Masternode ping arrived too early, masternode=%s\n", vin.prevout.ToStringShort());
         //nDos = 1; //disable, this is happening frequently and causing banned peers
         return false;
@@ -792,7 +792,7 @@ bool CMasternodePing::CheckAndUpdate(CMasternode* pmn, bool fFromNewBroadcast, i
     if(!masternodeSync.IsMasternodeListSynced() && !pmn->IsPingedWithin(MASTERNODE_EXPIRATION_SECONDS/2)) {
         // let's bump sync timeout
         LogPrint("masternode", "CMasternodePing::CheckAndUpdate -- bumping sync timeout, masternode=%s\n", vin.prevout.ToStringShort());
-        masternodeSync.BumpAssetLastTIMECCoin("CMasternodePing::CheckAndUpdate");
+        masternodeSync.BumpAssetLastTIMECoin("CMasternodePing::CheckAndUpdate");
     }
 
     // let's store this ping as the last one
@@ -847,10 +847,10 @@ void CMasternode::RemoveGovernanceObject(uint256 nGovernanceObjectHash)
     mapGovernanceObjectsVotedOn.erase(it);
 }
 
-void CMasternode::UpdateWatchdogVoteTIMECCoin(uint64_t nVoteTIMECCoin)
+void CMasternode::UpdateWatchdogVoteTIMECoin(uint64_t nVoteTIMECoin)
 {
     LOCK(cs);
-    nTIMECCoinLastWatchdogVote = (nVoteTIMECCoin == 0) ? GetAdjustedTIMECCoin() : nVoteTIMECCoin;
+    nTIMECoinLastWatchdogVote = (nVoteTIMECoin == 0) ? GetAdjustedTIMECoin() : nVoteTIMECoin;
 }
 
 /**

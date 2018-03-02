@@ -38,7 +38,7 @@ protected:
     virtual void SetBestChain(const CBlockLocator &locator) {}
     virtual bool UpdatedTransaction(const uint256 &hash) { return false;}
     virtual void Inventory(const uint256 &hash) {}
-    virtual void ResendWalletTransactions(int64_t nBestBlockTIMECCoin, CConnman* connman) {}
+    virtual void ResendWalletTransactions(int64_t nBestBlockTIMECoin, CConnman* connman) {}
     virtual void BlockChecked(const CBlock&, const CValidationState&) {}
     virtual void GetScriptForMining(boost::shared_ptr<CReserveScript>&) {};
     virtual void ResetRequestCount(const uint256 &hash) {};
@@ -65,7 +65,7 @@ struct CMainSignals {
     /** Notifies listeners about an inventory item being seen on the network. */
     boost::signals2::signal<void (const uint256 &)> Inventory;
     /** Tells listeners to broadcast their data. */
-    boost::signals2::signal<void (int64_t nBestBlockTIMECCoin, CConnman* connman)> Broadcast;
+    boost::signals2::signal<void (int64_t nBestBlockTIMECoin, CConnman* connman)> Broadcast;
     /** Notifies listeners of a block validation result */
     boost::signals2::signal<void (const CBlock&, const CValidationState&)> BlockChecked;
     /** Notifies listeners that a key for mining is required (coinbase) */

@@ -308,10 +308,10 @@
 #define PACKAGE_BUGREPORT "https://github.com/timepay/time/issues"
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "TIMECCoin Core"
+#define PACKAGE_NAME "TIMECoin Core"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "TIMECCoin Core 1.0.0"
+#define PACKAGE_STRING "TIMECoin Core 1.0.0"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "timecore"

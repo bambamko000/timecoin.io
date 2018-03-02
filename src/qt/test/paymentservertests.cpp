@@ -152,7 +152,7 @@ void PaymentServerTests::paymentServerTests()
     r.paymentRequest.parse(byteArray);
     // Ensure the request is initialized
     QVERIFY(r.paymentRequest.IsInitialized());
-    // compares 1 < GetTIMECCoin() == false (treated as expired payment request)
+    // compares 1 < GetTIMECoin() == false (treated as expired payment request)
     QCOMPARE(PaymentServer::verifyExpired(r.paymentRequest.getDetails()), true);
 
     // Unexpired payment request (expires is set to 0x7FFFFFFFFFFFFFFF = max. int64_t):
@@ -163,7 +163,7 @@ void PaymentServerTests::paymentServerTests()
     r.paymentRequest.parse(byteArray);
     // Ensure the request is initialized
     QVERIFY(r.paymentRequest.IsInitialized());
-    // compares 9223372036854775807 < GetTIMECCoin() == false (treated as unexpired payment request)
+    // compares 9223372036854775807 < GetTIMECoin() == false (treated as unexpired payment request)
     QCOMPARE(PaymentServer::verifyExpired(r.paymentRequest.getDetails()), false);
 
     // Unexpired payment request (expires is set to 0x8000000000000000 > max. int64_t, allowed uint64):
@@ -174,7 +174,7 @@ void PaymentServerTests::paymentServerTests()
     r.paymentRequest.parse(byteArray);
     // Ensure the request is initialized
     QVERIFY(r.paymentRequest.IsInitialized());
-    // compares -9223372036854775808 < GetTIMECCoin() == true (treated as expired payment request)
+    // compares -9223372036854775808 < GetTIMECoin() == true (treated as expired payment request)
     QCOMPARE(PaymentServer::verifyExpired(r.paymentRequest.getDetails()), true);
 
     // Test BIP70 DoS protection:

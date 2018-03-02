@@ -17,7 +17,7 @@
   <string>APPL</string>
 
   <key>CFBundleGetInfoString</key>
-  <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@, Copyright © 2009-@COPYRIGHT_YEAR@ The Bitcoin Core developers, 2014-@COPYRIGHT_YEAR@ The TIMECCoin Core developers</string>
+  <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@, Copyright © 2009-@COPYRIGHT_YEAR@ The Bitcoin Core developers, 2014-@COPYRIGHT_YEAR@ The TIMECoin Core developers</string>
 
   <key>CFBundleShortVersionString</key>
   <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@</string>
@@ -29,16 +29,16 @@
   <string>????</string>
 
   <key>CFBundleExecutable</key>
-  <string>TIMECCoin-Qt</string>
+  <string>TIMECoin-Qt</string>
   
   <key>CFBundleName</key>
-  <string>TIMECCoin-Qt</string>
+  <string>TIMECoin-Qt</string>
 
   <key>LSHasLocalizedDisplayName</key>
   <true/>
 
   <key>CFBundleIdentifier</key>
-  <string>org.time.TIMECCoin-Qt</string>
+  <string>org.time.TIMECoin-Qt</string>
 
   <key>CFBundleURLTypes</key>
   <array>
@@ -46,7 +46,7 @@
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
       <key>CFBundleURLName</key>
-      <string>org.time.TIMECCoinPayment</string>
+      <string>org.time.TIMECoinPayment</string>
       <key>CFBundleURLSchemes</key>
       <array>
         <string>time</string>
@@ -60,7 +60,7 @@
       <key>UTTypeIdentifier</key>
       <string>org.time.paymentrequest</string>
       <key>UTTypeDescription</key>
-      <string>TIMECCoin payment request</string>
+      <string>TIMECoin payment request</string>
       <key>UTTypeConformsTo</key>
       <array>
         <string>public.data</string>

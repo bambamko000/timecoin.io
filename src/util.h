@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -41,7 +41,7 @@
 #define DBG( x ) 
 #endif
 
-//TIMECCoin only features
+//TIMECoin only features
 
 extern bool fMasterNode;
 extern bool fLiteMode;
@@ -67,8 +67,8 @@ extern bool fPrintToConsole;
 extern bool fPrintToDebugLog;
 extern bool fServer;
 extern std::string strMiscWarning;
-extern bool fLogTIMECCoinstamps;
-extern bool fLogTIMECCoinMicros;
+extern bool fLogTIMECoinstamps;
+extern bool fLogTIMECoinMicros;
 extern bool fLogThreadNames;
 extern bool fLogIPs;
 extern volatile bool fReopenDebugLog;

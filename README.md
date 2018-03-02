@@ -1,36 +1,38 @@
-TIMECCoin Core staging tree 0.12.2
+TIMECoin Core staging tree 1.0.0.0
 ===============================
 
 `master:` [![Build Status](https://travis-ci.org/timepay/time.svg?branch=master)](https://travis-ci.org/timepay/time) `develop:` [![Build Status](https://travis-ci.org/timepay/time.svg?branch=develop)](https://travis-ci.org/timepay/time/branches)
 
-https://www.time.org
+https://www.timec.io/
 
 
-What is TIMECCoin?
+What is TIMECoin?
 ----------------
 
-TIMECCoin is an experimental new digital currency that enables anonymous, instant
-payments to anyone, anywhere in the world. TIMECCoin uses peer-to-peer technology
+TIMECoin is an experimental new digital currency that enables anonymous, instant
+payments to anyone, anywhere in the world. TIMECoin uses peer-to-peer technology
 to operate with no central authority: managing transactions and issuing money
-are carried out collectively by the network. TIMECCoin Core is the name of the open
+are carried out collectively by the network. TIMECoin Core is the name of the open
 source software which enables the use of this currency.
 
 For more information, as well as an immediately useable, binary version of
-the TIMECCoin Core software, see https://www.time.org/get-time/.
+the TIMECoin Core software, see the release tab.
+
+
+Coin Sp
 
 
 License
 -------
 
-TIMECCoin Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
+TIMECoin Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
 information or see https://opensource.org/licenses/MIT.
 
 Development Process
 -------------------
 
 The `master` branch is meant to be stable. Development is normally done in separate branches.
-[Tags](https://github.com/timepay/time/tags) are created to indicate new official,
-stable release versions of TIMECCoin Core.
+[Tags] are created to indicate new official, stable release versions of TIMECoin Core.
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -66,7 +68,7 @@ Translations
 ------------
 
 Changes to translations as well as new translations can be submitted to
-[TIMECCoin Core's Transifex page](https://www.transifex.com/projects/p/time/).
+[TIMECoin Core's Transifex page](https://www.transifex.com/projects/p/time/).
 
 Translations are periodically pulled from Transifex and merged into the git repository. See the
 [translation process](doc/translation_process.md) for details on how this works.
@@ -74,4 +76,4 @@ Translations are periodically pulled from Transifex and merged into the git repo
 **Important**: We do not accept translation changes as GitHub pull requests because the next
 pull from Transifex would automatically overwrite them again.
 
-Translators should also follow the [forum](https://www.time.org/forum/topic/time-worldwide-collaboration.88/).
+

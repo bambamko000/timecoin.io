@@ -18,7 +18,7 @@ This test is meant to exercise activation of the first version bits soft fork
 This soft fork will activate the following BIPS:
 BIP 68  - nSequence relative lock times
 BIP 112 - CHECKSEQUENCEVERIFY
-BIP 113 - MedianTIMECCoinPast semantics for nLockTIMECCoin
+BIP 113 - MedianTIMECoinPast semantics for nLockTIMECoin
 
 regtest lock-in with 108/144 block signalling
 activation after a further 144 blocks
@@ -323,7 +323,7 @@ class BIP68_112_113Test(ComparisonTestFramework):
         ### Version 1 txs ###
         success_txs = []
         # add BIP113 tx and -1 CSV tx
-        bip113tx_v1.nLockTIMECCoin = self.last_block_time - 600 * 5 # = MTP of prior block (not <) but < time put on current block
+        bip113tx_v1.nLockTIMECoin = self.last_block_time - 600 * 5 # = MTP of prior block (not <) but < time put on current block
         bip113signed1 = self.sign_transaction(self.nodes[0], bip113tx_v1)
         success_txs.append(bip113signed1)
         success_txs.append(bip112tx_special_v1)
@@ -341,7 +341,7 @@ class BIP68_112_113Test(ComparisonTestFramework):
         ### Version 2 txs ###
         success_txs = []
         # add BIP113 tx and -1 CSV tx
-        bip113tx_v2.nLockTIMECCoin = self.last_block_time - 600 * 5 # = MTP of prior block (not <) but < time put on current block
+        bip113tx_v2.nLockTIMECoin = self.last_block_time - 600 * 5 # = MTP of prior block (not <) but < time put on current block
         bip113signed2 = self.sign_transaction(self.nodes[0], bip113tx_v2)
         success_txs.append(bip113signed2)
         success_txs.append(bip112tx_special_v2)
@@ -367,17 +367,17 @@ class BIP68_112_113Test(ComparisonTestFramework):
         ### After Soft Forks Activate ###
         #################################
         ### BIP 113 ###
-        # BIP 113 tests should now fail regardless of version number if nLockTIMECCoin isn't satisfied by new rules
-        bip113tx_v1.nLockTIMECCoin = self.last_block_time - 600 * 5 # = MTP of prior block (not <) but < time put on current block
+        # BIP 113 tests should now fail regardless of version number if nLockTIMECoin isn't satisfied by new rules
+        bip113tx_v1.nLockTIMECoin = self.last_block_time - 600 * 5 # = MTP of prior block (not <) but < time put on current block
         bip113signed1 = self.sign_transaction(self.nodes[0], bip113tx_v1)
-        bip113tx_v2.nLockTIMECCoin = self.last_block_time - 600 * 5 # = MTP of prior block (not <) but < time put on current block
+        bip113tx_v2.nLockTIMECoin = self.last_block_time - 600 * 5 # = MTP of prior block (not <) but < time put on current block
         bip113signed2 = self.sign_transaction(self.nodes[0], bip113tx_v2)
         for bip113tx in [bip113signed1, bip113signed2]:
             yield TestInstance([[self.create_test_block([bip113tx]), False]]) # 9,10
         # BIP 113 tests should now pass if the locktime is < MTP
-        bip113tx_v1.nLockTIMECCoin = self.last_block_time - 600 * 5 - 1 # < MTP of prior block
+        bip113tx_v1.nLockTIMECoin = self.last_block_time - 600 * 5 - 1 # < MTP of prior block
         bip113signed1 = self.sign_transaction(self.nodes[0], bip113tx_v1)
-        bip113tx_v2.nLockTIMECCoin = self.last_block_time - 600 * 5 - 1 # < MTP of prior block
+        bip113tx_v2.nLockTIMECoin = self.last_block_time - 600 * 5 - 1 # < MTP of prior block
         bip113signed2 = self.sign_transaction(self.nodes[0], bip113tx_v2)
         for bip113tx in [bip113signed1, bip113signed2]:
             yield TestInstance([[self.create_test_block([bip113tx]), True]]) # 11,12

@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The TIMECCoin Core developers
+// Copyright (c) 2014-2017 The TIMECoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -33,11 +33,11 @@ static bool fRPCRunning = false;
 static bool fRPCInWarmup = true;
 static std::string rpcWarmupStatus("RPC server started");
 static CCriticalSection cs_rpcWarmup;
-/* TIMECCoinr-creating functions */
-static std::vector<RPCTIMECCoinrInterface*> timerInterfaces;
+/* TIMECoinr-creating functions */
+static std::vector<RPCTIMECoinrInterface*> timerInterfaces;
 /* Map of name to timer.
  * @note Can be changed to std::unique_ptr when C++11 */
-static std::map<std::string, boost::shared_ptr<RPCTIMECCoinrBase> > deadlineTIMECCoinrs;
+static std::map<std::string, boost::shared_ptr<RPCTIMECoinrBase> > deadlineTIMECoinrs;
 
 static struct CRPCSignals
 {
@@ -243,11 +243,11 @@ UniValue stop(const UniValue& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "stop\n"
-            "\nStop TIMECCoin Core server.");
+            "\nStop TIMECoin Core server.");
     // Event loop will exit after current HTTP requests have been handled, so
     // this reply will get back to the client.
     StartShutdown();
-    return "TIMECCoin Core server stopping";
+    return "TIMECoin Core server stopping";
 }
 
 /**
@@ -343,7 +343,7 @@ static const CRPCCommand vRPCCommands[] =
     { "hidden",             "resendwallettransactions", &resendwallettransactions, true},
 #endif
 
-    /* TIMECCoin features */
+    /* TIMECoin features */
     { "time",               "masternode",             &masternode,             true  },
     { "time",               "masternodelist",         &masternodelist,         true  },
     { "time",               "masternodebroadcast",    &masternodebroadcast,    true  },
@@ -445,7 +445,7 @@ void InterruptRPC()
 void StopRPC()
 {
     LogPrint("rpc", "Stopping RPC\n");
-    deadlineTIMECCoinrs.clear();
+    deadlineTIMECoinrs.clear();
     g_rpcSignals.Stopped();
 }
 
@@ -589,14 +589,14 @@ std::string HelpExampleRpc(const std::string& methodname, const std::string& arg
         "\"method\": \"" + methodname + "\", \"params\": [" + args + "] }' -H 'content-type: text/plain;' http://127.0.0.1:9998/\n";
 }
 
-void RPCRegisterTIMECCoinrInterface(RPCTIMECCoinrInterface *iface)
+void RPCRegisterTIMECoinrInterface(RPCTIMECoinrInterface *iface)
 {
     timerInterfaces.push_back(iface);
 }
 
-void RPCUnregisterTIMECCoinrInterface(RPCTIMECCoinrInterface *iface)
+void RPCUnregisterTIMECoinrInterface(RPCTIMECoinrInterface *iface)
 {
-    std::vector<RPCTIMECCoinrInterface*>::iterator i = std::find(timerInterfaces.begin(), timerInterfaces.end(), iface);
+    std::vector<RPCTIMECoinrInterface*>::iterator i = std::find(timerInterfaces.begin(), timerInterfaces.end(), iface);
     assert(i != timerInterfaces.end());
     timerInterfaces.erase(i);
 }
@@ -605,10 +605,10 @@ void RPCRunLater(const std::string& name, boost::function<void(void)> func, int6
 {
     if (timerInterfaces.empty())
         throw JSONRPCError(RPC_INTERNAL_ERROR, "No timer handler registered for RPC");
-    deadlineTIMECCoinrs.erase(name);
-    RPCTIMECCoinrInterface* timerInterface = timerInterfaces.back();
+    deadlineTIMECoinrs.erase(name);
+    RPCTIMECoinrInterface* timerInterface = timerInterfaces.back();
     LogPrint("rpc", "queue run of timer %s in %i seconds (using %s)\n", name, nSeconds, timerInterface->Name());
-    deadlineTIMECCoinrs.insert(std::make_pair(name, boost::shared_ptr<RPCTIMECCoinrBase>(timerInterface->NewTIMECCoinr(func, nSeconds*1000))));
+    deadlineTIMECoinrs.insert(std::make_pair(name, boost::shared_ptr<RPCTIMECoinrBase>(timerInterface->NewTIMECoinr(func, nSeconds*1000))));
 }
 
 const CRPCTable tableRPC;

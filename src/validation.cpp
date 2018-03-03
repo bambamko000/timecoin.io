@@ -1234,6 +1234,9 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
 
     if (nPrevHeight == 0)
         nSubsidy = 500000 * COIN; // premine (1,25%)
+    
+    else if (nPrevHeight == 1)
+        nSubsidy = 1 * COIN;	//BUGFIX
 
     else if (nPrevHeight < 17280)
         nSubsidy = 0.1 * COIN; // INSTA MINE PROTECTION

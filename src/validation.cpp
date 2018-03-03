@@ -1235,28 +1235,28 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     if (nPrevHeight == 0)
         nSubsidy = 500000 * COIN; // premine (1,25%)
 
-    else if (nPrevHeight > 1)
+    else if (nPrevHeight < 17280)
         nSubsidy = 0.1 * COIN; // INSTA MINE PROTECTION
 
-    else if (nPrevHeight > 8640)
+    else if (nPrevHeight < 3153600)
         nSubsidy = 1 * COIN; // 6 coins per minute
 
-    else if (nPrevHeight > 3153600)
+    else if (nPrevHeight < 6307200)
         nSubsidy = 0.75 * COIN; // 4.5 coins per minute
 
-    else if (nPrevHeight > 6307200)
+    else if (nPrevHeight < 9460800)
         nSubsidy = 0.56 * COIN; // 3.36 coins per minute
 
-    else if (nPrevHeight > 9460800)
+    else if (nPrevHeight < 12614400)
         nSubsidy = 0.42 * COIN; // 2.52 coins per minute
 
-    else if (nPrevHeight > 12614400)
+    else if (nPrevHeight < 15768000)
         nSubsidy = 0.32 * COIN; // 1.92 coins per minute
 
-    else if (nPrevHeight > 15768000)
+    else if (nPrevHeight < 18921600)
         nSubsidy = 0.23 * COIN; // 1.38 coins per minute
 
-    else if (nPrevHeight > 18921600)
+    else
         nSubsidy = 0.16 * COIN; //0.96 coins per minute
 
     return nSubsidy;

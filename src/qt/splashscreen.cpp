@@ -43,7 +43,7 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle *networkStyle) 
 
     // define text to place
     QString titleText       = tr("TIMECoin Core");
-    QString versionText     = QString(tr("Version 1.0.0.1")).arg(QString::fromStdString(FormatFullVersion()));
+    QString versionText     = QString(tr("Version 1.0.1.1")).arg(QString::fromStdString(FormatFullVersion()));
     QString copyrightTextBtc   = QChar(0xA9)+QString(" 2009-%1 ").arg(COPYRIGHT_YEAR) + QString(tr("The Bitcoin Core developers"));
     QString copyrightTextTIMECoin   = QChar(0xA9)+QString(" 2017-%1 ").arg(COPYRIGHT_YEAR) + QString(tr("The TIMECoin Core developers"));
     QString titleAddText    = networkStyle->getTitleAddText();

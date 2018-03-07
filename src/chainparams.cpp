@@ -147,8 +147,11 @@ public:
         assert(genesis.hashMerkleRoot == uint256S("0x166c745bc826eb1efcecd731bee940676dd73075f7a31d60c4c1498c66836e56"));
 
 
-        vSeeds.push_back(CDNSSeedData("seed1.timec.io", "seed2.timec.io"));
-
+        vSeeds.push_back(CDNSSeedData("seed1.timec.io", "seed1.timec.io"));
+        vSeeds.push_back(CDNSSeedData("seed2.timec.io", "seed2.timec.io"));
+        vSeeds.push_back(CDNSSeedData("seed3.timec.io", "seed3.timec.io"));
+               
+        
         // TIMECoin addresses start with 'T'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,66);
         // TIMECoin script addresses start with '7'

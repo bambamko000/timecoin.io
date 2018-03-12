@@ -13,7 +13,7 @@
  * client versioning and copyright year
  */
 
-//! These need to be macros, as clientversion.cpp's and time*-res.rc's voodoo requires it
+//! These need to be macros, as clientversion.cpp's and dash*-res.rc's voodoo requires it
 #define CLIENT_VERSION_MAJOR 1
 #define CLIENT_VERSION_MINOR 0
 #define CLIENT_VERSION_REVISION 1
@@ -38,10 +38,10 @@
 #define DO_STRINGIZE(X) #X
 
 //! Copyright string used in Windows .rc files
-#define COPYRIGHT_STR "2009-" STRINGIZE(COPYRIGHT_YEAR) " The Bitcoin Core Developers, 2014-" STRINGIZE(COPYRIGHT_YEAR) " The TIMECoin Core Developers"
+#define COPYRIGHT_STR "2009-" STRINGIZE(COPYRIGHT_YEAR) " The Bitcoin Core Developers, 2014-" STRINGIZE(COPYRIGHT_YEAR) " The Dash Core Developers"
 
 /**
- * timed-res.rc includes this file, but it cannot cope with real c++ code.
+ * dashd-res.rc includes this file, but it cannot cope with real c++ code.
  * WINDRES_PREPROC is defined to indicate that its pre-processor is running.
  * Anything other than a define should be guarded below.
  */
@@ -51,11 +51,7 @@
 #include <string>
 #include <vector>
 
-static const int CLIENT_VERSION =
-                           1000000 * CLIENT_VERSION_MAJOR
-                         +   10000 * CLIENT_VERSION_MINOR
-                         +     100 * CLIENT_VERSION_REVISION
-                         +       1 * CLIENT_VERSION_BUILD;
+static const int CLIENT_VERSION = 10001010;
 
 extern const std::string CLIENT_NAME;
 extern const std::string CLIENT_BUILD;

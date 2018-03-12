@@ -24,7 +24,7 @@
 #define HAVE_BUILTIN_EXPECT 1
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
-/* #undef HAVE_DLFCN_H */
+#define HAVE_DLFCN_H 1
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
@@ -60,7 +60,7 @@
 #define HAVE_UNISTD_H 1
 
 /* Define to 1 if the system has the type `__int128'. */
-/* #undef HAVE___INT128 */
+#define HAVE___INT128 1
 
 /* Define to the sub-directory where libtool stores uninstalled libraries. */
 #define LT_OBJDIR ".libs/"
@@ -90,7 +90,7 @@
 #define STDC_HEADERS 1
 
 /* Define this symbol to enable x86_64 assembly optimizations */
-/* #undef USE_ASM_X86_64 */
+#define USE_ASM_X86_64 1
 
 /* Define this symbol to use a statically generated ecmult table */
 #define USE_ECMULT_STATIC_PRECOMPUTATION 1
@@ -99,10 +99,10 @@
 /* #undef USE_ENDOMORPHISM */
 
 /* Define this symbol to use the FIELD_10X26 implementation */
-#define USE_FIELD_10X26 1
+/* #undef USE_FIELD_10X26 */
 
 /* Define this symbol to use the FIELD_5X52 implementation */
-/* #undef USE_FIELD_5X52 */
+#define USE_FIELD_5X52 1
 
 /* Define this symbol to use the native field inverse implementation */
 #define USE_FIELD_INV_BUILTIN 1
@@ -117,10 +117,10 @@
 #define USE_NUM_NONE 1
 
 /* Define this symbol to use the 4x64 scalar implementation */
-/* #undef USE_SCALAR_4X64 */
+#define USE_SCALAR_4X64 1
 
 /* Define this symbol to use the 8x32 scalar implementation */
-#define USE_SCALAR_8X32 1
+/* #undef USE_SCALAR_8X32 */
 
 /* Define this symbol to use the native scalar inverse implementation */
 #define USE_SCALAR_INV_BUILTIN 1
